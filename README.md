@@ -1,1 +1,2 @@
-# cses-cli
+# CSES CLI
+
