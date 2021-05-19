@@ -1,0 +1,30 @@
+name: Coverage report
+
+on:
+  # Only manual running
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cache Cargo registry
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - name: Rust toolchain setup
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
+        components: llvm-tools-preview
+    - name: Install grcov
+      run: if [[ ! -e ~/.cargo/bin/grcov ]]; then cargo install grcov; fi
+    - name: Run tests
+      run: cargo test --no-default-features
+      env:
+        RUSTFLAGS: '-Z instrument-coverage -C link-dead-code -C codegen-units=1 -C opt-level=0'
+    - name: Run grcov
+      run: grcov . --binary-path target/debug/deps/ -s . -t lcov --ignore-not-existing --ignore 'src/test/*' -o coverage.lcov
+    - uses: codecov/codecov-action@v1
