@@ -72,7 +72,6 @@ dependencies = [
  "minreq",
  "pico-args",
  "serde",
- "serde_json",
  "thiserror",
 ]
 
@@ -142,6 +141,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "781e56f7d29192378f0a04948b1e6aec67ce561273b2dd26ac510bbe88d7be70"
 dependencies = [
  "native-tls",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

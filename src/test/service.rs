@@ -23,6 +23,6 @@ fn construct_service(apis: &mut (FakeCsesApi, FakeStorage, FakeFilesystem)) -> i
 #[test]
 fn ping_works() {
     let mut apis = fake_apis();
-    let service = construct_service(&mut apis);
+    let mut service = construct_service(&mut apis);
     // assert!(service.ping());
 }
