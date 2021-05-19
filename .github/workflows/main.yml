@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check format
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo fmt -- --check
+
+      - name: Run linter
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo clippy -- -D clippy::all -D warnings
+
+      - name: Run tests
+        run: cargo test --verbose
