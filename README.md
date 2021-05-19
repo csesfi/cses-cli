@@ -1,6 +1,8 @@
 # CSES CLI
 
 ![GitHub Actions](https://github.com/H4m5t3r/cses-cli/actions/workflows/main.yml/badge.svg)
+[![codecov](https://codecov.io/gh/H4m5t3r/cses-cli/branch/main/graph/badge.svg)](https://app.codecov.io/gh/H4m5t3r/cses-cli)
+
 
 University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
