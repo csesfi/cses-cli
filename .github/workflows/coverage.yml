@@ -1,6 +1,9 @@
 name: Coverage report
 
 on:
+  # to be removed
+  pull_request:
+    branches: [ main ]
   # Only manual running
   workflow_dispatch:
 
@@ -8,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Cache Cargo registry
       uses: actions/cache@v2
       with:
