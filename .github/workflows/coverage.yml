@@ -1,10 +1,9 @@
 name: Coverage report
 
 on:
-  # to be removed
-  pull_request:
+  push:
     branches: [ main ]
-  # Only manual running
+
   workflow_dispatch:
 
 jobs:
