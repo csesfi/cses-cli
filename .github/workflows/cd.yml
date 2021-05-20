@@ -22,6 +22,7 @@ jobs:
         prerelease: false
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
   compile:
     name: Compile binary
     needs: draft_release
@@ -72,3 +73,15 @@ jobs:
         asset_name: ${{ matrix.export_name }}
         asset_path: target/${{ matrix.target_triplet }}/release/${{ matrix.compiled_name }}
         asset_content_type: application/octet-stream
+  publish-release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    needs:
+      - draft_release
+      - compile
+    steps:
+      - uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ needs.draft_release.outputs.release_id }}
