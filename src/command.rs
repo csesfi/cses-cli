@@ -108,6 +108,23 @@ mod tests {
     }
 
     #[test]
+    fn submit_returns_the_correct_file_string() {
+        let pargs = to_pargs(&["submit", "test.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        if let Command::Submit(file_name) = command {
+            assert_eq!(file_name, String::from("test.cpp"))
+        };
+
+        let pargs = to_pargs(&["submit", "qwerty.rs"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        if let Command::Submit(file_name) = command {
+            assert_eq!(file_name, String::from("qwerty.rs"))
+        }
+    }
+
+    #[test]
     fn command_submit_fails_without_a_file() {
         let pargs = to_pargs(&["submit"]);
         let command = Command::parse_command(pargs);
