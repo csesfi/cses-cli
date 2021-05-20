@@ -40,7 +40,7 @@ impl Command {
             "help" => Ok(Command::Help),
             "login" => Ok(Command::Login),
             "submit" => {
-                let file_name = pargs.free_from_str::<String>();
+                let file_name = pargs.free_from_str();
                 match file_name {
                     Ok(file_name) => Ok(Command::Submit(file_name)),
                     Err(_) => Err(anyhow!("File name not specified")),
@@ -112,16 +112,20 @@ mod tests {
         let pargs = to_pargs(&["submit", "test.cpp"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        if let Command::Submit(file_name) = command {
-            assert_eq!(file_name, String::from("test.cpp"))
-        };
+        assert!(matches!(
+            command,
+            Command::Submit(file_name)
+            if file_name == "test.cpp"
+        ));
 
         let pargs = to_pargs(&["submit", "qwerty.rs"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        if let Command::Submit(file_name) = command {
-            assert_eq!(file_name, String::from("qwerty.rs"))
-        }
+        assert!(matches!(
+            command,
+            Command::Submit(file_name)
+            if file_name == "qwerty.rs"
+        ));
     }
 
     #[test]
