@@ -1,0 +1,74 @@
+
+name: CD
+
+on:
+  push:
+    tags:
+      - 'v.*'
+
+jobs:
+  draft_release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Draft Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: false
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+  compile:
+    name: Compile binary
+    needs: draft_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target_triplet: x86_64-apple-darwin
+            compiled_name: cses-cli
+            export_name: cses-cli-mac
+          - os: ubuntu-latest
+            target_triplet: x86_64-unknown-linux-gnu
+            compiled_name: cses-cli
+            export_name: cses-cli-linux
+          - os: windows-latest
+            target_triplet: x86_64-pc-windows-msvc
+            compiled_name: cses-cli.exe
+            export_name: cses-cli-windows.exe
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache Cargo registry
+      uses: actions/cache@v2
+      with:
+        path: ~/.cargo
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - name: Rust toolchain setup
+      uses: actions-rs/toolchain@v1
+      env:
+        RUSTUP_UNPACK_RAM: 104857600
+      with:
+        profile: minimal
+        toolchain: nightly
+        components: rust-src
+        override: true
+    - name: Install Xargo
+      run: cargo install xargo
+    - name: Compile binary
+      run: xargo build --release --target ${{ matrix.target_triplet }}
+      env:
+        RUSTFLAGS: '-Z strip=symbols'
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.draft_release.outputs.upload_url }}
+        asset_name: ${{ matrix.export_name }}
+        asset_path: target/${{ matrix.target_triplet }}/release/${{ matrix.compiled_name }}
+        asset_content_type: application/octet-stream
