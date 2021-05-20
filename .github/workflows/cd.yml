@@ -4,7 +4,7 @@ name: CD
 on:
   push:
     tags:
-      - 'v.*'
+      - 'v*'
 
 jobs:
   draft_release:
