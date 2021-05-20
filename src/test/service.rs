@@ -1,4 +1,4 @@
-use crate::{ConcreteService, CsesApi, Filesystem, Service, Storage};
+use crate::{CsesApi, Filesystem, Resources, Storage};
 
 struct FakeCsesApi {}
 
@@ -12,17 +12,16 @@ struct FakeFilesystem {}
 
 impl Filesystem for FakeFilesystem {}
 
-fn fake_apis() -> (FakeCsesApi, FakeStorage, FakeFilesystem) {
-    (FakeCsesApi {}, FakeStorage {}, FakeFilesystem {})
-}
-
-fn construct_service(apis: &mut (FakeCsesApi, FakeStorage, FakeFilesystem)) -> impl Service + '_ {
-    ConcreteService::with_apis(&mut apis.0, &mut apis.1, &mut apis.2)
+fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
+    Resources {
+        api: FakeCsesApi {},
+        storage: FakeStorage {},
+        filesystem: FakeFilesystem {},
+    }
 }
 
 #[test]
 fn ping_works() {
-    let mut apis = fake_apis();
-    let mut service = construct_service(&mut apis);
+    let mut resources = fake_resources();
     // assert!(service.ping());
 }
