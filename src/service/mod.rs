@@ -1,6 +1,10 @@
-use crate::login::Login;
 use crate::{Resources, RP};
 use anyhow::Result;
+
+pub struct Login {
+    pub username: String,
+    pub password: String,
+}
 
 pub fn ping(_res: &mut Resources<impl RP>) -> bool {
     true
