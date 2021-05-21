@@ -5,8 +5,6 @@ use anyhow::Result;
 use console::Term;
 
 use super::Ui;
-use super::PASSWORD_STR;
-use super::USERNAME_STR;
 
 pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
     let login = Login {
@@ -17,10 +15,10 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
 }
 
 fn prompt_username(term: &mut Term) -> Result<String> {
-    term.write_str(USERNAME_STR)?;
+    term.write_str("Username: ")?;
     Ok(term.read_line()?)
 }
 fn prompt_password(term: &mut Term) -> Result<String> {
-    term.write_str(PASSWORD_STR)?;
+    term.write_str("Password: ")?;
     Ok(term.read_secure_line()?)
 }

@@ -12,9 +12,6 @@ pub struct Ui<R: ResourcesProvider> {
     term: Term,
 }
 
-static USERNAME_STR: &str = "Username: ";
-static PASSWORD_STR: &str = "Password: ";
-
 impl<R: ResourcesProvider> Ui<R> {
     pub fn with_resources(res: Resources<R>) -> Self {
         let term = Term::stdout();
