@@ -26,9 +26,12 @@ mod test;
 #[cfg(custom_abort)]
 mod abort_handler;
 
+// FIXME
+#[allow(unreachable_code)]
 fn main() -> anyhow::Result<()> {
     #[cfg(custom_abort)]
     abort_handler::setup();
+    panic!();
     let command = Command::from_command_line()?;
     let api = CsesHttpApi::default();
     let storage = FileStorage::default();
