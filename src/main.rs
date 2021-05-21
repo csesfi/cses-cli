@@ -23,7 +23,12 @@ use ui::Ui;
 #[cfg(test)]
 mod test;
 
+#[cfg(custom_abort)]
+mod abort_handler;
+
 fn main() -> anyhow::Result<()> {
+    #[cfg(custom_abort)]
+    abort_handler::setup();
     let command = Command::from_command_line()?;
     let api = CsesHttpApi::default();
     let storage = FileStorage::default();

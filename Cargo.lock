@@ -69,6 +69,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "console",
+ "libc",
  "miniserde",
  "minreq",
  "pico-args",
