@@ -10,7 +10,11 @@ impl Storage for FakeStorage {}
 
 struct FakeFilesystem {}
 
-impl Filesystem for FakeFilesystem {}
+impl Filesystem for FakeFilesystem {
+    fn get_file(&self, _filename: &str) -> anyhow::Result<Vec<u8>> {
+        Ok(b"test".to_vec())
+    }
+}
 
 fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
     Resources {
