@@ -1,6 +1,6 @@
+use anyhow::Result;
 use std::fs::{self, File};
 use std::io::Read;
-use anyhow::Result;
 
 pub struct ConcreteFilesystem {}
 
@@ -24,8 +24,8 @@ impl Filesystem for ConcreteFilesystem {
     fn get_file(&self, filename: &str) -> Result<Vec<u8>> {
         let mut file = File::open(&filename)?;
         let metadata = fs::metadata(&filename)?;
-        let mut buffer = vec![0; metadata.len() as usize];
-        file.read(&mut buffer)?;
+        let mut buffer = Vec::with_capacity(metadata.len() as usize);
+        file.read_to_end(&mut buffer)?;
 
         Ok(buffer)
     }
@@ -33,8 +33,8 @@ impl Filesystem for ConcreteFilesystem {
 
 #[cfg(test)]
 mod tests {
-    use std::env::temp_dir;
     use super::*;
+    use std::env::temp_dir;
     use std::io::Write;
 
     #[test]
