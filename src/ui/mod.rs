@@ -23,6 +23,9 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Help => {
                 self.term.write_str(HELP_STR)?;
             }
+            _ => {
+                self.term.write_str("Command not yet implemented\n")?;
+            }
         }
         Ok(())
     }
