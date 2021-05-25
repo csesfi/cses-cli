@@ -55,52 +55,28 @@ pub trait Storage {
 
 impl Storage for FileStorage {
     fn get_username(&self) -> Option<&str> {
-        match &self.username {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.username.as_deref()
     }
     fn get_password(&self) -> Option<&str> {
-        match &self.password {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.password.as_deref()
     }
     fn get_token(&self) -> Option<&str> {
-        match &self.token {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.token.as_deref()
     }
     fn get_course(&self) -> Option<&str> {
-        match &self.course {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.course.as_deref()
     }
     fn get_task(&self) -> Option<&str> {
-        match &self.task {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.task.as_deref()
     }
     fn get_language(&self) -> Option<&str> {
-        match &self.language {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.language.as_deref()
     }
     fn get_option(&self) -> Option<&str> {
-        match &self.option {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.option.as_deref()
     }
     fn get_file(&self) -> Option<&str> {
-        match &self.file {
-            Some(val) => Some(val),
-            None => None,
-        }
+        self.file.as_deref()
     }
     fn set_username(&mut self, val: String) {
         self.username = Some(val);
