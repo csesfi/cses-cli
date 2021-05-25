@@ -2,7 +2,7 @@ import connexion
 
 
 def login_get(user):
-    return {"sessionid": "asdf"}
+    return {"X-AUTH-TOKEN": "asdf"}
 
 def basic_auth(username, password, required_scopes=None):
     if username == "kalle":

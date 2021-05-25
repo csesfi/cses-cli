@@ -13,13 +13,13 @@ components:
       scheme: basic
       x-basicInfoFunc: app.basic_auth
 
-    cookieAuth: # could be any name
+    apiKeyAuth: # could be any name
       type: apiKey
-      in: cookie # where should this be?
-      name: SESSIONID
+      in: header
+      name: X-AUTH-TOKEN
 
 security:
-  - cookieAuth: []
+  - apiKeyAuth: []
 
 paths:
   /login:
@@ -43,9 +43,9 @@ paths:
                 type: object
                 additionalProperties: false
                 required:
-                  - sessionid
+                  - X-AUTH-TOKEN
                 properties:
-                  sessionid:
+                  X-AUTH-TOKEN:
                     type: string
 
               examples:
@@ -54,7 +54,7 @@ paths:
                 example1:
                   summary: An example session ID
                   value:
-                    sessionid: "123"
+                    X-AUTH-TOKEN: "123"
 
         "401":
           description: Invalid username/password.
