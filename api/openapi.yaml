@@ -8,34 +8,46 @@ info:
 # define possible authentication methods
 components:
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-      x-basicInfoFunc: app.basic_auth
-
     apiKeyAuth: # could be any name
       type: apiKey
       in: header
-      name: X-AUTH-TOKEN
+      name: X-Auth-Token
 
 security:
   - apiKeyAuth: []
 
 paths:
   /login:
-    get:
+    post:
       # unique id for mocking
-
       operationId: app.login_get
+
       summary: Logs in the user with CSES credentials
 
-      security:
-        - basicAuth: []
+      security: []
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+
+              required:
+                - username
+                - password
+              additionalProperties: false
+
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
 
       responses:
         "200":
           description: >
-            Authentication successful. The SESSIONID is returned as a
+            Authentication successful. X-Auth-Token is returned as a
             json object.
           content:
             application/json:
@@ -43,9 +55,9 @@ paths:
                 type: object
                 additionalProperties: false
                 required:
-                  - X-AUTH-TOKEN
+                  - X-Auth-Token
                 properties:
-                  X-AUTH-TOKEN:
+                  X-Auth-Token:
                     type: string
 
               examples:
@@ -54,7 +66,7 @@ paths:
                 example1:
                   summary: An example session ID
                   value:
-                    X-AUTH-TOKEN: "123"
+                    X-Auth-Token: "123"
 
         "401":
           description: Invalid username/password.
