@@ -8,9 +8,10 @@ on:
 
 jobs:
   draft_release:
+    name: Draft release
     runs-on: ubuntu-latest
     steps:
-    - name: Create Draft Release
+    - name: Create draft release
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -66,7 +67,7 @@ jobs:
     - name: Compile binary
       run: xargo build --release --target ${{ matrix.target_triplet }}
       env:
-        RUSTFLAGS: '-Z strip=symbols'
+        RUSTFLAGS: '-Z strip=symbols --cfg custom_abort'
     - name: Upload release assets
       uses: actions/upload-release-asset@v1
       env:

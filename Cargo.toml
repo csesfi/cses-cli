@@ -9,11 +9,12 @@ edition = "2018"
 [dependencies]
 pico-args = "0.4"
 console = "0.14"
-serde = { version = "1", features = ["derive"] }
-minreq = { version = "2", features = ["https-native", "json-using-serde"] }
+miniserde = "0.1"
+minreq = { version = "2", features = ["https-native"] }
 anyhow = "1"
 thiserror = "1"
 base64 = "0.13.0"
+libc = "0.2"
 
 [profile.release]
 opt-level = 'z'
