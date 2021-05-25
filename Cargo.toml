@@ -13,6 +13,7 @@ serde = { version = "1", features = ["derive"] }
 minreq = { version = "2", features = ["https-native", "json-using-serde"] }
 anyhow = "1"
 thiserror = "1"
+base64 = "0.13.0"
 
 [profile.release]
 opt-level = 'z'
