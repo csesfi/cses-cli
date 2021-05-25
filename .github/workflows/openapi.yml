@@ -4,10 +4,6 @@ on:
   push:
     branches: [main]
 
-  # for testing
-  pull_request:
-    branches: [main]
-
 jobs:
   docgen:
     name: Generate Openapi documentation
