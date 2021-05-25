@@ -8,44 +8,29 @@ info:
 # define possible authentication methods
 components:
   securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      x-basicInfoFunc: app.basic_auth
+
     cookieAuth: # could be any name
       type: apiKey
       in: cookie # where should this be?
       name: SESSIONID
 
-# set default securityScheme
 security:
   - cookieAuth: []
 
 paths:
   /login:
-    post:
+    get:
       # unique id for mocking
 
-      operationId: app.login_post
+      operationId: app.login_get
       summary: Logs in the user with CSES credentials
 
-      # no securityScheme needed
-      security: []
-
-      requestBody:
-        required: true
-        content:
-          # or application/x-www-form-urlencoded to (maybe) match the current cses
-          application/json:
-            schema:
-
-              required:
-                - username
-                - password
-              additionalProperties: false
-
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
+      security:
+        - basicAuth: []
 
       responses:
         "200":
@@ -55,13 +40,21 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: object
+                additionalProperties: false
+                required:
+                  - sessionid
+                properties:
+                  sessionid:
+                    type: string
+
               examples:
                 # for documentations and
                 # could be used by the prism
                 example1:
                   summary: An example session ID
-                  value: examplesessionid
+                  value:
+                    sessionid: "123"
 
         "401":
           description: Invalid username/password.
