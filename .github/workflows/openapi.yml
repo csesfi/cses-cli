@@ -13,7 +13,7 @@ jobs:
     name: Generate Openapi documentation
     runs-on: ubuntu-latest
     steps:
-      uses: Legion2/swagger-ui-action@v1
+    - uses: Legion2/swagger-ui-action@v1
       with:
         output: swagger-ui
         spec-file: api/openapi.yaml
