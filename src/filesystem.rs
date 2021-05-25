@@ -1,7 +1,7 @@
 use anyhow::Result;
+use base64::{decode, encode};
 use std::fs::{self, File};
 use std::io::Read;
-use base64::{decode, encode};
 
 pub struct ConcreteFilesystem {}
 
@@ -19,7 +19,7 @@ impl Default for ConcreteFilesystem {
 
 pub trait Filesystem {
     fn get_file(&self, filename: &str) -> Result<Vec<u8>>;
-    fn encode_base64(&self, filecontent: &Vec<u8>) -> String;
+    fn encode_base64(&self, filecontent: &[u8]) -> String;
     fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>>;
 }
 
@@ -33,8 +33,8 @@ impl Filesystem for ConcreteFilesystem {
         Ok(buffer)
     }
 
-    fn encode_base64(&self, filecontent: &Vec<u8>) -> String {
-        String::from(encode(filecontent))
+    fn encode_base64(&self, filecontent: &[u8]) -> String {
+        encode(filecontent)
     }
 
     fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>> {
@@ -70,6 +70,9 @@ mod tests {
     #[test]
     fn base64_decoding_works_correctly() {
         let to_decode = "aGVsbG8gd29ybGQ=";
-        assert_eq!(decode(&to_decode), Ok(vec![104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]));
+        assert_eq!(
+            decode(&to_decode),
+            Ok(vec![104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100])
+        );
     }
 }

@@ -15,7 +15,7 @@ impl Filesystem for FakeFilesystem {
         Ok(b"test".to_vec())
     }
 
-    fn encode_base64(&self, _filecontent: &Vec<u8>) -> String {
+    fn encode_base64(&self, _filecontent: &[u8]) -> String {
         todo!()
     }
 
