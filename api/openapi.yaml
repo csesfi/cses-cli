@@ -1,0 +1,67 @@
+openapi: 3.0.3
+
+info:
+  title: CSES API
+  description: API describing the communication between CSES CLI and cses.fi
+  version: 0.0.1
+
+# define possible authentication methods
+components:
+  securitySchemes:
+    cookieAuth: # could be any name
+      type: apiKey
+      in: cookie # where should this be?
+      name: SESSIONID
+
+# set default securityScheme
+security:
+  - cookieAuth: []
+
+paths:
+  /login:
+    post:
+      # unique id for mocking
+
+      operationId: app.login_post
+      summary: Logs in the user with CSES credentials
+
+      # no securityScheme needed
+      security: []
+
+      requestBody:
+        required: true
+        content:
+          # or application/x-www-form-urlencoded to (maybe) match the current cses
+          application/json:
+            schema:
+
+              required:
+                - username
+                - password
+              additionalProperties: false
+
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        "200":
+          description: >
+            Authentication successful. The SESSIONID is returned as a
+            json object.
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                # for documentations and
+                # could be used by the prism
+                example1:
+                  summary: An example session ID
+                  value: examplesessionid
+
+        "401":
+          description: Invalid username/password.
