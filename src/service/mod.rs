@@ -11,5 +11,5 @@ pub fn ping(_res: &mut Resources<impl RP>) -> bool {
 }
 
 pub fn login(_res: &mut Resources<impl RP>, _login: &Login) -> Result<()> {
-    Ok(())
+    todo!()
 }

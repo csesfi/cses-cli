@@ -1,8 +1,13 @@
+use crate::{api::ApiResult, service::Login};
 use crate::{CsesApi, Filesystem, Resources, Storage};
 
 struct FakeCsesApi {}
 
-impl CsesApi for FakeCsesApi {}
+impl CsesApi for FakeCsesApi {
+    fn login(_login: &Login) -> ApiResult<String> {
+        todo!()
+    }
+}
 
 struct FakeStorage {}
 
@@ -22,6 +27,6 @@ fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
 
 #[test]
 fn ping_works() {
-    let mut resources = fake_resources();
+    let mut _resources = fake_resources();
     // assert!(service.ping());
 }

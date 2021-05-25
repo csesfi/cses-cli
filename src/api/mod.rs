@@ -1,3 +1,4 @@
+use crate::service::Login;
 use thiserror::Error;
 
 pub struct CsesHttpApi {}
@@ -19,6 +20,12 @@ pub enum ApiError {}
 
 pub type ApiResult<T> = Result<T, ApiError>;
 
-pub trait CsesApi {}
+pub trait CsesApi {
+    fn login(login: &Login) -> ApiResult<String>;
+}
 
-impl CsesApi for CsesHttpApi {}
+impl CsesApi for CsesHttpApi {
+    fn login(_login: &Login) -> ApiResult<String> {
+        todo!()
+    }
+}
