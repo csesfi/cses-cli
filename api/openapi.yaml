@@ -60,7 +60,7 @@ paths:
       operationId: app.login_get
 
       summary: Logs in the user with CSES credentials
-      description: |
+      description: >
         Logs the user in with CSES credentials. Returns an API token
         that can be used to authenticate subsequent API queries.
 
