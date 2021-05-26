@@ -1,6 +1,5 @@
 use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
-use std::default::Default;
 use std::fs;
 use std::path::Path;
 
