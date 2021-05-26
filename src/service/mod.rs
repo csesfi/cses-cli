@@ -1,6 +1,6 @@
 use crate::{CsesApi, Resources, Storage, RP};
-use anyhow::{Result, anyhow};
-use miniserde::{Serialize, Deserialize};
+use anyhow::{anyhow, Result};
+use miniserde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 pub struct Login {
     pub username: String,
