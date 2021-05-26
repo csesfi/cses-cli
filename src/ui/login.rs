@@ -11,7 +11,9 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
         username: prompt_username(&mut ui.term)?,
         password: prompt_password(&mut ui.term)?,
     };
-    service::login(&mut ui.res, &login)
+    service::login(&mut ui.res, &login)?;
+    ui.term.write_line("Login successful")?;
+    Ok(())
 }
 
 fn prompt_username(term: &mut Term) -> Result<String> {
