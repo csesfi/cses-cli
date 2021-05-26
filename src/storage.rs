@@ -43,7 +43,7 @@ pub trait Storage {
     fn get_file(&self) -> Option<&str>;
     fn set_username(&mut self, val: String);
     fn set_password(&mut self, val: String);
-    fn set_token(&mut self, val: String);
+    fn set_token(&mut self, val: Option<String>);
     fn set_course(&mut self, val: String);
     fn set_task(&mut self, val: String);
     fn set_language(&mut self, val: String);
@@ -84,8 +84,8 @@ impl Storage for FileStorage {
     fn set_password(&mut self, val: String) {
         self.password = Some(val);
     }
-    fn set_token(&mut self, val: String) {
-        self.token = Some(val);
+    fn set_token(&mut self, val: Option<String>) {
+        self.token = val;
     }
     fn set_course(&mut self, val: String) {
         self.course = Some(val);
@@ -119,7 +119,7 @@ mod tests {
         let mut storage: FileStorage = Default::default();
         storage.set_username(String::from("username"));
         storage.set_password(String::from("password"));
-        storage.set_token(String::from("token"));
+        storage.set_token(Some(String::from("token")));
         storage.set_course(String::from("course"));
         storage.set_task(String::from("task"));
         storage.set_language(String::from("language"));

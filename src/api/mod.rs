@@ -32,6 +32,7 @@ pub type ApiResult<T> = Result<T, ApiError>;
 
 pub trait CsesApi {
     fn login(&self, login: &Login) -> ApiResult<String>;
+    fn logout(&self, token: &str) -> ApiResult<()>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -44,6 +45,10 @@ impl CsesApi for CsesHttpApi {
         let response_body: LoginResponse = json::from_str(response.as_str()?)?;
         let token = response_body.x_auth_token;
         Ok(token)
+    }
+
+    fn logout(&self, _token: &str) -> ApiResult<()> {
+        todo!()
     }
 }
 

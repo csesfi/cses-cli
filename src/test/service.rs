@@ -8,6 +8,9 @@ impl CsesApi for FakeCsesApi {
     fn login(&self, _login: &Login) -> ApiResult<String> {
         todo!()
     }
+    fn logout(&self, _token: &str) -> ApiResult<()> {
+        todo!()
+    }
 }
 
 struct FakeStorage {}
@@ -43,7 +46,7 @@ impl Storage for FakeStorage {
     fn set_password(&mut self, _val: String) {
         todo!()
     }
-    fn set_token(&mut self, _val: String) {
+    fn set_token(&mut self, _val: Option<String>) {
         todo!()
     }
     fn set_course(&mut self, _val: String) {
