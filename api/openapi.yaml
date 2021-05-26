@@ -8,9 +8,6 @@ info:
     name: MIT
     url: https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE
 
-
-
-
 components:
   responses:
     GeneralClientError:
