@@ -12,6 +12,26 @@ info:
 
 
 components:
+  responses:
+    GeneralClientError:
+      description: General client side error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+          examples:
+            example1:
+              summary: An example error message
+              value:
+                message: "Too many requests"
+
+    GeneralServerError:
+      description: General server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+
   schemas:
     ErrorMessage:
       additionalProperties: false
@@ -96,20 +116,7 @@ paths:
                 $ref: "#/components/schemas/ErrorMessage"
 
         "4XX":
-          description: General client side error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
-              examples:
-                example1:
-                  summary: An example error message
-                  value:
-                    message: "Too many requests"
+          $ref: "#/components/responses/GeneralClientError"
 
         "5XX":
-          description: Server error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
+          $ref: "#/components/responses/GeneralServerError"
