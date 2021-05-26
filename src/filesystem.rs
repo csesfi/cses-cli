@@ -1,3 +1,8 @@
+use anyhow::Result;
+use base64::{decode, encode};
+use std::fs::{self, File};
+use std::io::Read;
+
 pub struct ConcreteFilesystem {}
 
 impl ConcreteFilesystem {
@@ -12,6 +17,62 @@ impl Default for ConcreteFilesystem {
     }
 }
 
-pub trait Filesystem {}
+pub trait Filesystem {
+    fn get_file(&self, filename: &str) -> Result<Vec<u8>>;
+    fn encode_base64(&self, filecontent: &[u8]) -> String;
+    fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>>;
+}
 
-impl Filesystem for ConcreteFilesystem {}
+impl Filesystem for ConcreteFilesystem {
+    fn get_file(&self, filename: &str) -> Result<Vec<u8>> {
+        let mut file = File::open(&filename)?;
+        let metadata = fs::metadata(&filename)?;
+        let mut buffer = Vec::with_capacity(metadata.len() as usize);
+        file.read_to_end(&mut buffer)?;
+
+        Ok(buffer)
+    }
+
+    fn encode_base64(&self, filecontent: &[u8]) -> String {
+        encode(filecontent)
+    }
+
+    fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>> {
+        Ok(decode(filecontent)?)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env::temp_dir;
+    use std::io::Write;
+
+    #[test]
+    fn can_read_file() {
+        let mut path = temp_dir();
+        path.push("test_file");
+        let mut test_file = File::create(&path).unwrap();
+
+        test_file.write_all(b"test content").unwrap();
+
+        let filesystem = ConcreteFilesystem::default();
+        let read_file = filesystem.get_file(path.to_str().unwrap()).unwrap();
+        assert_eq!(read_file, b"test content");
+    }
+
+    #[test]
+    fn base64_encoding_works_correctly() {
+        let to_encode = b"tEstVAlu3";
+        assert_eq!(encode(&to_encode), "dEVzdFZBbHUz");
+    }
+
+    #[test]
+    fn base64_decoding_works_correctly() {
+        let to_decode = "aGVsbG8gd29ybGQ=";
+        assert_eq!(
+            decode(&to_decode),
+            Ok(vec![104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100])
+        );
+    }
+}
