@@ -13,62 +13,58 @@ impl CsesApi for FakeCsesApi {
     }
 }
 
-struct FakeStorage {}
+#[derive(Default, Debug)]
+pub struct FakeStorage {
+    token: Option<String>,
+    course: Option<String>,
+    task: Option<String>,
+    language: Option<String>,
+    option: Option<String>,
+    file: Option<String>,
+}
 
 impl Storage for FakeStorage {
-    fn get_username(&self) -> Option<&str> {
-        todo!()
-    }
-    fn get_password(&self) -> Option<&str> {
-        todo!()
-    }
     fn get_token(&self) -> Option<&str> {
-        todo!()
+        self.token.as_deref()
     }
     fn get_course(&self) -> Option<&str> {
-        todo!()
+        self.course.as_deref()
     }
     fn get_task(&self) -> Option<&str> {
-        todo!()
+        self.task.as_deref()
     }
     fn get_language(&self) -> Option<&str> {
-        todo!()
+        self.language.as_deref()
     }
     fn get_option(&self) -> Option<&str> {
-        todo!()
+        self.option.as_deref()
     }
     fn get_file(&self) -> Option<&str> {
-        todo!()
+        self.file.as_deref()
     }
-    fn set_username(&mut self, _val: String) {
-        todo!()
+    fn set_token(&mut self, val: String) {
+        self.token = Some(val);
     }
-    fn set_password(&mut self, _val: String) {
-        todo!()
+    fn set_course(&mut self, val: String) {
+        self.course = Some(val);
     }
-    fn set_token(&mut self, _val: Option<String>) {
-        todo!()
+    fn set_task(&mut self, val: String) {
+        self.task = Some(val);
     }
-    fn set_course(&mut self, _val: String) {
-        todo!()
+    fn set_language(&mut self, val: String) {
+        self.language = Some(val);
     }
-    fn set_task(&mut self, _val: String) {
-        todo!()
+    fn set_option(&mut self, val: String) {
+        self.option = Some(val);
     }
-    fn set_language(&mut self, _val: String) {
-        todo!()
-    }
-    fn set_option(&mut self, _val: String) {
-        todo!()
-    }
-    fn set_file(&mut self, _val: String) {
-        todo!()
+    fn set_file(&mut self, val: String) {
+        self.file = Some(val);
     }
     fn save(&mut self) -> Result<()> {
-        todo!()
+        Ok(())
     }
     fn delete(&mut self) -> Result<()> {
-        todo!()
+        Ok(())
     }
 }
 
@@ -79,13 +75,13 @@ impl Filesystem for FakeFilesystem {}
 fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
     Resources {
         api: FakeCsesApi {},
-        storage: FakeStorage {},
+        storage: Default::default(),
         filesystem: FakeFilesystem {},
     }
 }
 
 #[test]
 fn ping_works() {
-    let mut _resources = fake_resources();
+    let _resources = fake_resources();
     // assert!(service.ping());
 }
