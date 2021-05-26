@@ -10,7 +10,19 @@ impl Storage for FakeStorage {}
 
 struct FakeFilesystem {}
 
-impl Filesystem for FakeFilesystem {}
+impl Filesystem for FakeFilesystem {
+    fn get_file(&self, _filename: &str) -> anyhow::Result<Vec<u8>> {
+        Ok(b"test".to_vec())
+    }
+
+    fn encode_base64(&self, _filecontent: &[u8]) -> String {
+        todo!()
+    }
+
+    fn decode_base64(&self, _filecontent: &str) -> anyhow::Result<Vec<u8>> {
+        todo!()
+    }
+}
 
 fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
     Resources {
