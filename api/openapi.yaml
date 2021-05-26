@@ -11,8 +11,19 @@ info:
 
 
 
-# define possible authentication methods
 components:
+  schemas:
+    ErrorMessage:
+      additionalProperties: false
+      required:
+        - message
+      type: object
+      properties:
+        message:
+          description: Error message from the server.
+          type: string
+
+  # define possible authentication methods
   securitySchemes:
     apiKeyAuth: # could be any name
       type: apiKey
@@ -79,13 +90,26 @@ paths:
 
         "401":
           description: Invalid username/password.
-
-        "5XX":
-          description: Unexpected error.
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: false
-                required:
-                  - message
+                $ref: "#/components/schemas/ErrorMessage"
+
+        "4XX":
+          description: General client side error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+              examples:
+                example1:
+                  summary: An example error message
+                  value:
+                    message: "Too many requests"
+
+        "5XX":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
