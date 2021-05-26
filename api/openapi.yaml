@@ -113,3 +113,71 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
+
+  /logout:
+    post:
+      operationId: app.logout_post
+
+      summary: Deauthorizes the given authorization token.
+      description: >
+        Deauthorizes the valid authentication token. Returns if the
+        deauthorization was successful or not.
+
+      security: []
+
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              required:
+                - X-Auth-Token
+              additionalProperties: false
+
+              type: object
+              properties:
+                X-Auth-Token:
+                  description: A valid authorization token
+                  type: string
+
+      responses:
+        "200":
+          description: >
+            Valid authentication token which has hopefully now been devalidated.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - Success
+                properties:
+                  Success:
+                    description: True if successfully devalidated
+                    type: boolean
+
+        "401":
+          description: Invalid authorization token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+        "4XX":
+          description: General client side error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+              examples:
+                example1:
+                  summary: An example error message
+                  value:
+                    message: "Too many requests"
+
+        "5XX":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"

@@ -27,3 +27,23 @@ curl --header "Content-Type: application/json" \
 	--request POST \
 	--data '{"username": 10, "password": "salasana"}' \
 	http://127.0.0.1:4010/login
+
+echo
+
+curl --header "Content-Type: application/json" \
+	--request POST \
+	--data '{"X-Auth-Token": "asdf"}' \
+	http://localhost:4010/logout
+
+echo
+
+curl --header "Content-Type: application/json" \
+	--request POST \
+	--data '{"X-Auth-Token": "kissa"}' \
+	http://localhost:4010/logout
+
+echo
+
+curl --header "Content-Type: application/json" \
+	--request POST \
+	http://localhost:4010/logout
