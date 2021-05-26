@@ -8,10 +8,27 @@ info:
     name: MIT
     url: https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE
 
-
-
-
 components:
+  responses:
+    GeneralClientError:
+      description: General client side error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+          examples:
+            example1:
+              summary: An example error message
+              value:
+                message: "Too many requests"
+
+    GeneralServerError:
+      description: General server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+
   schemas:
     ErrorMessage:
       additionalProperties: false
@@ -40,7 +57,7 @@ paths:
       operationId: app.login_get
 
       summary: Logs in the user with CSES credentials
-      description: |
+      description: >
         Logs the user in with CSES credentials. Returns an API token
         that can be used to authenticate subsequent API queries.
 
@@ -82,12 +99,6 @@ paths:
                     description: API token used to authenticate the user.
                     type: string
 
-              examples:
-                example1:
-                  summary: An example session ID
-                  value:
-                    X-Auth-Token: "123"
-
         "401":
           description: Invalid username/password.
           content:
@@ -96,23 +107,10 @@ paths:
                 $ref: "#/components/schemas/ErrorMessage"
 
         "4XX":
-          description: General client side error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
-              examples:
-                example1:
-                  summary: An example error message
-                  value:
-                    message: "Too many requests"
+          $ref: "#/components/responses/GeneralClientError"
 
         "5XX":
-          description: Server error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
+          $ref: "#/components/responses/GeneralServerError"
 
   /logout:
     post:
@@ -157,27 +155,14 @@ paths:
                     type: boolean
 
         "401":
-          description: Invalid authorization token
+          description: Invalid username/password.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
 
         "4XX":
-          description: General client side error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
-              examples:
-                example1:
-                  summary: An example error message
-                  value:
-                    message: "Too many requests"
+          $ref: "#/components/responses/GeneralClientError"
 
         "5XX":
-          description: Server error.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
+          $ref: "#/components/responses/GeneralServerError"
