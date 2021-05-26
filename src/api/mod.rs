@@ -21,11 +21,11 @@ pub enum ApiError {}
 pub type ApiResult<T> = Result<T, ApiError>;
 
 pub trait CsesApi {
-    fn login(login: &Login) -> ApiResult<String>;
+    fn login(&self, login: &Login) -> ApiResult<String>;
 }
 
 impl CsesApi for CsesHttpApi {
-    fn login(_login: &Login) -> ApiResult<String> {
+    fn login(&self, _login: &Login) -> ApiResult<String> {
         todo!()
     }
 }
