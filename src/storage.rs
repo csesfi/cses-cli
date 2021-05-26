@@ -1,6 +1,5 @@
 use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
-use std::default::Default;
 use std::fs;
 use std::path::Path;
 
@@ -8,8 +7,6 @@ const FILENAME: &str = "filestorage.json";
 
 #[derive(Default, Serialize, Deserialize, Debug)]
 pub struct FileStorage {
-    username: Option<String>,
-    password: Option<String>,
     token: Option<String>,
     course: Option<String>,
     task: Option<String>,
@@ -33,17 +30,13 @@ impl FileStorage {
 }
 
 pub trait Storage {
-    fn get_username(&self) -> Option<&str>;
-    fn get_password(&self) -> Option<&str>;
     fn get_token(&self) -> Option<&str>;
     fn get_course(&self) -> Option<&str>;
     fn get_task(&self) -> Option<&str>;
     fn get_language(&self) -> Option<&str>;
     fn get_option(&self) -> Option<&str>;
     fn get_file(&self) -> Option<&str>;
-    fn set_username(&mut self, val: String);
-    fn set_password(&mut self, val: String);
-    fn set_token(&mut self, val: Option<String>);
+    fn set_token(&mut self, val: String);
     fn set_course(&mut self, val: String);
     fn set_task(&mut self, val: String);
     fn set_language(&mut self, val: String);
@@ -54,12 +47,6 @@ pub trait Storage {
 }
 
 impl Storage for FileStorage {
-    fn get_username(&self) -> Option<&str> {
-        self.username.as_deref()
-    }
-    fn get_password(&self) -> Option<&str> {
-        self.password.as_deref()
-    }
     fn get_token(&self) -> Option<&str> {
         self.token.as_deref()
     }
@@ -78,14 +65,8 @@ impl Storage for FileStorage {
     fn get_file(&self) -> Option<&str> {
         self.file.as_deref()
     }
-    fn set_username(&mut self, val: String) {
-        self.username = Some(val);
-    }
-    fn set_password(&mut self, val: String) {
-        self.password = Some(val);
-    }
-    fn set_token(&mut self, val: Option<String>) {
-        self.token = val;
+    fn set_token(&mut self, val: String) {
+        self.token = Some(val);
     }
     fn set_course(&mut self, val: String) {
         self.course = Some(val);
@@ -117,16 +98,12 @@ mod tests {
     #[test]
     fn setters_and_getters_work() {
         let mut storage: FileStorage = Default::default();
-        storage.set_username(String::from("username"));
-        storage.set_password(String::from("password"));
-        storage.set_token(Some(String::from("token")));
+        storage.set_token(String::from("token"));
         storage.set_course(String::from("course"));
         storage.set_task(String::from("task"));
         storage.set_language(String::from("language"));
         storage.set_option(String::from("option"));
         storage.set_file(String::from("file"));
-        assert_eq!(String::from("username"), storage.get_username().unwrap());
-        assert_eq!(String::from("password"), storage.get_password().unwrap());
         assert_eq!(String::from("token"), storage.get_token().unwrap());
         assert_eq!(String::from("course"), storage.get_course().unwrap());
         assert_eq!(String::from("task"), storage.get_task().unwrap());
