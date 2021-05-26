@@ -1,11 +1,10 @@
 import connexion
 
-
 def login_get():
     if connexion.request.json == {"username": "kalle",
                                   "password": "kissa2"}:
         return {"X-Auth-Token": "asdf"}
-    return ("Invalid username/password", 401)
+    return ({"message": "Invalid username/password"}, 401)
 
 def logout_post():
     if connexion.request.json["X-Auth-Token"] == "asdf":
