@@ -123,9 +123,10 @@ paths:
 
       security: []
 
-      requestBody:
-        required: false
-        content:
+      parameters:
+        - in: header
+          name: X-Auth-Token
+          content:
           application/json:
             schema:
               required:
@@ -137,6 +138,7 @@ paths:
                 X-Auth-Token:
                   description: A valid authorization token
                   type: string
+            required: true
 
       responses:
         "200":
