@@ -27,6 +27,9 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Login => {
                 login::login(self)?;
             }
+            Command::Logout => {
+                service::logout(&mut self.res)?;
+            }
             _ => {
                 self.term.write_str("Command not yet implemented\n")?;
             }

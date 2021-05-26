@@ -22,10 +22,15 @@ pub type ApiResult<T> = Result<T, ApiError>;
 
 pub trait CsesApi {
     fn login(&self, login: &Login) -> ApiResult<String>;
+    fn logout(&self, token: &str) -> ApiResult<()>;
 }
 
 impl CsesApi for CsesHttpApi {
     fn login(&self, _login: &Login) -> ApiResult<String> {
+        todo!()
+    }
+
+    fn logout(&self, _token: &str) -> ApiResult<()> {
         todo!()
     }
 }
