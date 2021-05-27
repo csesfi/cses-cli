@@ -2,6 +2,7 @@ import connexion
 import werkzeug
 
 from connexion import NoContent
+from connexion import RestyResolver
 
 from connexion.exceptions import ValidationError, BadRequestProblem
 from connexion.exceptions import Unauthorized
@@ -14,8 +15,41 @@ def login_get():
     return ({"message": "Invalid username/password", "code": "invalid_credentials"}, 401)
 
 def logout_post(token_info):
-    print(token_info)
+    print(f"logout: {token_info}")
     return (NoContent, 204)
+
+def submit_post(token_info, course_id, task_id):
+    print(f"submit post: {token_info}")
+    return ({"id": 1337}, 200)
+
+def default_submission_info():
+    return {
+        "time": "2017-07-21T17:32:28Z",
+        "language": {
+            "name": "C++",
+            "option": "C++17"
+        },
+        "status": "READY",
+        "pending": False,
+        "result": "ACCEPTED",
+        "tests": [{
+            "number": 1,
+            "verdict": "ACCEPTED",
+            "time": 120
+            }
+        ]
+    }
+
+def get_submit(token_info, course_id, task_id, submission_id):
+    print(f"get submit: {token_info}")
+    return (default_submission_info(), 200)
+
+def get_submit_poll(token_info, course_id, task_id, submission_id):
+    print(f"get submit poll: {token_info}")
+    print(f"course_id: {course_id}")
+    print(f"task_id: {task_id}")
+    print(f"submission_id: {submission_id}")
+    return (default_submission_info(), 200)
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
@@ -26,7 +60,7 @@ def apikey_auth(apikey, required_scopes=None):
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
     if apikey == "asdf":
-        return {"this": "goes to logout function"}
+        return {"this": "goes to the function"}
 
     # this will be overriden by the render_api_authentication_failed function
     raise werkzeug.exceptions.Unauthorized()
@@ -47,5 +81,5 @@ app = connexion.App(__name__, specification_dir="../",
 app.add_error_handler(BadRequestProblem, render_invalid_query)
 app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
-app.add_api("openapi.yaml")
+app.add_api("openapi.yaml", resolver=RestyResolver('api'))
 app.run(debug=True, host="127.0.0.1", port=4010)
