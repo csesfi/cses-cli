@@ -65,7 +65,7 @@ fn check_error(response: &Response) -> ApiResult<()> {
     } else {
         let error: ErrorResponse = json::from_str(response.as_str()?)?;
         Err(ApiError::CustomError(error.message))
-    } 
+    }
 }
 
 fn successful_response(response: &Response) -> bool {
