@@ -4,14 +4,112 @@ info:
   title: CSES API
   description: API describing the communication between CSES CLI and cses.fi
   version: 0.0.1
+  license:
+    name: MIT
+    url: https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE
 
-# define possible authentication methods
 components:
+  responses:
+    InvalidApiKeyError:
+      description: Invalid api key error response from the server.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InvalidApiKeyError"
+
+    InvalidCredentialsError:
+      description: Invalid credentials error response from the server.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InvalidCredentialsError"
+
+    ClientError:
+      description: General error response from the server.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ClientError"
+          examples:
+            example1:
+              summary: An example error message
+              value:
+                message: Too many requests
+                code: client_error
+
+    ServerError:
+      description: General server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ServerError"
+
+  schemas:
+    BaseError:
+      additionalProperties: false
+      required:
+        - message
+        - code
+      type: object
+
+      properties:
+        message:
+          description: Human-readable error message from the server.
+          type: string
+        code:
+          description: Machine-readable error code from the server.
+          type: string
+          enum:
+            - invalid_api_key
+            - invalid_credentials
+            - server_error
+            - client_error
+
+    InvalidApiKeyError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - invalid_api_key
+    InvalidCredentialsError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - invalid_credentials
+    ClientError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - client_error
+
+    ServerError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - server_error
+
+  # define possible authentication methods
   securitySchemes:
     apiKeyAuth: # could be any name
       type: apiKey
       in: header
       name: X-Auth-Token
+      x-apikeyInfoFunc: app.apikey_auth
 
 security:
   - apiKeyAuth: []
@@ -23,6 +121,9 @@ paths:
       operationId: app.login_get
 
       summary: Logs in the user with CSES credentials
+      description: >
+        Logs the user in with CSES credentials. Returns an API token
+        that can be used to authenticate subsequent API queries.
 
       security: []
 
@@ -31,7 +132,6 @@ paths:
         content:
           application/json:
             schema:
-
               required:
                 - username
                 - password
@@ -40,8 +140,10 @@ paths:
               type: object
               properties:
                 username:
+                  description: A CSES username
                   type: string
                 password:
+                  description: A CSES password
                   type: string
 
       responses:
@@ -58,15 +160,39 @@ paths:
                   - X-Auth-Token
                 properties:
                   X-Auth-Token:
+                    description: API token used to authenticate the user.
                     type: string
 
-              examples:
-                # for documentations and
-                # could be used by the prism
-                example1:
-                  summary: An example session ID
-                  value:
-                    X-Auth-Token: "123"
+        "401":
+          $ref: "#/components/responses/InvalidCredentialsError"
+
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+
+  /logout:
+    post:
+      operationId: app.logout_post
+
+      summary: Deauthorizes the given authorization token.
+      description: >
+        Deauthorizes the valid authentication token. Returns if the
+        deauthorization was successful or not.
+
+      security:
+        - apiKeyAuth: []
+
+      responses:
+        "204":
+          description: Api token deauthorized successfully.
 
         "401":
-          description: Invalid username/password.
+          $ref: "#/components/responses/InvalidApiKeyError"
+
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+
+        "5XX":
+          $ref: "#/components/responses/ServerError"
