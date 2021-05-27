@@ -8,9 +8,9 @@ pub mod filesystem;
 pub use filesystem::{ConcreteFilesystem, Filesystem};
 
 pub mod resources;
-use resources::DefaultResources;
 pub use resources::{Resources, ResourcesProvider};
 pub use ResourcesProvider as RP;
+use resources::DefaultResources;
 
 pub mod service;
 
@@ -18,7 +18,7 @@ pub mod command;
 pub use command::Command;
 
 pub mod ui;
-use ui::Ui;
+pub use ui::Ui;
 
 #[cfg(test)]
 mod test;
