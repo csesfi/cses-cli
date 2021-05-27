@@ -58,10 +58,10 @@ impl TestServer {
             })
             .spawn()
             .unwrap();
-        for _try in 0..5 {
+        for _try in 0..10 {
             let res = net::TcpStream::connect_timeout(
                 &"127.0.0.1:4010".parse().unwrap(),
-                std::time::Duration::from_millis(1000),
+                std::time::Duration::from_millis(500),
             );
             match res {
                 Ok(_stream) => {
@@ -74,7 +74,7 @@ impl TestServer {
                     return Self { child };
                 }
                 Err(_) => {
-                    std::thread::sleep(std::time::Duration::from_millis(1000));
+                    std::thread::sleep(std::time::Duration::from_millis(500));
                 }
             }
         }

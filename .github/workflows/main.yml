@@ -14,8 +14,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        
+        # os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [windows-latest]
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v2
 
@@ -27,11 +30,37 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: cargo clippy -- -D clippy::all -D warnings
 
-      - name: Prepare test server
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.1.6
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Cache Poetry packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Poetry dependencies
         run: |
-          pip3 install poetry
-          cd api/mock_server
-          poetry install
+          mv api/mock_server/pyproject.toml .
+          mv api/mock_server/poetry.lock .
+          poetry install --no-interaction -vvv
+        # working-directory: api/mock_server
+
+      - name: Test
+        run: |
+          pwd
+          ls -a
+          ls .venv
+          source .venv/Scripts/activate
+          poetry run python api/mock_server/app.py
+        # working-directory: api/mock_server
 
       - name: Run tests
-        run: cargo test
+        run: |
+          source $VENV
+          cargo test -- --nocapture
