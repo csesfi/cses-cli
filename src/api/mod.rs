@@ -49,13 +49,22 @@ impl CsesApi for CsesHttpApi {
             let token = response_body.x_auth_token;
             Ok(token)
         } else {
+            // TODO: Fix error message parsing, currently always JSON error
             let message: String = json::from_str(response.as_str()?)?;
             Err(ApiError::CustomError(message))
         }
     }
 
-    fn logout(&self, _token: &str) -> ApiResult<()> {
-        todo!()
+    fn logout(&self, token: &str) -> ApiResult<()> {
+        let response = minreq::post(format!("{}/logout", self.url))
+            .with_header("X-Auth-Token", token)
+            .send()?;
+        if (200..300).contains(&response.status_code) {
+            Ok(())
+        } else {
+            // TODO: Error message parsing
+            Err(ApiError::CustomError(response.as_str()?.to_string()))
+        }
     }
 }
 

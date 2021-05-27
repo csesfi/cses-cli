@@ -29,9 +29,10 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::Logout => {
                 service::logout(&mut self.res)?;
+                self.term.write_line("Login invalidated successfully")?;
             }
             _ => {
-                self.term.write_str("Command not yet implemented\n")?;
+                self.term.write_line("Command not yet implemented")?;
             }
         }
         Ok(())
