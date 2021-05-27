@@ -121,24 +121,8 @@ paths:
         Deauthorizes the valid authentication token. Returns if the
         deauthorization was successful or not.
 
-      security: []
-
-      parameters:
-        - in: header
-          name: X-Auth-Token
-          content:
-          application/json:
-            schema:
-              required:
-                - X-Auth-Token
-              additionalProperties: false
-
-              type: object
-              properties:
-                X-Auth-Token:
-                  description: A valid authorization token
-                  type: string
-            required: true
+      security:
+        - apiKeyAuth: []
 
       responses:
         "200":

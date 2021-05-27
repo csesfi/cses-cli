@@ -7,10 +7,9 @@ def login_get():
         return {"X-Auth-Token": "asdf"}
     return ({"message": "Invalid username/password"}, 401)
 
-def logout_post():
-    if connexion.request.json["X-Auth-Token"] == "asdf":
-        return {"Success": True}
-    return ("Invalid Authorization token", 401)
+def logout_post(token_info):
+    print(token_info)
+    return (200)
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.

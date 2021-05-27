@@ -31,15 +31,15 @@ curl --header "Content-Type: application/json" \
 echo
 
 curl --header "Content-Type: application/json" \
+	--header "X-Auth-Token: asdf" \
 	--request POST \
-	--data '{"X-Auth-Token": "asdf"}' \
 	http://localhost:4010/logout
 
 echo
 
 curl --header "Content-Type: application/json" \
+	--header "X-Auth-Token: kissa" \
 	--request POST \
-	--data '{"X-Auth-Token": "kissa"}' \
 	http://localhost:4010/logout
 
 echo
