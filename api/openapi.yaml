@@ -185,20 +185,8 @@ paths:
         - apiKeyAuth: []
 
       responses:
-        "200":
-          description: >
-            Valid authentication token which has hopefully now been devalidated.
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: false
-                required:
-                  - Success
-                properties:
-                  Success:
-                    description: True if successfully devalidated
-                    type: boolean
+        "204":
+          description: Api token deauthorized successfully.
 
         "401":
           $ref: "#/components/responses/InvalidApiKeyError"

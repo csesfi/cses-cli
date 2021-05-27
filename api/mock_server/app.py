@@ -9,7 +9,7 @@ def login_get():
 
 def logout_post(token_info):
     print(token_info)
-    return (200)
+    return (204)
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
