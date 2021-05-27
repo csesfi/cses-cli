@@ -44,39 +44,32 @@ impl CsesApi for CsesHttpApi {
             .with_body(json::to_string(login))
             .with_header("Content-Type", "application/json")
             .send()?;
-        if successful_response(&response) {
-            let response_body: LoginResponse = json::from_str(response.as_str()?)?;
-            let token = response_body.x_auth_token;
-            Ok(token)
-        } else {
-            custom_error_with_returned_string(&response)
-        }
+        check_error(&response)?;
+        let response_body: LoginResponse = json::from_str(response.as_str()?)?;
+        let token = response_body.x_auth_token;
+        Ok(token)
     }
 
     fn logout(&self, token: &str) -> ApiResult<()> {
         let response = minreq::post(format!("{}/logout", self.url))
             .with_header("X-Auth-Token", token)
             .send()?;
-        if successful_response(&response) {
-            Ok(())
-        } else {
-            custom_error_without_returned_string(&response)
-        }
+        check_error(&response)?;
+        Ok(())
     }
+}
+
+fn check_error(response: &Response) -> ApiResult<()> {
+    if successful_response(response) {
+        Ok(())
+    } else {
+        let error: ErrorResponse = json::from_str(response.as_str()?)?;
+        Err(ApiError::CustomError(error.message))
+    } 
 }
 
 fn successful_response(response: &Response) -> bool {
     (200..300).contains(&response.status_code)
-}
-
-fn custom_error_with_returned_string(response: &Response) -> Result<String, ApiError> {
-    let error: ErrorResponse = json::from_str(response.as_str()?)?;
-    Err(ApiError::CustomError(error.message))
-}
-
-fn custom_error_without_returned_string(response: &Response) -> Result<(), ApiError> {
-    let error: ErrorResponse = json::from_str(response.as_str()?)?;
-    Err(ApiError::CustomError(error.message))
 }
 
 #[derive(Deserialize)]
