@@ -10,35 +10,98 @@ info:
 
 components:
   responses:
-    GeneralClientError:
-      description: General client side error.
+    InvalidApiKeyError:
+      description: Invalid api key error response from the server.
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorMessage"
+            $ref: "#/components/schemas/InvalidApiKeyError"
+
+    InvalidCredentialsError:
+      description: Invalid credentials error response from the server.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InvalidCredentialsError"
+
+    ClientError:
+      description: General error response from the server.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ClientError"
           examples:
             example1:
               summary: An example error message
               value:
-                message: "Too many requests"
+                message: Too many requests
+                code: client_error
 
-    GeneralServerError:
+    ServerError:
       description: General server error.
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorMessage"
+            $ref: "#/components/schemas/ServerError"
 
   schemas:
-    ErrorMessage:
+    BaseError:
       additionalProperties: false
       required:
         - message
+        - code
       type: object
+
       properties:
         message:
-          description: Error message from the server.
+          description: Human-readable error message from the server.
           type: string
+        code:
+          description: Machine-readable error code from the server.
+          type: string
+          enum:
+            - invalid_api_key
+            - invalid_credentials
+            - server_error
+            - client_error
+
+    InvalidApiKeyError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - invalid_api_key
+    InvalidCredentialsError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - invalid_credentials
+    ClientError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - client_error
+
+    ServerError:
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - server_error
 
   # define possible authentication methods
   securitySchemes:
@@ -101,17 +164,13 @@ paths:
                     type: string
 
         "401":
-          description: Invalid username/password.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
+          $ref: "#/components/responses/InvalidCredentialsError"
 
         "4XX":
-          $ref: "#/components/responses/GeneralClientError"
+          $ref: "#/components/responses/ClientError"
 
         "5XX":
-          $ref: "#/components/responses/GeneralServerError"
+          $ref: "#/components/responses/ServerError"
 
   /logout:
     post:
@@ -142,14 +201,10 @@ paths:
                     type: boolean
 
         "401":
-          description: Invalid username/password.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorMessage"
+          $ref: "#/components/responses/InvalidApiKeyError"
 
         "4XX":
-          $ref: "#/components/responses/GeneralClientError"
+          $ref: "#/components/responses/ClientError"
 
         "5XX":
-          $ref: "#/components/responses/GeneralServerError"
+          $ref: "#/components/responses/ServerError"
