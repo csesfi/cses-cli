@@ -27,5 +27,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: cargo clippy -- -D clippy::all -D warnings
 
+      - name: Prepare test server
+        run: |
+          pip3 install poetry
+          cd api/mock_server
+          poetry install
+
       - name: Run tests
         run: cargo test

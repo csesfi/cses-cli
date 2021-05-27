@@ -28,6 +28,11 @@ jobs:
         components: llvm-tools-preview
     - name: Install grcov
       run: if [[ ! -e ~/.cargo/bin/grcov ]]; then cargo install grcov; fi
+    - name: Prepare test server
+      run: |
+        pip3 install poetry
+        cd api/mock_server
+        poetry install
     - name: Run tests
       run: cargo test --no-default-features
       env:
