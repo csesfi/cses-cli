@@ -74,6 +74,7 @@ components:
               type: string
               enum:
                 - invalid_api_key
+
     InvalidCredentialsError:
       allOf:
         - $ref: "#/components/schemas/BaseError"
@@ -83,6 +84,7 @@ components:
               type: string
               enum:
                 - invalid_credentials
+
     ClientError:
       allOf:
         - $ref: "#/components/schemas/BaseError"
@@ -118,6 +120,7 @@ components:
           type: string
           description: >
             Optional language version specifier, e.g. "CPython" or "PyPy".
+
     SubmissionInfo:
       additionalProperties: false
       required:
@@ -168,6 +171,32 @@ components:
               time:
                 type: integer
                 description: Run time of the test in milliseconds.
+
+  parameters:
+    CourseId:
+      in: path
+      name: course_id
+      schema:
+        type: string
+      required: true
+      description: >
+        Alphanumeric identifier of the course. Same as in course URLs.
+
+    TaskId:
+      in: path
+      name: task_id
+      schema:
+        type: integer
+      required: true
+      description: Task ID.
+
+    SubmissionId:
+      in: path
+      name: submission_id
+      schema:
+        type: integer
+      required: true
+      description: Submission ID.
 
   # define possible authentication methods
   securitySchemes:
@@ -275,19 +304,8 @@ paths:
         - apiKeyAuth: []
 
       parameters:
-        - in: path
-          name: course_id
-          schema:
-            type: string
-          required: true
-          description: >
-            Alphanumeric identifier of the course. Same as in course URLs.
-        - in: path
-          name: task_id
-          schema:
-            type: integer
-          required: true
-          description: Task ID.
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/TaskId"
 
       requestBody:
         required: true
@@ -342,26 +360,9 @@ paths:
         - apiKeyAuth: []
 
       parameters:
-        - in: path
-          name: course_id
-          schema:
-            type: string
-          required: true
-          description: >
-            Alphanumeric identifier of the course. Same as in course URLs.
-        - in: path
-          name: task_id
-          schema:
-            type: integer
-          required: true
-          description: Task ID.
-
-        - in: path
-          name: submission_id
-          schema:
-            type: integer
-          required: true
-          description: Submission ID.
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/SubmissionId"
 
       responses:
         "200":
@@ -375,6 +376,8 @@ paths:
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
+
+
 
   /course/{course_id}/task/{task_id}/submit/{submission_id}/poll:
     get:
@@ -392,10 +395,19 @@ paths:
         - apiKeyAuth: []
 
       parameters:
-        $ref: "#/paths/~1course~1{course_id}~1task~1{task_id}~1submit~1{submission_id}/get/parameters"
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/TaskId"
+        - $ref: "#/components/parameters/SubmissionId"
 
       responses:
-        $ref: "#/paths/~1course~1{course_id}~1task~1{task_id}~1submit~1{submission_id}/get/responses"
-
-
-
+        "200":
+          description: >
+            The submission information was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionInfo"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
