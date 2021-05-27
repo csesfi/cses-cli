@@ -13,10 +13,8 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
 }
 fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     let login = Login {
-        username: prompt_username(&mut ui.term)
-            .context("Failed reading username")?,
-        password: prompt_password(&mut ui.term)
-            .context("Failed reading password")?,
+        username: prompt_username(&mut ui.term).context("Failed reading username")?,
+        password: prompt_password(&mut ui.term).context("Failed reading password")?,
     };
     service::login(&mut ui.res, &login)?;
     ui.term.write_line("Login successful")?;
