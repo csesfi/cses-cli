@@ -25,8 +25,7 @@ mod test;
 
 #[cfg(custom_abort)]
 mod abort_handler;
-
-fn main() -> anyhow::Result<()> {
+fn run() -> anyhow::Result<()> {
     #[cfg(custom_abort)]
     abort_handler::setup();
     let command = Command::from_command_line()?;
@@ -41,4 +40,11 @@ fn main() -> anyhow::Result<()> {
     let mut ui = Ui::with_resources(resources);
     ui.run(command)?;
     Ok(())
+}
+
+fn main() {
+    if let Err(err) = run() {
+        ui::print_error(&err);
+        std::process::exit(1);
+    }
 }
