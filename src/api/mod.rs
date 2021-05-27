@@ -49,9 +49,8 @@ impl CsesApi for CsesHttpApi {
             let token = response_body.x_auth_token;
             Ok(token)
         } else {
-            // TODO: Fix error message parsing, currently always JSON error
-            let message: String = json::from_str(response.as_str()?)?;
-            Err(ApiError::CustomError(message))
+            let error: ErrorResponse = json::from_str(response.as_str()?)?;
+            Err(ApiError::CustomError(error.message))
         }
     }
 
@@ -62,8 +61,8 @@ impl CsesApi for CsesHttpApi {
         if (200..300).contains(&response.status_code) {
             Ok(())
         } else {
-            // TODO: Error message parsing
-            Err(ApiError::CustomError(response.as_str()?.to_string()))
+            let error: ErrorResponse = json::from_str(response.as_str()?)?;
+            Err(ApiError::CustomError(error.message))
         }
     }
 }
@@ -72,4 +71,9 @@ impl CsesApi for CsesHttpApi {
 struct LoginResponse {
     #[serde(rename = "X-Auth-Token")]
     x_auth_token: String,
+}
+
+#[derive(Deserialize)]
+struct ErrorResponse {
+    message: String,
 }
