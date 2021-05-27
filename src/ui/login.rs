@@ -4,12 +4,19 @@ use crate::RP;
 use anyhow::Result;
 use console::Term;
 
+use anyhow::Context;
+
 use super::Ui;
 
 pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
+    try_login(ui).context("Login failed!")
+}
+fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     let login = Login {
-        username: prompt_username(&mut ui.term)?,
-        password: prompt_password(&mut ui.term)?,
+        username: prompt_username(&mut ui.term)
+            .context("Failed reading username")?,
+        password: prompt_password(&mut ui.term)
+            .context("Failed reading password")?,
     };
     service::login(&mut ui.res, &login)?;
     ui.term.write_line("Login successful")?;
