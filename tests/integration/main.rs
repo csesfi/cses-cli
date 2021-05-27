@@ -3,7 +3,7 @@
 //! Integration tests are run in a clean folder (`crate/tmp`) alongside the API test server.
 //!
 //! ## Running integration tests
-//! 
+//!
 //! Integration tests are run among other tests with `cargo test`.
 //!
 //! Filter to only integration tests:
@@ -31,9 +31,9 @@ mod help;
 
 use common::TESTS;
 
-use std::process::{Child, Command, Stdio};
-use std::path::PathBuf;
 use std::net;
+use std::path::PathBuf;
+use std::process::{Child, Command, Stdio};
 use std::sync::{Arc, Mutex};
 
 struct TestServer {
@@ -46,22 +46,32 @@ impl TestServer {
             .current_dir(["api", "mock_server"].iter().collect::<PathBuf>())
             .args(&["run", "python", "app.py"])
             .stdin(Stdio::null())
-            .stdout(if capture { Stdio::null() } else { Stdio::inherit() })
-            .stderr(if capture { Stdio::null() } else { Stdio::inherit() })
+            .stdout(if capture {
+                Stdio::null()
+            } else {
+                Stdio::inherit()
+            })
+            .stderr(if capture {
+                Stdio::null()
+            } else {
+                Stdio::inherit()
+            })
             .spawn()
             .unwrap();
         for _try in 0..5 {
-            let res = net::TcpStream::connect_timeout(&"127.0.0.1:4010".parse().unwrap(), std::time::Duration::from_millis(1000));
+            let res = net::TcpStream::connect_timeout(
+                &"127.0.0.1:4010".parse().unwrap(),
+                std::time::Duration::from_millis(1000),
+            );
             match res {
                 Ok(_stream) => {
                     let child = Arc::new(Mutex::new(child));
                     let child_copy = Arc::clone(&child);
                     ctrlc::set_handler(move || {
                         let _ = child_copy.lock().unwrap().kill();
-                    }).unwrap();
-                    return Self {
-                        child
-                    };
+                    })
+                    .unwrap();
+                    return Self { child };
                 }
                 Err(_) => {
                     std::thread::sleep(std::time::Duration::from_millis(1000));
@@ -90,9 +100,12 @@ fn main() {
     runtime_dir.push("tmp");
     for test in TESTS {
         let mut name = "?".to_owned();
-        backtrace::resolve(unsafe { (*test as *mut std::os::raw::c_void).offset(1) }, |symbol| {
-            name = symbol.name().unwrap().to_string();
-        });
+        backtrace::resolve(
+            unsafe { (*test as *mut std::os::raw::c_void).offset(1) },
+            |symbol| {
+                name = symbol.name().unwrap().to_string();
+            },
+        );
         if let Some(filter) = &filter {
             if !name.contains(filter) {
                 continue;
@@ -110,4 +123,3 @@ fn main() {
     println!("success");
     println!();
 }
-
