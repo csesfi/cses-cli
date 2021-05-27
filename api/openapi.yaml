@@ -103,6 +103,72 @@ components:
               enum:
                 - server_error
 
+    Language:
+      additionalProperties: false
+      required:
+        - name
+      type: object
+
+      properties:
+        name:
+          type: string
+          description: >
+            Name of the language, e.g. "C++", "Haskell", "Python2".
+        option:
+          type: string
+          description: >
+            Optional language version specifier, e.g. "CPython" or "PyPy".
+    SubmissionInfo:
+      additionalProperties: false
+      required:
+        - time
+        - language
+        - status
+        - pending
+      type: object
+
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: >
+            Name of the language, e.g. "C++", "Haskell", "Python2".
+        language:
+          $ref: "#/components/schemas/Language"
+        status:
+          type: string
+          description: >
+            Status of the submission, e.g. "PENDING" or "READY".
+        pending:
+          type: boolean
+          description: >
+            Whether the submission is still being graded,
+            and the information may change soon.
+        result:
+          type: string
+          description: >
+            Verdict of the submission, e.g. "ACCEPTED".
+        tests:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - number
+              - verdict
+              - time
+            properties:
+              number:
+                type: integer
+                description: Test case number, starting from 1.
+              verdict:
+                type: string
+                description: >
+                  Verdict of the test, e.g. "WRONG ANSWER".
+              time:
+                type: integer
+                description: Run time of the test in milliseconds.
+
   # define possible authentication methods
   securitySchemes:
     apiKeyAuth: # could be any name
@@ -145,6 +211,7 @@ paths:
                 password:
                   description: A CSES password
                   type: string
+                  format: password
 
       responses:
         "200":
@@ -196,3 +263,137 @@ paths:
 
         "5XX":
           $ref: "#/components/responses/ServerError"
+  /course/{courseId}/task/{taskId}/submit:
+    post:
+      operationId: app.submit_post
+
+      summary: Make new submission.
+      description: >
+        Submit code file encoded as base64..
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: string
+          required: true
+          description: >
+            Alphanumeric identifier of the course. Same as in course URLs.
+        - in: path
+          name: taskId
+          schema:
+            type: integer
+          required: true
+          description: Task ID.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - language
+                - filename
+                - content
+              additionalProperties: false
+
+              type: object
+              properties:
+                language:
+                  $ref: "#/components/schemas/Language"
+                filename:
+                  type: string
+                  description: Original name of the file.
+                content:
+                  type: string
+                  format: byte
+                  description: Content of the file encoded as base64.
+      responses:
+        "200":
+          description: >
+            Submission was sent successfully. The new submission ID is
+            given in the response.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                additionalProperties: false
+                properties:
+                  id:
+                    description: ID of the resulting submission.
+                    type: integer
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+
+  /course/{courseId}/task/{taskId}/submit/{submissionId}:
+    get:
+      operationId: app.get_submit
+
+      summary: Retrieve information about a submission.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - in: path
+          name: courseId
+          schema:
+            type: string
+          required: true
+          description: >
+            Alphanumeric identifier of the course. Same as in course URLs.
+        - in: path
+          name: taskId
+          schema:
+            type: integer
+          required: true
+          description: Task ID.
+
+        - in: path
+          name: submissionId
+          schema:
+            type: integer
+          required: true
+          description: Submission ID.
+
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionInfo"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+
+  /course/{courseId}/task/{taskId}/submit/{submissionId}/poll:
+    get:
+      operationId: app.get_submit_poll
+
+      summary: Retrieve information about a submission (long polling).
+      description: >
+        This endpoint is otherwise the same as the normal version,
+        except long polling is employed. If the submission is still
+        pending, the server will wait up to some amount of time, before
+        responding with a result. If grading of this submission
+        completes during this time, the response is sent immediately.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        $ref: "#/paths/~1course~1{courseId}~1task~1{taskId}~1submit~1{submissionId}/get/parameters"
+
+      responses:
+        $ref: "#/paths/~1course~1{courseId}~1task~1{taskId}~1submit~1{submissionId}/get/responses"
+
+
+
