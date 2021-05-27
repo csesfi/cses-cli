@@ -46,6 +46,7 @@ components:
       type: apiKey
       in: header
       name: X-Auth-Token
+      x-apikeyInfoFunc: app.apikey_auth
 
 security:
   - apiKeyAuth: []
