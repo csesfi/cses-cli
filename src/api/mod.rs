@@ -1,5 +1,6 @@
 use crate::service::Login;
 use miniserde::{json, /*Serialize,*/ Deserialize};
+use minreq::Response;
 use thiserror::Error;
 
 pub struct CsesHttpApi {
@@ -43,8 +44,7 @@ impl CsesApi for CsesHttpApi {
             .with_body(json::to_string(login))
             .with_header("Content-Type", "application/json")
             .send()?;
-        let success = (200..300).contains(&response.status_code);
-        if success {
+        if successful_response(&response) {
             let response_body: LoginResponse = json::from_str(response.as_str()?)?;
             let token = response_body.x_auth_token;
             Ok(token)
@@ -58,13 +58,17 @@ impl CsesApi for CsesHttpApi {
         let response = minreq::post(format!("{}/logout", self.url))
             .with_header("X-Auth-Token", token)
             .send()?;
-        if (200..300).contains(&response.status_code) {
+        if successful_response(&response) {
             Ok(())
         } else {
             let error: ErrorResponse = json::from_str(response.as_str()?)?;
             Err(ApiError::CustomError(error.message))
         }
     }
+}
+
+fn successful_response(response: &Response) -> bool {
+    (200..300).contains(&response.status_code)
 }
 
 #[derive(Deserialize)]
