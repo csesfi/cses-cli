@@ -49,8 +49,7 @@ impl CsesApi for CsesHttpApi {
             let token = response_body.x_auth_token;
             Ok(token)
         } else {
-            let error: ErrorResponse = json::from_str(response.as_str()?)?;
-            Err(ApiError::CustomError(error.message))
+            custom_error_with_returned_string(&response)
         }
     }
 
@@ -61,14 +60,23 @@ impl CsesApi for CsesHttpApi {
         if successful_response(&response) {
             Ok(())
         } else {
-            let error: ErrorResponse = json::from_str(response.as_str()?)?;
-            Err(ApiError::CustomError(error.message))
+            custom_error_without_returned_string(&response)
         }
     }
 }
 
 fn successful_response(response: &Response) -> bool {
     (200..300).contains(&response.status_code)
+}
+
+fn custom_error_with_returned_string(response: &Response) -> Result<String, ApiError> {
+    let error: ErrorResponse = json::from_str(response.as_str()?)?;
+    Err(ApiError::CustomError(error.message))
+}
+
+fn custom_error_without_returned_string(response: &Response) -> Result<(), ApiError> {
+    let error: ErrorResponse = json::from_str(response.as_str()?)?;
+    Err(ApiError::CustomError(error.message))
 }
 
 #[derive(Deserialize)]
