@@ -263,7 +263,7 @@ paths:
 
         "5XX":
           $ref: "#/components/responses/ServerError"
-  /course/{courseId}/task/{taskId}/submit:
+  /course/{course_id}/task/{task_id}/submit:
     post:
       operationId: app.submit_post
 
@@ -276,14 +276,14 @@ paths:
 
       parameters:
         - in: path
-          name: courseId
+          name: course_id
           schema:
             type: string
           required: true
           description: >
             Alphanumeric identifier of the course. Same as in course URLs.
         - in: path
-          name: taskId
+          name: task_id
           schema:
             type: integer
           required: true
@@ -332,7 +332,7 @@ paths:
         "5XX":
           $ref: "#/components/responses/ServerError"
 
-  /course/{courseId}/task/{taskId}/submit/{submissionId}:
+  /course/{course_id}/task/{task_id}/submit/{submission_id}:
     get:
       operationId: app.get_submit
 
@@ -343,21 +343,21 @@ paths:
 
       parameters:
         - in: path
-          name: courseId
+          name: course_id
           schema:
             type: string
           required: true
           description: >
             Alphanumeric identifier of the course. Same as in course URLs.
         - in: path
-          name: taskId
+          name: task_id
           schema:
             type: integer
           required: true
           description: Task ID.
 
         - in: path
-          name: submissionId
+          name: submission_id
           schema:
             type: integer
           required: true
@@ -365,6 +365,8 @@ paths:
 
       responses:
         "200":
+          description: >
+            Info about a submission is retrieved successfully.
           content:
             application/json:
               schema:
@@ -374,7 +376,7 @@ paths:
         "5XX":
           $ref: "#/components/responses/ServerError"
 
-  /course/{courseId}/task/{taskId}/submit/{submissionId}/poll:
+  /course/{course_id}/task/{task_id}/submit/{submission_id}/poll:
     get:
       operationId: app.get_submit_poll
 
@@ -390,10 +392,10 @@ paths:
         - apiKeyAuth: []
 
       parameters:
-        $ref: "#/paths/~1course~1{courseId}~1task~1{taskId}~1submit~1{submissionId}/get/parameters"
+        $ref: "#/paths/~1course~1{course_id}~1task~1{task_id}~1submit~1{submission_id}/get/parameters"
 
       responses:
-        $ref: "#/paths/~1course~1{courseId}~1task~1{taskId}~1submit~1{submissionId}/get/responses"
+        $ref: "#/paths/~1course~1{course_id}~1task~1{task_id}~1submit~1{submission_id}/get/responses"
 
 
 
