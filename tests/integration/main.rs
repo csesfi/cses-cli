@@ -59,12 +59,11 @@ impl TestServer {
             .spawn()
             .unwrap();
         for _try in 0..10 {
-            let res = net::TcpStream::connect_timeout(
-                &"127.0.0.1:4010".parse().unwrap(),
-                std::time::Duration::from_millis(500),
-            );
+            let res = minreq::get("http://127.0.0.1:4010/ping")
+                .with_timeout(1)
+                .send();
             match res {
-                Ok(_stream) => {
+                Ok(_response) => {
                     let child = Arc::new(Mutex::new(child));
                     let child_copy = Arc::clone(&child);
                     ctrlc::set_handler(move || {
