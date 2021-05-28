@@ -1,4 +1,4 @@
-use miniserde::{Serialize, Deserialize};
+use miniserde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Language {
