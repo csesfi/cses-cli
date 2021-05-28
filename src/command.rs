@@ -1,3 +1,4 @@
+use crate::entities::Language;
 use anyhow::{anyhow, Result};
 
 pub static HELP_STR: &str = r#"CSES CLI
@@ -22,6 +23,14 @@ pub enum Command {
     Login,
     Logout,
     Submit(String),
+}
+#[derive(Debug)]
+pub struct Submit {
+    course_id: Option<String>,
+    task_id: Option<u64>,
+    submission_id: Option<u64>,
+    filename: Option<String>,
+    language: Option<Language>,
 }
 
 impl Command {
