@@ -1,7 +1,8 @@
 use crate::service::Login;
-use miniserde::{json, /*Serialize,*/ Deserialize};
+use miniserde::{json, Serialize, Deserialize};
 use minreq::Response;
 use thiserror::Error;
+use crate::entities::Language;
 
 pub struct CsesHttpApi {
     url: String,
@@ -36,6 +37,7 @@ pub type ApiResult<T> = Result<T, ApiError>;
 pub trait CsesApi {
     fn login(&self, login: &Login) -> ApiResult<String>;
     fn logout(&self, token: &str) -> ApiResult<()>;
+    fn submit(&self, token: &str, course_id: &str, task_id: u64, submission: &CodeSubmit) -> ApiResult<u64>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -56,6 +58,17 @@ impl CsesApi for CsesHttpApi {
             .send()?;
         check_error(&response)?;
         Ok(())
+    }
+
+    fn submit(&self, token: &str, course_id: &str, task_id: u64, submission: &CodeSubmit) -> ApiResult<u64> {
+        let response = minreq::post(format!("{}/course/{}/task/{}/submit", self.url, course_id, task_id))
+            .with_body(json::to_string(submission))
+            .with_header("X-Auth-Token", token)
+            .send()?;
+        check_error(&response)?;
+        let response_body: SubmissionResponse = json::from_str(response.as_str()?)?;
+        let submission_id = response_body.id;
+        Ok(submission_id)
     }
 }
 
@@ -84,6 +97,11 @@ pub struct ErrorResponse {
     pub code: ErrorCode,
 }
 
+#[derive(Deserialize)]
+struct SubmissionResponse {
+    id: u64,
+}
+
 #[derive(Debug, Deserialize)]
 pub enum ErrorCode {
     #[serde(rename = "invalid_api_key")]
@@ -94,4 +112,11 @@ pub enum ErrorCode {
     ServerError,
     #[serde(rename = "client_error")]
     ClientError,
+}
+
+#[derive(Debug, Serialize)]
+pub struct CodeSubmit {
+    pub language: Language,
+    pub filename: String,
+    pub content: String,
 }
