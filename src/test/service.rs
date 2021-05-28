@@ -16,7 +16,7 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_submit(&self, _token: &str,_course_id: &str, _task_id: u64, _submission_id: u64) -> ApiResult<crate::entities::SubmissionInfo> {
+    fn get_submit(&self, _token: &str,_course_id: &str, _task_id: u64, _submission_id: u64, _poll: bool) -> ApiResult<crate::entities::SubmissionInfo> {
         todo!()
     }
 }

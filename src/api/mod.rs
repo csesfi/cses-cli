@@ -38,7 +38,7 @@ pub trait CsesApi {
     fn login(&self, login: &Login) -> ApiResult<String>;
     fn logout(&self, token: &str) -> ApiResult<()>;
     fn submit_task(&self, token: &str, course_id: &str, task_id: u64, submission: &CodeSubmit) -> ApiResult<u64>;
-    fn get_submit(&self, token: &str, course_id: &str, task_id: u64, submission_id: u64) -> ApiResult<SubmissionInfo>;
+    fn get_submit(&self, token: &str, course_id: &str, task_id: u64, submission_id: u64, poll: bool) -> ApiResult<SubmissionInfo>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -72,7 +72,7 @@ impl CsesApi for CsesHttpApi {
         Ok(submission_id)
     }
 
-    fn get_submit(&self, token: &str, course_id: &str, task_id: u64, submission_id: u64) -> ApiResult<SubmissionInfo> {
+    fn get_submit(&self, token: &str, course_id: &str, task_id: u64, submission_id: u64, poll: bool) -> ApiResult<SubmissionInfo> {
         let response = minreq::post(format!("/course/{}/task/{}/submit/{}", course_id, task_id, submission_id))
             .with_header("X-Auth-Token", token)
             .send()?;
