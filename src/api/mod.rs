@@ -10,7 +10,7 @@ pub struct CsesHttpApi {
 impl CsesHttpApi {
     pub fn new() -> Self {
         Self {
-            url: "http://127.0.0.1:4010/".to_string(),
+            url: "http://127.0.0.1:4010".to_string(),
         }
     }
 }
@@ -27,8 +27,8 @@ pub enum ApiError {
     HttpError(#[from] minreq::Error),
     #[error("JSON error")]
     JsonError(#[from] miniserde::Error),
-    #[error("{0}")]
-    CustomError(String),
+    #[error("{}", .0.message)]
+    ResponseError(ErrorResponse),
 }
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -64,7 +64,7 @@ fn check_error(response: &Response) -> ApiResult<()> {
         Ok(())
     } else {
         let error: ErrorResponse = json::from_str(response.as_str()?)?;
-        Err(ApiError::CustomError(error.message))
+        Err(ApiError::ResponseError(error))
     }
 }
 
@@ -79,13 +79,13 @@ struct LoginResponse {
 }
 
 #[derive(Debug, Deserialize)]
-struct ErrorResponse {
-    message: String,
-    code: ErrorCode,
+pub struct ErrorResponse {
+    pub message: String,
+    pub code: ErrorCode,
 }
 
 #[derive(Debug, Deserialize)]
-enum ErrorCode {
+pub enum ErrorCode {
     #[serde(rename = "invalid_api_key")]
     InvalidApiKey,
     #[serde(rename = "invalid_credentials")]
