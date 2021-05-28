@@ -91,7 +91,7 @@ impl Drop for TestServer {
 
 fn main() {
     println!();
-    let filter = std::env::args().nth(1);
+    let filter = std::env::args().skip(1).find(|arg| !arg.starts_with("-"));
     let capture = !std::env::args().any(|arg| arg == "--nocapture");
     println!("starting test server");
     let _test_server = TestServer::start(capture);
