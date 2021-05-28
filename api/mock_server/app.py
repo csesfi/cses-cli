@@ -81,5 +81,5 @@ app = connexion.App(__name__, specification_dir="../",
 app.add_error_handler(BadRequestProblem, render_invalid_query)
 app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
-app.add_api("openapi.yaml", resolver=RestyResolver('api'))
+app.add_api("openapi.yaml", validate_responses=True, resolver=RestyResolver('api'))
 app.run(debug=True, host="127.0.0.1", port=4010)
