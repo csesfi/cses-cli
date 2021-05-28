@@ -28,10 +28,10 @@
 
 mod common;
 mod help;
+mod login;
 
 use common::TESTS;
 
-use std::net;
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
 use std::sync::{Arc, Mutex};
