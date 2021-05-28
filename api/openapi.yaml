@@ -213,7 +213,7 @@ paths:
   /login:
     post:
       # unique id for mocking
-      operationId: app.login_get
+      operationId: app.login_post
 
       summary: Logs in the user with CSES credentials
       description: >

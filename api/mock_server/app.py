@@ -8,7 +8,7 @@ from connexion.exceptions import ValidationError, BadRequestProblem
 from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
-def login_get():
+def login_post():
     if connexion.request.json == {"username": "kalle",
                                   "password": "kissa2"}:
         return {"X-Auth-Token": "asdf"}
