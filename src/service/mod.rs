@@ -1,3 +1,4 @@
+use crate::entities::SubmissionInfo;
 use crate::{CsesApi, Resources, Storage, RP};
 use anyhow::{anyhow, Result};
 use miniserde::{Deserialize, Serialize};
@@ -25,4 +26,17 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
     } else {
         Err(anyhow!("not currently logged in"))
     }
+}
+pub fn submission(
+    res: &mut Resources<impl RP>,
+    submission_id: u64,
+    poll: bool,
+) -> Result<SubmissionInfo> {
+    let token = res.storage.get_token().unwrap();
+    let course_id = res.storage.get_course().unwrap();
+    let task_id = res.storage.get_task().unwrap().parse::<u64>().unwrap();
+    let submission = res
+        .api
+        .get_submit(token, course_id, task_id, submission_id, poll);
+    Ok(submission?)
 }
