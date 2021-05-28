@@ -78,7 +78,20 @@ struct LoginResponse {
     x_auth_token: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct ErrorResponse {
     message: String,
+    code: ErrorCode,
+}
+
+#[derive(Debug, Deserialize)]
+enum ErrorCode {
+    #[serde(rename = "invalid_api_key")]
+    InvalidApiKey,
+    #[serde(rename = "invalid_credentials")]
+    InvalidCredentials,
+    #[serde(rename = "server_error")]
+    ServerError,
+    #[serde(rename = "client_error")]
+    ClientError,
 }
