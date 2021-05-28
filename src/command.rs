@@ -28,7 +28,7 @@ pub enum Command {
 pub struct Submit {
     course_id: Option<String>,
     task_id: Option<u64>,
-    sumission_id: Option<u64>,
+    submission_id: Option<u64>,
     filename: Option<String>,
     language: Option<Language>,
 }
