@@ -47,3 +47,32 @@ echo
 curl --header "Content-Type: application/json" \
 	--request POST \
 	http://localhost:4010/logout
+
+echo
+
+curl --header "Content-Type: application/json" \
+	--header "X-Auth-Token: asdf" \
+	--request POST \
+	--data '{
+		"language": {
+			"name": "C++",
+			"option": "C++17"
+		},
+		"filename": "testi.cpp",
+		"content": "#include <iostream>"
+}' \
+	http://localhost:4010/course/1/task/2/submit
+
+echo
+
+curl --header "Content-Type: application/json" \
+	--header "X-Auth-Token: asdf" \
+	--request GET \
+	http://localhost:4010/course/1/task/2/submit/3
+
+echo
+
+curl --header "Content-Type: application/json" \
+	--header "X-Auth-Token: asdf" \
+	--request GET \
+	http://localhost:4010/course/1/task/2/submit/3/poll
