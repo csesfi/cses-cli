@@ -11,6 +11,14 @@ impl CsesApi for FakeCsesApi {
     fn logout(&self, _token: &str) -> ApiResult<()> {
         todo!()
     }
+
+    fn submit_task(&self, _token: &str, _course_id: &str, _task_id: u64, _submissionion: &crate::api::CodeSubmit) -> ApiResult<u64> {
+        todo!()
+    }
+
+    fn get_submit(&self, _token: &str,_course_id: &str, _task_id: u64, _submission_id: u64) -> ApiResult<crate::entities::SubmissionInfo> {
+        todo!()
+    }
 }
 
 #[derive(Default, Debug)]
