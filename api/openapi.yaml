@@ -135,7 +135,7 @@ components:
           type: string
           format: date-time
           description: >
-            Name of the language, e.g. "C++", "Haskell", "Python2".
+            Submission time in ISO 8601 format. (Timezone format has not been decided upon)
         language:
           $ref: "#/components/schemas/Language"
         status:
