@@ -44,7 +44,7 @@ impl TestServer {
     fn start(capture: bool) -> Self {
         let mut child = Command::new("poetry")
             .current_dir(["api", "mock_server"].iter().collect::<PathBuf>())
-            .args(&["run", "python3", "app.py"])
+            .args(&["run", "python", "app.py"])
             .stdin(Stdio::null())
             .stdout(if capture {
                 Stdio::null()

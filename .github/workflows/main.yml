@@ -14,8 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     defaults:
       run:
         shell: bash
@@ -38,29 +37,15 @@ jobs:
         uses: snok/install-poetry@v1.1.6
         with:
           virtualenvs-create: true
-          virtualenvs-in-project: true
-      - name: Cache Poetry packages
+          virtualenvs-in-project: false
+      - name: Cache pip wheels
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          key: wheels-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install Poetry dependencies
-        run: |
-          mv api/mock_server/pyproject.toml .
-          mv api/mock_server/poetry.lock .
-          poetry install --no-interaction -vvv
-        # working-directory: api/mock_server
-
-      - name: Test
-        run: |
-          pwd
-          ls -a
-          ls .venv
-          source .venv/Scripts/activate
-          poetry run python api/mock_server/app.py
-        # working-directory: api/mock_server
+        run: poetry install --no-interaction
+        working-directory: api/mock_server
 
       - name: Run tests
-        run: |
-          source $VENV
-          cargo test -- --nocapture
+        run: cargo test -- --nocapture
