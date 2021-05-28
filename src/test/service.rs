@@ -1,9 +1,17 @@
+use crate::{api::ApiResult, service::Login};
 use crate::{CsesApi, Filesystem, Resources, Storage};
 use anyhow::Result;
 
 struct FakeCsesApi {}
 
-impl CsesApi for FakeCsesApi {}
+impl CsesApi for FakeCsesApi {
+    fn login(&self, _login: &Login) -> ApiResult<String> {
+        todo!()
+    }
+    fn logout(&self, _token: &str) -> ApiResult<()> {
+        todo!()
+    }
+}
 
 #[derive(Default, Debug)]
 pub struct FakeStorage {

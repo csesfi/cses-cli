@@ -11,6 +11,7 @@ FLAGS:
 COMMANDS:
     help                Prints this help message.
     login               Log in to cses.fi
+    logout              Invalidate the current login session.
     submit <file>       Submit a file to cses.fi.
 "#;
 
@@ -19,6 +20,7 @@ pub enum Command {
     None,
     Help,
     Login,
+    Logout,
     Submit(String),
 }
 
@@ -39,6 +41,7 @@ impl Command {
             "" => Ok(Command::None),
             "help" => Ok(Command::Help),
             "login" => Ok(Command::Login),
+            "logout" => Ok(Command::Logout),
             "submit" => {
                 let file_name = pargs.free_from_str();
                 match file_name {
@@ -97,6 +100,22 @@ mod tests {
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(command, Command::Login));
+    }
+
+    #[test]
+    fn logout_without_flags_returns_logout() {
+        let pargs = to_pargs(&["logout"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(command, Command::Logout));
+    }
+
+    #[test]
+    fn logout_with_h_flag_returns_help() {
+        let pargs = to_pargs(&["logout", "-h"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(command, Command::Help));
     }
 
     #[test]
