@@ -32,6 +32,12 @@ def default_submission_info():
         "status": "READY",
         "pending": False,
         "result": "ACCEPTED",
+        "tests": [{
+            "number": 1,
+            "verdict": "ACCEPTED",
+            "time": 120
+            }
+        ]
     }
 
 def compile_error_submission_info():
