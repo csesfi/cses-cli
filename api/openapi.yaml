@@ -171,6 +171,11 @@ components:
               time:
                 type: integer
                 description: Run time of the test in milliseconds.
+        compiler:
+          type: string
+          description: >
+            The compiler report in case of COMPILE ERROR or just some warnings
+            from the compiler.
 
   parameters:
     CourseId:
