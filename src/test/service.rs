@@ -11,13 +11,34 @@ impl CsesApi for FakeCsesApi {
     fn logout(&self, _token: &str) -> ApiResult<()> {
         todo!()
     }
+
+    fn submit_task(
+        &self,
+        _token: &str,
+        _course_id: &str,
+        _task_id: u64,
+        _submissionion: &crate::api::CodeSubmit,
+    ) -> ApiResult<u64> {
+        todo!()
+    }
+
+    fn get_submit(
+        &self,
+        _token: &str,
+        _course_id: &str,
+        _task_id: u64,
+        _submission_id: u64,
+        _poll: bool,
+    ) -> ApiResult<crate::entities::SubmissionInfo> {
+        todo!()
+    }
 }
 
 #[derive(Default, Debug)]
 pub struct FakeStorage {
     token: Option<String>,
     course: Option<String>,
-    task: Option<String>,
+    task: Option<u64>,
     language: Option<String>,
     option: Option<String>,
     file: Option<String>,
@@ -30,8 +51,8 @@ impl Storage for FakeStorage {
     fn get_course(&self) -> Option<&str> {
         self.course.as_deref()
     }
-    fn get_task(&self) -> Option<&str> {
-        self.task.as_deref()
+    fn get_task(&self) -> Option<u64> {
+        self.task
     }
     fn get_language(&self) -> Option<&str> {
         self.language.as_deref()
@@ -48,7 +69,7 @@ impl Storage for FakeStorage {
     fn set_course(&mut self, val: String) {
         self.course = Some(val);
     }
-    fn set_task(&mut self, val: String) {
+    fn set_task(&mut self, val: u64) {
         self.task = Some(val);
     }
     fn set_language(&mut self, val: String) {
