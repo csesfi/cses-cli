@@ -19,7 +19,10 @@ fn user_can_log_out() {
     let assert = successful_login_attempt();
     verify_successful_login_output(assert);
     let assert = logout_user();
-    verify_successful_login_invalidation(assert);
+    assert
+        .success()
+        .stdout(regex_match(r"(?i)login invalidated successfully"))
+        .stderr(predicate::str::is_empty());
 }
 
 #[distributed_slice(TESTS)]
@@ -72,11 +75,4 @@ fn unsuccessful_login() -> Assert {
 
 fn logout_user() -> Assert {
     command().args(&["logout"]).assert()
-}
-
-fn verify_successful_login_invalidation(assert: Assert) {
-    assert
-        .success()
-        .stdout(regex_match(r"(?i)login invalidated successfully"))
-        .stderr(predicate::str::is_empty());
 }
