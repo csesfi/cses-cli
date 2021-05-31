@@ -8,7 +8,16 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
 [CSES](https://cses.fi/) is used for learning algorithms. CSES is used in University of Helsinki courses Tietorakenteet ja algoritmit and Algoritmit ongelmanratkaisussa. CSES CLI is a lightweight tool for submiting solutions to CSES problems from command line.
 
+## Application
+
+- [Releases](https://github.com/H4m5t3r/cses-cli/releases)
+
 ## Project documentation
 
-### Backlogs + work time monitoring
-https://docs.google.com/spreadsheets/d/10vB2CXV9RVyM_wIMyXrgepMcKMDzQ1qXHvmtuqjiaio/edit#gid=0
+- [Google Drive folder](https://drive.google.com/drive/folders/1teZTWPnbmWlJkVfETz7T2j04UHqJYpuf?usp=sharing)
+
+- [Backlogs + work time monitoring](https://docs.google.com/spreadsheets/d/10vB2CXV9RVyM_wIMyXrgepMcKMDzQ1qXHvmtuqjiaio/edit#gid=0)
+
+- [API](https://h4m5t3r.github.io/cses-cli/)
+
+- [Product backlog](https://docs.google.com/spreadsheets/d/10vB2CXV9RVyM_wIMyXrgepMcKMDzQ1qXHvmtuqjiaio/edit#gid=0)
