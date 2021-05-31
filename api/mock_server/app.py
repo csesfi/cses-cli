@@ -32,16 +32,29 @@ def default_submission_info():
         "status": "READY",
         "pending": False,
         "result": "ACCEPTED",
-        "tests": [{
-            "number": 1,
-            "verdict": "ACCEPTED",
-            "time": 120
-            }
-        ]
+    }
+
+def compile_error_submission_info():
+    return {
+        "time": "2017-07-21T17:32:28Z",
+        "language": {
+            "name": "C++",
+            "option": "C++17"
+        },
+        "status": "COMPILE ERROR",
+        "pending": False,
+        "compiler": """input/code.cpp:1:1: error: 'use' does not name a type
+\nuse std::io;
+\n^~~
+\ninput/code.cpp:3:1: error: 'fn' does not name a type
+\nfn main() {
+\n^~"""
     }
 
 def get_submit(token_info, course_id, task_id, submission_id):
     print(f"get submit: {token_info}")
+    if course_id == "comp":
+        return (compile_error_submission_info(), 200)
     return (default_submission_info(), 200)
 
 def get_submit_poll(token_info, course_id, task_id, submission_id):
@@ -49,6 +62,8 @@ def get_submit_poll(token_info, course_id, task_id, submission_id):
     print(f"course_id: {course_id}")
     print(f"task_id: {task_id}")
     print(f"submission_id: {submission_id}")
+    if course_id == "comp":
+        return (compile_error_submission_info(), 200)
     return (default_submission_info(), 200)
 
 def apikey_auth(apikey, required_scopes=None):
