@@ -31,6 +31,12 @@ impl<R: ResourcesProvider> Ui<R> {
                 service::logout(&mut self.res)?;
                 self.term.write_line("Login invalidated successfully")?;
             }
+            Command::Submit(_submit) => {
+                let submission_id = service::submit()?;
+                let long_poll = false;
+                let submission_info = service::submission(&mut self.res, submission_id, long_poll)?;
+                self.term.write_line(&submission_info.status)?;
+            }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
             }

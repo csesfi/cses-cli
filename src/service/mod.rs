@@ -27,6 +27,12 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
         Err(anyhow!("not currently logged in"))
     }
 }
+
+pub fn submit() -> Result<u64> {
+    let submission_id = 0;
+    Ok(submission_id)
+}
+
 pub fn submission(
     res: &mut Resources<impl RP>,
     submission_id: u64,
