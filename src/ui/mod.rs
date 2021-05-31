@@ -1,6 +1,6 @@
 mod login;
 
-use anyhow::Result;
+use anyhow::{Error, Result};
 use console::Term;
 
 use crate::command::HELP_STR;
@@ -45,4 +45,8 @@ impl<R: ResourcesProvider> Ui<R> {
         }
         Ok(())
     }
+}
+
+pub fn print_error(err: &Error) {
+    println!("{:?}", err);
 }
