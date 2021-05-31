@@ -31,11 +31,11 @@ pub enum Command {
 }
 #[derive(Debug)]
 pub struct Submit {
-    course_id: Option<String>,
-    task_id: Option<u64>,
-    language_name: Option<String>,
-    language_option: Option<String>,
-    file_name: String,
+    pub course_id: Option<String>,
+    pub task_id: Option<u64>,
+    pub language_name: Option<String>,
+    pub language_option: Option<String>,
+    pub file_name: String,
 }
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {

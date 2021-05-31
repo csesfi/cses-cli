@@ -9,7 +9,7 @@ const FILENAME: &str = "filestorage.json";
 pub struct FileStorage {
     token: Option<String>,
     course: Option<String>,
-    task: Option<String>,
+    task: Option<u64>,
     language: Option<String>,
     option: Option<String>,
     file: Option<String>,
@@ -32,13 +32,13 @@ impl FileStorage {
 pub trait Storage {
     fn get_token(&self) -> Option<&str>;
     fn get_course(&self) -> Option<&str>;
-    fn get_task(&self) -> Option<&str>;
+    fn get_task(&self) -> Option<u64>;
     fn get_language(&self) -> Option<&str>;
     fn get_option(&self) -> Option<&str>;
     fn get_file(&self) -> Option<&str>;
     fn set_token(&mut self, val: String);
     fn set_course(&mut self, val: String);
-    fn set_task(&mut self, val: String);
+    fn set_task(&mut self, val: u64);
     fn set_language(&mut self, val: String);
     fn set_option(&mut self, val: String);
     fn set_file(&mut self, val: String);
@@ -53,8 +53,8 @@ impl Storage for FileStorage {
     fn get_course(&self) -> Option<&str> {
         self.course.as_deref()
     }
-    fn get_task(&self) -> Option<&str> {
-        self.task.as_deref()
+    fn get_task(&self) -> Option<u64> {
+        self.task
     }
     fn get_language(&self) -> Option<&str> {
         self.language.as_deref()
@@ -71,7 +71,7 @@ impl Storage for FileStorage {
     fn set_course(&mut self, val: String) {
         self.course = Some(val);
     }
-    fn set_task(&mut self, val: String) {
+    fn set_task(&mut self, val: u64) {
         self.task = Some(val);
     }
     fn set_language(&mut self, val: String) {
@@ -100,13 +100,13 @@ mod tests {
         let mut storage: FileStorage = Default::default();
         storage.set_token(String::from("token"));
         storage.set_course(String::from("course"));
-        storage.set_task(String::from("task"));
+        storage.set_task(42);
         storage.set_language(String::from("language"));
         storage.set_option(String::from("option"));
         storage.set_file(String::from("file"));
         assert_eq!(String::from("token"), storage.get_token().unwrap());
         assert_eq!(String::from("course"), storage.get_course().unwrap());
-        assert_eq!(String::from("task"), storage.get_task().unwrap());
+        assert_eq!(42, storage.get_task().unwrap());
         assert_eq!(String::from("language"), storage.get_language().unwrap());
         assert_eq!(String::from("option"), storage.get_option().unwrap());
         assert_eq!(String::from("file"), storage.get_file().unwrap());

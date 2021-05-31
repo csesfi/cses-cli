@@ -11,16 +11,16 @@ pub fn update_submit_parameters(
     res: &mut Resources<impl RP>,
     parameters: &command::Submit,
 ) -> Result<()> {
-    if let Some(course_id) = parameters.course_id {
+    if let Some(ref course_id) = parameters.course_id {
         res.storage.set_course(course_id.clone());
     }
     if let Some(task_id) = parameters.task_id {
         res.storage.set_task(task_id);
     }
-    if let Some(language_name) = parameters.language_name {
+    if let Some(ref language_name) = parameters.language_name {
         res.storage.set_language(language_name.clone());
     }
-    if let Some(language_option) = parameters.language_option {
+    if let Some(ref language_option) = parameters.language_option {
         res.storage.set_option(language_option.clone());
     }
     Ok(())
@@ -31,17 +31,17 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
     let course_id = res
         .storage
         .get_course()
-        .ok_or(anyhow!("Course not provided"))?
+        .ok_or_else(|| anyhow!("Course not provided"))?
         .to_owned();
     let task_id = res
         .storage
         .get_task()
-        .ok_or(anyhow!("Task not provided"))?
+        .ok_or_else(|| anyhow!("Task not provided"))?
         .to_owned();
     let language_name = res
         .storage
         .get_token()
-        .ok_or(anyhow!("Language not provided"))?
+        .ok_or_else(|| anyhow!("Language not provided"))?
         .to_owned();
     let language_option = res.storage.get_token().map(|t| t.to_owned());
 
@@ -52,7 +52,7 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
             name: language_name,
             option: language_option,
         },
-        filename: filename.clone(),
+        filename,
         content,
     };
     let submission_id =

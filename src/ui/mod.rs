@@ -31,10 +31,12 @@ impl<R: ResourcesProvider> Ui<R> {
                 service::logout(&mut self.res)?;
                 self.term.write_line("Login invalidated successfully")?;
             }
-            Command::Submit(_submit) => {
-                let submission_id = service::submit()?;
+            Command::Submit(submit) => {
+                service::update_submit_parameters(&mut self.res, &submit)?;
+                let submission_id = service::submit(&mut self.res, submit.file_name)?;
                 let long_poll = false;
-                let submission_info = service::submission(&mut self.res, submission_id, long_poll)?;
+                let submission_info =
+                    service::submission_info(&mut self.res, submission_id, long_poll)?;
                 self.term.write_line(&submission_info.status)?;
             }
             _ => {
