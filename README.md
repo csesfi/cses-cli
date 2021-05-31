@@ -2,7 +2,7 @@
 
 ![GitHub Actions](https://github.com/H4m5t3r/cses-cli/actions/workflows/main.yml/badge.svg)
 [![codecov](https://codecov.io/gh/H4m5t3r/cses-cli/branch/main/graph/badge.svg)](https://app.codecov.io/gh/H4m5t3r/cses-cli)
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
@@ -18,6 +18,6 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
 - [Backlogs + work time monitoring](https://docs.google.com/spreadsheets/d/10vB2CXV9RVyM_wIMyXrgepMcKMDzQ1qXHvmtuqjiaio/edit#gid=0)
 
-- [API](https://h4m5t3r.github.io/cses-cli/)
+- [Architecture](https://github.com/H4m5t3r/cses-cli/wiki/Architecture)
 
-- [Product backlog](https://docs.google.com/spreadsheets/d/10vB2CXV9RVyM_wIMyXrgepMcKMDzQ1qXHvmtuqjiaio/edit#gid=0)
+- [API](https://h4m5t3r.github.io/cses-cli/)
