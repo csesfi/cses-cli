@@ -6,10 +6,20 @@ pub struct Language {
     pub option: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+
+#[derive(Debug, Deserialize)]
 pub struct SubmissionInfo {
     pub time: String,
-    pub language: String,
+    pub language: Language,
     pub status: String,
     pub pending: bool,
+    pub result: Option<String>,
+    pub tests: Option<Vec<SubmissionTestInfo>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubmissionTestInfo {
+    number: u64,
+    verdict: String,
+    time: u64,
 }
