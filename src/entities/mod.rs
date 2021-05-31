@@ -6,7 +6,6 @@ pub struct Language {
     pub option: Option<String>,
 }
 
-
 #[derive(Debug, Deserialize)]
 pub struct SubmissionInfo {
     pub time: String,
@@ -19,7 +18,7 @@ pub struct SubmissionInfo {
 
 #[derive(Debug, Deserialize)]
 pub struct SubmissionTestInfo {
-    number: u64,
-    verdict: String,
-    time: u64,
+    pub number: u64,
+    pub verdict: String,
+    pub time: u64,
 }

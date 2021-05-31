@@ -1,4 +1,4 @@
-use anyhow::{Result, bail};
+use anyhow::{bail, Result};
 use base64::{decode, encode};
 use std::fs::{self, File};
 use std::io::Read;
@@ -71,7 +71,7 @@ mod tests {
     }
 
     #[test]
-    fn cannot_read_oversized_file()  {
+    fn cannot_read_oversized_file() {
         let mut path = temp_dir();
         path.push("test_file2");
         let mut test_file = File::create(&path).unwrap();
