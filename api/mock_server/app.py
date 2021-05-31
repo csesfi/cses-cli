@@ -44,11 +44,11 @@ def compile_error_submission_info():
         "status": "COMPILE ERROR",
         "pending": False,
         "compiler": """input/code.cpp:1:1: error: 'use' does not name a type
-\nuse std::io;
-\n^~~
-\ninput/code.cpp:3:1: error: 'fn' does not name a type
-\nfn main() {
-\n^~"""
+use std::io;
+^~~
+input/code.cpp:3:1: error: 'fn' does not name a type
+fn main() {
+^~"""
     }
 
 def get_submit(token_info, course_id, task_id, submission_id):

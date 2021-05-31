@@ -38,6 +38,10 @@ impl<R: ResourcesProvider> Ui<R> {
                 let submission_info =
                     service::submission_info(&mut self.res, submission_id, long_poll)?;
                 self.term.write_line(&submission_info.status)?;
+                if let Some(compiler_report) = &submission_info.compiler {
+                    self.term.write_line("\nCompiler report:")?;
+                    self.term.write_line(compiler_report)?;
+                }
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
