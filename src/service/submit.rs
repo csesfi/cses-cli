@@ -66,11 +66,10 @@ pub fn submission_info(
     submission_id: u64,
     poll: bool,
 ) -> Result<SubmissionInfo> {
-    let token = res.storage.get_token().unwrap();
     let course_id = res.storage.get_course().unwrap();
     let task_id = res.storage.get_task().unwrap();
-    let submission = res
-        .api
-        .get_submit(token, course_id, task_id, submission_id, poll);
+    let submission =
+        res.api
+            .get_submit(require_login(res)?, course_id, task_id, submission_id, poll);
     Ok(submission?)
 }
