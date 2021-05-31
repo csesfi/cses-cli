@@ -87,6 +87,7 @@ impl CsesApi for CsesHttpApi {
         ))
         .with_body(json::to_string(submission))
         .with_header("X-Auth-Token", token)
+        .with_header("Content-Type", "application/json")
         .send()?;
         check_error(&response)?;
         let response_body: SubmissionResponse = json::from_str(response.as_str()?)?;
@@ -103,9 +104,9 @@ impl CsesApi for CsesHttpApi {
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "/poll" } else { "" };
-        let response = minreq::post(format!(
-            "/course/{}/task/{}/submit/{}{}",
-            course_id, task_id, submission_id, poll
+        let response = minreq::get(format!(
+            "{}/course/{}/task/{}/submit/{}{}",
+            self.url, course_id, task_id, submission_id, poll
         ))
         .with_header("X-Auth-Token", token)
         .send()?;
