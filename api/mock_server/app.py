@@ -119,13 +119,8 @@ state = ServerState(
                 },
                 "status": "PENDING",
                 "pending": True,
-                "result": "ACCEPTED",
-                "tests": [{
-                    "number": 1,
-                    "verdict": "ACCEPTED",
-                    "time": 120
-                    }
-                ]},
+                },
+
                 {"time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "Rust"
@@ -144,9 +139,12 @@ state = ServerState(
         SubmissionScenario(
             NewSubmission(course_id = "alon", task_id = 4,
                 submission_json = {
-                    "language": {"name": "Rust"},
-                    "filename": "main.rs",
-                    "content": "1234abcd"}
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                        },
+                    "filename": "main.c++",
+                    "content": "#include <iostream>\n"}
             ),
             [
                 {"time": "2017-07-21T17:32:28Z",
@@ -156,27 +154,38 @@ state = ServerState(
                 },
                 "status": "PENDING",
                 "pending": True,
-                "result": "ACCEPTED",
-                "tests": [{
-                    "number": 1,
-                    "verdict": "ACCEPTED",
-                    "time": 120
-                    }
-                ]},
+                },
+
                 {"time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
                     "option": "C++17"
                 },
-                "status": "PENDING",
+                "status": "TESTING",
                 "pending": True,
+                },
+
+                {"time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
                 "result": "WRONG ANSWER",
-                "tests": [{
+                "tests": [
+                    {
                     "number": 1,
-                    "verdict": "WRONG ANSWER",
+                    "verdict": "ACCEPTED",
                     "time": 120
+                    },
+                    {
+                    "number": 2,
+                    "verdict": "WRONG ANSWER",
+                    "time": 800
                     }
                 ]}
+
             ]
         )
     ]
