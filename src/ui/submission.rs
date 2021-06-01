@@ -4,15 +4,15 @@ use anyhow::Result;
 use console::{Style, StyledObject};
 
 use super::Ui;
-use crate::entities::{Language, SubmissionInfo, SubmissionTestInfo};
+//use crate::entities::{Language, SubmissionInfo, SubmissionTestInfo};
 
 pub fn print_submission_info(
     ui: &mut Ui<impl RP>,
     submission_id: u64,
     long_poll: bool,
 ) -> Result<()> {
-    //let mut submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
-
+    let mut submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
+    /*
     let time = String::from("2021-05-31 10:32:41");
     let language = Language {
         name: String::from("RUST"),
@@ -43,6 +43,7 @@ pub fn print_submission_info(
         result,
         tests,
     };
+    */
     ui.term
         .write_line(&format!("Submission time: {}", submission_info.time))?;
     match submission_info.language.option {
@@ -57,7 +58,7 @@ pub fn print_submission_info(
     ui.term
         .write_line(&format!("Status: {}", submission_info.status))?;
     while submission_info.pending {
-        //submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
+        submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
         submission_info.pending = false;
         submission_info.status = String::from("READY");
         ui.term.clear_last_lines(1)?;

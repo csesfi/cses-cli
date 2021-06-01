@@ -6,7 +6,6 @@ use anyhow::{Error, Result};
 use console::{Style, Term};
 
 use crate::command::HELP_STR;
-use crate::entities::{Language, SubmissionInfo, SubmissionTestInfo};
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider};
 
