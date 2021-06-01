@@ -52,16 +52,15 @@ jobs:
     - name: Run tests
       run: cargo test
       env:
-        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort'
+        RUSTFLAGS: '-Z instrument-coverage -C link-dead-code -C codegen-units=1 -C opt-level=0'
         LLVM_PROFILE_FILE: '${{ github.workspace }}/output-%p-%m.profraw'
-        CARGO_INCREMENTAL: 0
     - name: Run grcov
       run: |
         # Copy relevant binaries into one folder, otherwise grcov tries to walk all dependencies
         mkdir binaries
         cp target/debug/deps/cses_cli* binaries/
         cp target/debug/cses-cli binaries/
-        grcov . --binary-path binaries/ -s . -t lcov --llvm --branch --ignore-not-existing --ignore 'src/test/*' --ignore 'tests/*' --ignore '/*' -o coverage-pre.lcov
+        grcov . --binary-path binaries/ -s . -t lcov --llvm --ignore-not-existing --ignore 'src/test/*' --ignore 'tests/*' --ignore '/*' -o coverage-pre.lcov
     - name: Run rust-covfix
       run: |
         rust-covfix coverage-pre.lcov -o coverage.lcov
