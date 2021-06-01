@@ -2,7 +2,6 @@ use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
-extern crate whoami;
 
 #[derive(Default, Serialize, Deserialize, Debug)]
 pub struct FileStorage {
