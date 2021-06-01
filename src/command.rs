@@ -14,18 +14,24 @@ COMMANDS:
     logout              Invalidate the current login session.
     submit <file>       Submit a file to cses.fi.
 
-OPTIONS:
-    -c course_id
-    --course course_id
+        Submit options:
 
-    -t task_id
-    --task task_id
+        -c course_id
+        --course course_id
+            Submit the file to course `course_id`.
 
-    -l language
-    --language language
+        -t task_id
+        --task task_id
+            Submit the file to task `task_id`.
 
-    -o language_option
-    --lang-opt language_option
+        -l language
+        --language language
+            Specifies the programming language of the submitted file.
+
+        -o language_option
+        --lang-opt language_option
+            Specifies the possible language options. For example, language `C++`
+            could have options `C++11` and `C++17`.
 "#;
 
 #[derive(Debug)]
