@@ -90,16 +90,20 @@ mod tests {
 
     #[test]
     fn base64_encoding_works_correctly() {
+        let filesystem = ConcreteFilesystem::default();
         let to_encode = b"tEstVAlu3";
-        assert_eq!(encode(&to_encode), "dEVzdFZBbHUz");
+        assert_eq!(filesystem.encode_base64(to_encode), "dEVzdFZBbHUz");
     }
 
     #[test]
     fn base64_decoding_works_correctly() {
+        let filesystem = ConcreteFilesystem::default();
         let to_decode = "aGVsbG8gd29ybGQ=";
+        let decoded = filesystem.decode_base64(to_decode).unwrap();
+        let corrrect_result: Vec<u8> = vec![104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
         assert_eq!(
-            decode(&to_decode),
-            Ok(vec![104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100])
+            decoded,
+            corrrect_result
         );
     }
 }
