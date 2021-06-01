@@ -1,9 +1,8 @@
 use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
 use std::fs;
-use std::path::Path;
-
-const FILENAME: &str = "filestorage.json";
+use std::path::PathBuf;
+extern crate whoami;
 
 #[derive(Default, Serialize, Deserialize, Debug)]
 pub struct FileStorage {
@@ -15,16 +14,32 @@ pub struct FileStorage {
     file: Option<String>,
 }
 
+#[cfg(unix)]
+fn create_path() -> Result<PathBuf> {
+    let mut path = PathBuf::from(std::env::var("HOME")?);
+    path.push(".config/cses-cli/filestorage.json");
+    return Ok(path);
+}
+
+#[cfg(target_os = "windows")]
+fn create_path() -> Result<PathBuf> {
+    let mut path = PathBuf::from(std::env::var("APPDATA")?);
+    path.push_str("cses-cli\\filestorage.json");
+    return Ok(path);
+}
+
 impl FileStorage {
-    pub fn new() -> Self {
-        if !Path::new(FILENAME).exists() {
-            return Default::default();
+    pub fn new() -> Result<Self> {
+        let filename = create_path()?;
+        fs::create_dir_all(filename.parent().unwrap())?;
+        if !filename.exists() {
+            return Ok(Default::default());
         };
-        let data = fs::read_to_string(FILENAME).unwrap();
+        let data = fs::read_to_string(filename)?;
         let res = json::from_str(&data);
         match res {
-            Ok(fs) => fs,
-            Err(_) => Default::default(),
+            Ok(fs) => Ok(fs),
+            Err(_) => Ok(Default::default()),
         }
     }
 }
@@ -84,10 +99,10 @@ impl Storage for FileStorage {
         self.file = Some(val);
     }
     fn save(&mut self) -> Result<()> {
-        Ok(fs::write(FILENAME, json::to_string(self))?)
+        Ok(fs::write(create_path()?, json::to_string(self))?)
     }
     fn delete(&mut self) -> Result<()> {
-        Ok(fs::remove_file(FILENAME)?)
+        Ok(fs::remove_file(create_path()?)?)
     }
 }
 

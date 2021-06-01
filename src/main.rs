@@ -30,7 +30,7 @@ fn run() -> anyhow::Result<()> {
     abort_handler::setup();
     let command = Command::from_command_line()?;
     let api = CsesHttpApi::default();
-    let storage = FileStorage::new();
+    let storage = FileStorage::new()?;
     let filesystem = ConcreteFilesystem::default();
     let resources: Resources<DefaultResources> = Resources {
         api,
