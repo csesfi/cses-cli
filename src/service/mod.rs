@@ -1,5 +1,5 @@
 mod login;
-pub use login::{login, logout, Login};
+pub use login::{login, logout, login_exists, Login};
 
 mod submit;
 pub use submit::{submission_info, submit, update_submit_parameters};

@@ -1,6 +1,5 @@
 use crate::service;
 use crate::service::Login;
-use crate::storage::Storage;
 use crate::RP;
 use anyhow::Result;
 use console::Term;
@@ -13,7 +12,7 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
     try_login(ui).context("Login failed!")
 }
 fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
-    if let Some(_token) = ui.res.storage.get_token() {
+    if service::login_exists(&ui.res) {
         let confirmation = prompt_overwrite(&mut ui.term).context("Failed reading confirmation")?;
         if confirmation.to_lowercase() != "yes" {
             return Ok(());
@@ -26,6 +25,12 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     };
     service::login(&mut ui.res, &login)?;
     ui.term.write_line("Login successful")?;
+    Ok(())
+}
+
+pub fn logout(ui: &mut Ui<impl RP>) -> Result<()> {
+    service::logout(&mut ui.res)?;
+    ui.term.write_line("Login invalidated successfully")?;
     Ok(())
 }
 
