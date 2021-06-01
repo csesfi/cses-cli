@@ -60,9 +60,9 @@ jobs:
         mkdir binaries
         cp target/debug/deps/cses_cli* binaries/
         cp target/debug/cses-cli binaries/
-        grcov . --binary-path binaries/ -s . -t lcov --llvm --ignore-not-existing --ignore 'src/test/*' --ignore 'tests/*' -o coverage-pre.lcov
+        grcov . --binary-path binaries/ -s . -t lcov --llvm --ignore-not-existing --ignore 'src/test/*' --ignore 'tests/*' --ignore '/*' -o coverage-pre.lcov
     - name: Run rust-covfix
       run: |
-        rust-covfix coverage-pre.lcov -o coverage
+        rust-covfix coverage-pre.lcov -o coverage.lcov
         rm coverage-pre.lcov
     - uses: codecov/codecov-action@v1
