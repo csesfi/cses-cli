@@ -12,6 +12,9 @@ def login_post():
     if connexion.request.json == {"username": "kalle",
                                   "password": "kissa2"}:
         return {"X-Auth-Token": "asdf"}
+    if connexion.request.json == {"username": "Olaf",
+                                  "password": "ILoveSummer"}:
+        return {"X-Auth-Token": "snowman"}
     return ({"message": "Invalid username/password", "code": "invalid_credentials"}, 401)
 
 def logout_post(token_info):
@@ -82,6 +85,8 @@ def apikey_auth(apikey, required_scopes=None):
     """
     if apikey == "asdf":
         return {"this": "goes to the function"}
+    elif apikey == "snowman":
+        return { "anna": "do you wanna build a snowman?" }
 
     # this will be overriden by the render_api_authentication_failed function
     raise werkzeug.exceptions.Unauthorized()

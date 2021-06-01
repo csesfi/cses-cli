@@ -29,6 +29,7 @@
 mod common;
 mod help;
 mod login;
+mod submit;
 
 use common::TESTS;
 
