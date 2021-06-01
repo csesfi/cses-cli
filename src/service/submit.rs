@@ -40,10 +40,10 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
         .to_owned();
     let language_name = res
         .storage
-        .get_token()
+        .get_language()
         .ok_or_else(|| anyhow!("Language not provided"))?
         .to_owned();
-    let language_option = res.storage.get_token().map(|t| t.to_owned());
+    let language_option = res.storage.get_option().map(|t| t.to_owned());
 
     let content = res.filesystem.get_file(&filename)?;
     let content = res.filesystem.encode_base64(&content);

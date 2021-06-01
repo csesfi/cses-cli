@@ -1,5 +1,6 @@
 mod login;
 mod submission;
+mod submit;
 
 use anyhow::{Error, Result};
 use console::{Style, Term};
@@ -12,12 +13,17 @@ use crate::{Command, Resources, ResourcesProvider};
 pub struct Ui<R: ResourcesProvider> {
     res: Resources<R>,
     term: Term,
+    raw_stdin: bool,
 }
 
 impl<R: ResourcesProvider> Ui<R> {
-    pub fn with_resources(res: Resources<R>) -> Self {
+    pub fn with_resources(raw_stdin: bool, res: Resources<R>) -> Self {
         let term = Term::stdout();
-        Ui { res, term }
+        Ui {
+            res,
+            term,
+            raw_stdin,
+        }
     }
 
     pub fn run(&mut self, command: Command) -> Result<()> {
@@ -30,20 +36,38 @@ impl<R: ResourcesProvider> Ui<R> {
                 login::login(self)?;
             }
             Command::Logout => {
-                service::logout(&mut self.res)?;
-                self.term.write_line("Login invalidated successfully")?;
+                login::logout(self)?;
             }
             Command::Submit(submit) => {
-                service::update_submit_parameters(&mut self.res, &submit)?;
-                let submission_id = service::submit(&mut self.res, submit.file_name)?;
-                let long_poll = false;
-                submission::print_submission_info(self, submission_id, long_poll)?;
+                let submission_id = submit::submit(self, submit)?;
+                submission::print_submission_info(self, submission_id, true)?;
             }
             _ => {
                 submission::print_submission_info(self, 1, true)?;
             }
         }
         Ok(())
+    }
+
+    fn prompt_line(&self) -> Result<String> {
+        if self.raw_stdin {
+            // Copied from the console crate
+            let mut rv = String::new();
+            std::io::stdin().read_line(&mut rv)?;
+            let len = rv.trim_end_matches(&['\r', '\n'][..]).len();
+            rv.truncate(len);
+            Ok(rv)
+        } else {
+            Ok(self.term.read_line()?)
+        }
+    }
+
+    fn prompt_secure_line(&self) -> Result<String> {
+        if self.raw_stdin {
+            self.prompt_line()
+        } else {
+            Ok(self.term.read_secure_line()?)
+        }
     }
 }
 

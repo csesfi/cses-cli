@@ -180,8 +180,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(submit)
-            if submit.course_id == Some("alon".to_string())
+            Command::Submit(Submit { course_id: Some(course), .. })
+            if course == "alon"
         ));
     }
 
@@ -192,8 +192,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(submit)
-            if submit.task_id == Some(123)
+            Command::Submit(Submit { task_id: Some(task), .. })
+            if task == 123
         ));
     }
 
@@ -201,7 +201,7 @@ mod tests {
     fn submit_task_id_should_be_integer() {
         let pargs = to_pargs(&["submit", "test.cpp", "--task-id", "asdf"]);
 
-        assert!(matches!(Command::parse_command(pargs), Err(_)));
+        assert!(Command::parse_command(pargs).is_err());
     }
 
     #[test]
@@ -211,8 +211,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(submit)
-            if submit.language_name== Some("Rust".to_string())
+            Command::Submit(Submit { language_name: Some(lang), .. })
+            if lang == "Rust"
         ));
     }
 
@@ -223,8 +223,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(submit)
-            if submit.language_option== Some("C++17".to_string())
+            Command::Submit(Submit { language_option: Some(opt), .. })
+            if opt == "C++17"
         ));
     }
 
