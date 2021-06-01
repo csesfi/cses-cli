@@ -143,7 +143,7 @@ state = ServerState(
                         "name": "C++",
                         "option": "C++17"
                         },
-                    "filename": "main.c++",
+                    "filename": "main.cpp",
                     "content": "#include <iostream>\n"}
             ),
             [
