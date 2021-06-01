@@ -1,3 +1,5 @@
+import string
+import random
 import connexion
 import werkzeug
 
@@ -8,19 +10,186 @@ from connexion.exceptions import ValidationError, BadRequestProblem
 from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
+class SubmissionTracker:
+    def __init__(self, submissions_infos):
+        assert len(submission_infos) > 0
+        self.infos = submission_infos
+        self._position = 0
+
+    def next(self):
+        if self._position + 1 < len(self.infos):
+            ++self._position
+        return self.infos[self._position]
+
+class NewSubmission:
+    """A class for representing data sent to server at new submission."""
+    def __init__(self, course_id, task_id, submission_json):
+        self.course_id = course_id
+        self.task_id = task_id
+        self.submission_json = submission_json
+
+    def __eq__(self, other):
+        return self.course_id == other.course_id \
+            and self.task_id == other.task_id \
+            and self.submission_info == other.submission_info
+
+class SubmissionScenario:
+    """A class for representing a single possible submission scenario"""
+    def __init__(self, new_submission, submission_infos):
+        self.new_submission = new_submission
+        self.submission_infos = submission_infos
+
+class ServerState:
+    def __init__(self):
+        # tokens need to be saved to test the logout
+        self.valid_tokens = []
+        self.valid_logins = [
+            {"username": "kalle", "password": "kissa2"},
+            {"username": "uolevi", "password": "12345"}
+        ]
+        self.submission_scenarios = [
+            SubmissionScenario(
+                NewSubmission(course_id = "alon", task_id = 2,
+                    submission_json = {
+                        "language": {"name": "Rust"},
+                        "filename": "main.rs",
+                        "content": "1234abcd"}
+                ),
+                [
+                    {"time": "2017-07-21T17:32:28Z",
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                    },
+                    "status": "PENDING",
+                    "pending": True,
+                    "result": "ACCEPTED",
+                    "tests": [{
+                        "number": 1,
+                        "verdict": "ACCEPTED",
+                        "time": 120
+                        }
+                    ]},
+                    {"time": "2017-07-21T17:32:28Z",
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                    },
+                    "status": "PENDING",
+                    "pending": True,
+                    "result": "WRONG ANSWER",
+                    "tests": [{
+                        "number": 1,
+                        "verdict": "WRONG ANSWER",
+                        "time": 120
+                        }
+                    ]}
+                ]
+            ),
+            SubmissionScenario(
+                NewSubmission(course_id = "kurssi", task_id = 4,
+                    submission_json = {
+                        "language": {"name": "Rust"},
+                        "filename": "main.rs",
+                        "content": "1234abcd"}
+                ),
+                [
+                    {"time": "2017-07-21T17:32:28Z",
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                    },
+                    "status": "PENDING",
+                    "pending": True,
+                    "result": "ACCEPTED",
+                    "tests": [{
+                        "number": 1,
+                        "verdict": "ACCEPTED",
+                        "time": 120
+                        }
+                    ]},
+                    {"time": "2017-07-21T17:32:28Z",
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                    },
+                    "status": "READY",
+                    "pending": False,
+                    "result": "ACCEPTED",
+                    "tests": [{
+                        "number": 1,
+                        "verdict": "ACCEPTED",
+                        "time": 120
+                        }
+                    ]}
+                ],
+            )
+        ]
+
+        self.submission_trackers = {}
+
+    def login(self, credentials):
+        if credentials not in self.valid_logins:
+            return None
+
+        token = self._generate_token()
+        self.valid_tokens.append(token)
+        return token
+
+    def logout(self, token):
+        """Logs out a valid api key"""
+        assert is_valid(token)
+        state.valid_tokens.remove(token_info["apikey"])
+
+    def is_valid(self, token):
+        return token in self.valid_tokens
+
+    def _generate_token(self):
+        token = "".join(random.choices(string.hexdigits, k=16))
+        return token
+
+    def add_submission(self, new_submission):
+        """Tries to add `new_submission`.
+
+        If `new_submission` doesn't match any of the valid
+        submission, then return None.
+        Otherwise returns the submission id"""
+
+        submission = None
+        for x in self.valid_submissions:
+            if x.new_submission == new_submission:
+                submission = x
+
+        if submission is None:
+            return None
+
+        submission_id = random.getrandbits(64)
+        self.submission_trackers[submission_id] = submission
+        return submission_id
+
+    def get_submission_info(self, course_id, task_id, submission_id):
+        """Returns the next state of the submission `submission_id`"""
+        return self.submission_trackers[submission_id].next()
+
+random.seed(1337)
+state = ServerState();
+
 def login_post():
-    if connexion.request.json == {"username": "kalle",
-                                  "password": "kissa2"}:
-        return {"X-Auth-Token": "asdf"}
+    token = state.login(connexion.request.json)
+    if token is not None:
+        return ({"X-Auth-Token": token}, 200)
+
     return ({"message": "Invalid username/password", "code": "invalid_credentials"}, 401)
 
 def logout_post(token_info):
-    print(f"logout: {token_info}")
+    state.logout(token_info["apikey"])
     return (NoContent, 204)
 
 def submit_post(token_info, course_id, task_id):
-    print(f"submit post: {token_info}")
-    return ({"id": 1337}, 200)
+    print(connesion.request.json)
+    new_submission = NewSubmission(course_id, task_id, connexion.request.json)
+    submission_id = state.add_submission(new_submission)
+    return ({"id": submission_id}, 200)
 
 def default_submission_info():
     return {
@@ -41,15 +210,17 @@ def default_submission_info():
     }
 
 def get_submit(token_info, course_id, task_id, submission_id):
+    submission_info = state.get_submission_info(submission_id)
     print(f"get submit: {token_info}")
-    return (default_submission_info(), 200)
+    return (submission_info, 200)
 
 def get_submit_poll(token_info, course_id, task_id, submission_id):
     print(f"get submit poll: {token_info}")
     print(f"course_id: {course_id}")
     print(f"task_id: {task_id}")
     print(f"submission_id: {submission_id}")
-    return (default_submission_info(), 200)
+    submission_info = state.get_submission_info(submission_id)
+    return (submission_info, 200)
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
@@ -59,8 +230,9 @@ def apikey_auth(apikey, required_scopes=None):
     `token_info` in the function corresponding to the
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
-    if apikey == "asdf":
-        return {"this": "goes to the function"}
+
+    if state.is_valid(apikey):
+        return {"apikey": apikey}
 
     # this will be overriden by the render_api_authentication_failed function
     raise werkzeug.exceptions.Unauthorized()
