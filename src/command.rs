@@ -15,10 +15,17 @@ COMMANDS:
     submit <file>       Submit a file to cses.fi.
 
 OPTIONS:
-    --course-id COURSE_ID
-    --task-id TASK_ID
-    --language LANGUAGE
-    --lang-opt LANGUAGE_OPTIONS
+    -c course_id
+    --course course_id
+
+    -t task_id
+    --task task_id
+
+    -l language
+    --language language
+
+    -o language_option
+    --lang-opt language_option
 "#;
 
 #[derive(Debug)]
@@ -40,10 +47,10 @@ pub struct Submit {
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            course_id: pargs.opt_value_from_str("--course-id")?,
-            task_id: pargs.opt_value_from_str("--task-id")?,
-            language_name: pargs.opt_value_from_str("--language")?,
-            language_option: pargs.opt_value_from_str("--lang-opt")?,
+            course_id: pargs.opt_value_from_str(["-c", "--course"])?,
+            task_id: pargs.opt_value_from_str(["-t", "--task"])?,
+            language_name: pargs.opt_value_from_str(["-l", "--language"])?,
+            language_option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
             file_name: {
                 if let Ok(file_name) = pargs.free_from_str() {
                     file_name
@@ -174,8 +181,8 @@ mod tests {
     }
 
     #[test]
-    fn submit_course_id_parsed_correctly() {
-        let pargs = to_pargs(&["submit", "test.cpp", "--course-id", "alon"]);
+    fn submit_course_long_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--course", "alon"]);
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(
@@ -186,8 +193,32 @@ mod tests {
     }
 
     #[test]
-    fn submit_task_id_parsed_correctly() {
-        let pargs = to_pargs(&["submit", "test.cpp", "--task-id", "123"]);
+    fn submit_course_short_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "-c", "alon"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { course_id: Some(course), .. })
+            if course == "alon"
+        ));
+    }
+
+    #[test]
+    fn submit_task_long_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--task", "123"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { task_id: Some(task), .. })
+            if task == 123
+        ));
+    }
+
+    #[test]
+    fn submit_task_short_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "-t", "123"]);
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(
@@ -199,13 +230,14 @@ mod tests {
 
     #[test]
     fn submit_task_id_should_be_integer() {
-        let pargs = to_pargs(&["submit", "test.cpp", "--task-id", "asdf"]);
-
+        let pargs = to_pargs(&["submit", "test.cpp", "--task", "asdf"]);
+        assert!(Command::parse_command(pargs).is_err());
+        let pargs = to_pargs(&["submit", "test.cpp", "-t", "asdf"]);
         assert!(Command::parse_command(pargs).is_err());
     }
 
     #[test]
-    fn submit_language_name_parsed_correctly() {
+    fn submit_language_long_name_parsed_correctly() {
         let pargs = to_pargs(&["submit", "test.cpp", "--language", "Rust"]);
         let command = Command::parse_command(pargs).unwrap();
 
@@ -217,8 +249,31 @@ mod tests {
     }
 
     #[test]
-    fn submit_language_option_correctly() {
+    fn submit_language_short_name_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "-l", "Rust"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { language_name: Some(lang), .. })
+            if lang == "Rust"
+        ));
+    }
+
+    #[test]
+    fn submit_language_option_long_parsed_correctly() {
         let pargs = to_pargs(&["submit", "test.cpp", "--lang-opt", "C++17"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { language_option: Some(opt), .. })
+            if opt == "C++17"
+        ));
+    }
+    #[test]
+    fn submit_language_option_short_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "-o", "C++17"]);
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(
