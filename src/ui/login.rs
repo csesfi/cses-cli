@@ -12,15 +12,14 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
 }
 fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     if service::login_exists(&ui.res) {
-        let confirmation = prompt_overwrite(ui).context("Failed reading confirmation")?;
-        if confirmation.to_lowercase() != "yes" {
+        if !prompt_overwrite(ui)? {
             return Ok(());
         }
     }
 
     let login = Login {
-        username: prompt_username(ui).context("Failed reading username")?,
-        password: prompt_password(ui).context("Failed reading password")?,
+        username: prompt_username(ui)?,
+        password: prompt_password(ui)?,
     };
     service::login(&mut ui.res, &login)?;
     ui.term.write_line("Login successful")?;
@@ -35,15 +34,16 @@ pub fn logout(ui: &mut Ui<impl RP>) -> Result<()> {
 
 fn prompt_username(ui: &mut Ui<impl RP>) -> Result<String> {
     ui.term.write_str("Username: ")?;
-    ui.prompt_line()
+    ui.prompt_line().context("Failed reading username")
 }
 
 fn prompt_password(ui: &mut Ui<impl RP>) -> Result<String> {
     ui.term.write_str("Password: ")?;
-    ui.prompt_secure_line()
+    ui.prompt_secure_line().context("Failed reading password")
 }
 
-fn prompt_overwrite(ui: &mut Ui<impl RP>) -> Result<String> {
+fn prompt_overwrite(ui: &mut Ui<impl RP>) -> Result<bool> {
     ui.term.write_str("Already logged in. Are you sure you want to overwrite the current login session (yes/No)? ")?;
-    ui.prompt_line()
+    let answer = ui.prompt_line().context("Failed reading confirmation")?;
+    Ok(answer == "yes")
 }
