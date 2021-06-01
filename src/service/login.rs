@@ -22,3 +22,8 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
     res.storage.delete()?;
     Ok(())
 }
+
+/// Checks if a session is active, disregarding whether it is still valid
+pub fn login_exists(res: &Resources<impl RP>) -> bool {
+    res.storage.get_token().is_some()
+}

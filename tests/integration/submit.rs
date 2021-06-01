@@ -10,7 +10,14 @@ fn compiler_report_is_dispayed_with_compile_error() {
     create_file(&"test.cpp", &TEST_CPP_CONTENT).unwrap();
 
     command()
-        .args(&["submit", "test.cpp", "--course-id", "comp", "--task-id", "1337"])
+        .args(&[
+            "submit",
+            "test.cpp",
+            "--course-id",
+            "comp",
+            "--task-id",
+            "1337",
+        ])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)compiler"))

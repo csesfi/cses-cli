@@ -109,6 +109,7 @@ components:
       additionalProperties: false
       required:
         - name
+        - option
       type: object
 
       properties:
@@ -118,6 +119,7 @@ components:
             Name of the language, e.g. "C++", "Haskell", "Python2".
         option:
           type: string
+          nullable: true
           description: >
             Optional language version specifier, e.g. "CPython" or "PyPy".
 
