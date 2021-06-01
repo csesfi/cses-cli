@@ -3,6 +3,8 @@ import random
 import connexion
 import werkzeug
 
+import base64
+
 from connexion import NoContent
 from connexion import RestyResolver
 
@@ -11,15 +13,16 @@ from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
 class SubmissionTracker:
-    def __init__(self, submissions_infos):
+    def __init__(self, submission_infos):
         assert len(submission_infos) > 0
         self.infos = submission_infos
         self._position = 0
 
     def next(self):
+        info = self.infos[self._position]
         if self._position + 1 < len(self.infos):
-            ++self._position
-        return self.infos[self._position]
+            self._position += 1
+        return info
 
 class NewSubmission:
     """A class for representing data sent to server at new submission."""
@@ -31,7 +34,7 @@ class NewSubmission:
     def __eq__(self, other):
         return self.course_id == other.course_id \
             and self.task_id == other.task_id \
-            and self.submission_info == other.submission_info
+            and self.submission_json == other.submission_json
 
 class SubmissionScenario:
     """A class for representing a single possible submission scenario"""
@@ -40,91 +43,11 @@ class SubmissionScenario:
         self.submission_infos = submission_infos
 
 class ServerState:
-    def __init__(self):
+    def __init__(self, valid_logins, scenarios):
         # tokens need to be saved to test the logout
         self.valid_tokens = []
-        self.valid_logins = [
-            {"username": "kalle", "password": "kissa2"},
-            {"username": "uolevi", "password": "12345"}
-        ]
-        self.submission_scenarios = [
-            SubmissionScenario(
-                NewSubmission(course_id = "alon", task_id = 2,
-                    submission_json = {
-                        "language": {"name": "Rust"},
-                        "filename": "main.rs",
-                        "content": "1234abcd"}
-                ),
-                [
-                    {"time": "2017-07-21T17:32:28Z",
-                    "language": {
-                        "name": "C++",
-                        "option": "C++17"
-                    },
-                    "status": "PENDING",
-                    "pending": True,
-                    "result": "ACCEPTED",
-                    "tests": [{
-                        "number": 1,
-                        "verdict": "ACCEPTED",
-                        "time": 120
-                        }
-                    ]},
-                    {"time": "2017-07-21T17:32:28Z",
-                    "language": {
-                        "name": "C++",
-                        "option": "C++17"
-                    },
-                    "status": "PENDING",
-                    "pending": True,
-                    "result": "WRONG ANSWER",
-                    "tests": [{
-                        "number": 1,
-                        "verdict": "WRONG ANSWER",
-                        "time": 120
-                        }
-                    ]}
-                ]
-            ),
-            SubmissionScenario(
-                NewSubmission(course_id = "kurssi", task_id = 4,
-                    submission_json = {
-                        "language": {"name": "Rust"},
-                        "filename": "main.rs",
-                        "content": "1234abcd"}
-                ),
-                [
-                    {"time": "2017-07-21T17:32:28Z",
-                    "language": {
-                        "name": "C++",
-                        "option": "C++17"
-                    },
-                    "status": "PENDING",
-                    "pending": True,
-                    "result": "ACCEPTED",
-                    "tests": [{
-                        "number": 1,
-                        "verdict": "ACCEPTED",
-                        "time": 120
-                        }
-                    ]},
-                    {"time": "2017-07-21T17:32:28Z",
-                    "language": {
-                        "name": "C++",
-                        "option": "C++17"
-                    },
-                    "status": "READY",
-                    "pending": False,
-                    "result": "ACCEPTED",
-                    "tests": [{
-                        "number": 1,
-                        "verdict": "ACCEPTED",
-                        "time": 120
-                        }
-                    ]}
-                ],
-            )
-        ]
+        self.valid_logins = valid_logins
+        self.submission_scenarios = scenarios
 
         self.submission_trackers = {}
 
@@ -138,8 +61,8 @@ class ServerState:
 
     def logout(self, token):
         """Logs out a valid api key"""
-        assert is_valid(token)
-        state.valid_tokens.remove(token_info["apikey"])
+        assert self.is_valid(token)
+        state.valid_tokens.remove(token)
 
     def is_valid(self, token):
         return token in self.valid_tokens
@@ -156,7 +79,7 @@ class ServerState:
         Otherwise returns the submission id"""
 
         submission = None
-        for x in self.valid_submissions:
+        for x in self.submission_scenarios:
             if x.new_submission == new_submission:
                 submission = x
 
@@ -164,18 +87,104 @@ class ServerState:
             return None
 
         submission_id = random.getrandbits(64)
-        self.submission_trackers[submission_id] = submission
+        self.submission_trackers[submission_id] = SubmissionTracker(
+            submission.submission_infos)
+
         return submission_id
 
     def get_submission_info(self, course_id, task_id, submission_id):
         """Returns the next state of the submission `submission_id`"""
+        if submission_id not in self.submission_trackers:
+            return None
         return self.submission_trackers[submission_id].next()
 
 random.seed(1337)
-state = ServerState();
+state = ServerState(
+    valid_logins = [
+        {"username": "kalle", "password": "kissa2"},
+        {"username": "uolevi", "password": "12345"}
+    ],
+    scenarios = [
+        SubmissionScenario(
+            NewSubmission(course_id = "kurssi", task_id = 2,
+                submission_json = {
+                    "language": {"name": "Rust"},
+                    "filename": "main.rs",
+                    "content": "use std::io;"}
+            ),
+            [
+                {"time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "Rust"
+                },
+                "status": "PENDING",
+                "pending": True,
+                "result": "ACCEPTED",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                    }
+                ]},
+                {"time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "Rust"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "ACCEPTED",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                    }
+                ]}
+            ],
+        ),
+        SubmissionScenario(
+            NewSubmission(course_id = "alon", task_id = 4,
+                submission_json = {
+                    "language": {"name": "Rust"},
+                    "filename": "main.rs",
+                    "content": "1234abcd"}
+            ),
+            [
+                {"time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+                "result": "ACCEPTED",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                    }
+                ]},
+                {"time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+                "result": "WRONG ANSWER",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "WRONG ANSWER",
+                    "time": 120
+                    }
+                ]}
+            ]
+        )
+    ]
+)
 
 def login_post():
     token = state.login(connexion.request.json)
+    print(f"got token: {token}")
     if token is not None:
         return ({"X-Auth-Token": token}, 200)
 
@@ -186,41 +195,32 @@ def logout_post(token_info):
     return (NoContent, 204)
 
 def submit_post(token_info, course_id, task_id):
-    print(connesion.request.json)
+    details = connexion.request.json
+    try:
+        details["content"] = base64.b64decode(details["content"]).decode("utf-8")
+    except Exception:
+        return ({"message": f"Failed to decode submission content base64 encoding",
+                 "code": "client_error"}, 400)
+
     new_submission = NewSubmission(course_id, task_id, connexion.request.json)
     submission_id = state.add_submission(new_submission)
+    if submission_id is None:
+        return ({"message": f"Invalid submission: {details}", "code": "client_error"}, 400)
     return ({"id": submission_id}, 200)
 
-def default_submission_info():
-    return {
-        "time": "2017-07-21T17:32:28Z",
-        "language": {
-            "name": "C++",
-            "option": "C++17"
-        },
-        "status": "READY",
-        "pending": False,
-        "result": "ACCEPTED",
-        "tests": [{
-            "number": 1,
-            "verdict": "ACCEPTED",
-            "time": 120
-            }
-        ]
-    }
-
 def get_submit(token_info, course_id, task_id, submission_id):
-    submission_info = state.get_submission_info(submission_id)
     print(f"get submit: {token_info}")
+    print(f"course_id: {course_id}")
+    print(f"task_id: {task_id}")
+    print(f"submission_id: {submission_id}")
+    submission_info = state.get_submission_info(course_id, task_id, submission_id)
+    if submission_info is None:
+        return ({"message": "Submission not found", "code": "client_error"}, 404)
     return (submission_info, 200)
 
 def get_submit_poll(token_info, course_id, task_id, submission_id):
     print(f"get submit poll: {token_info}")
-    print(f"course_id: {course_id}")
-    print(f"task_id: {task_id}")
-    print(f"submission_id: {submission_id}")
-    submission_info = state.get_submission_info(submission_id)
-    return (submission_info, 200)
+    return get_submit(token_info, course_id, task_id, submission_id);
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
@@ -242,11 +242,11 @@ def render_invalid_query(exception):
     return ({"message": "Invalid query format", "code": "client_error"}, 400)
 
 def render_api_authentication_failed(exception):
-    print("here")
     return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
 
 def render_method_not_allowed(exception):
     return ({"message": "Invalid HTTP method", "code": "client_error"}, 405)
+
 
 app = connexion.App(__name__, specification_dir="../",
                     options={"swagger_ui": False})
