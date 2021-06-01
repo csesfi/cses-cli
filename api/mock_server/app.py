@@ -108,14 +108,15 @@ state = ServerState(
         SubmissionScenario(
             NewSubmission(course_id = "kurssi", task_id = 2,
                 submission_json = {
-                    "language": {"name": "Rust"},
+                    "language": {"name": "Rust", "option": None},
                     "filename": "main.rs",
-                    "content": "use std::io;"}
+                    "content": "use std::io;\n"}
             ),
             [
                 {"time": "2017-07-21T17:32:28Z",
                 "language": {
-                    "name": "Rust"
+                    "name": "Rust",
+                    "option": None
                 },
                 "status": "PENDING",
                 "pending": True,
@@ -123,7 +124,8 @@ state = ServerState(
 
                 {"time": "2017-07-21T17:32:28Z",
                 "language": {
-                    "name": "Rust"
+                    "name": "Rust",
+                    "option": None
                 },
                 "status": "READY",
                 "pending": False,
