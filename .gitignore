@@ -1,4 +1,5 @@
 /target
 filestorage.json
 /api/mock_server/__pycache__
+/tmp
 venv/
