@@ -31,11 +31,11 @@ pub enum Command {
 }
 #[derive(Debug)]
 pub struct Submit {
-    course_id: Option<String>,
-    task_id: Option<u64>,
-    language_name: Option<String>,
-    language_option: Option<String>,
-    file_name: String,
+    pub course_id: Option<String>,
+    pub task_id: Option<u64>,
+    pub language_name: Option<String>,
+    pub language_option: Option<String>,
+    pub file_name: String,
 }
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
@@ -50,7 +50,7 @@ impl Submit {
                 } else {
                     anyhow::bail!("File name not specified")
                 }
-            }
+            },
         })
     }
 }
@@ -73,7 +73,7 @@ impl Command {
             "login" => Ok(Command::Login),
             "logout" => Ok(Command::Logout),
             "submit" => Ok(Command::Submit(
-                Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?
+                Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
             )),
             _ => Err(anyhow!("Invalid command: {}", command)),
         }
@@ -201,10 +201,7 @@ mod tests {
     fn submit_task_id_should_be_integer() {
         let pargs = to_pargs(&["submit", "test.cpp", "--task-id", "asdf"]);
 
-        assert!(matches!(
-            Command::parse_command(pargs),
-            Err(_)
-        ));
+        assert!(matches!(Command::parse_command(pargs), Err(_)));
     }
 
     #[test]
