@@ -1,8 +1,8 @@
-use crate::command::Submit;
-use crate::service;
-use super::FakeStorage;
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
+use super::FakeStorage;
+use crate::command::Submit;
+use crate::service;
 use crate::storage::{Storage, StorageData};
 use anyhow::Result;
 
@@ -16,7 +16,10 @@ fn submit_parameters_are_updated() -> Result<()> {
         language_option: None,
         file_name: "submission.py".to_string(),
     };
-    fake_resources.storage.get_mut().set_option("PyPy".to_string());
+    fake_resources
+        .storage
+        .get_mut()
+        .set_option("PyPy".to_string());
     service::update_submit_parameters(&mut fake_resources, &submit)?;
 
     assert_eq!(fake_resources.storage.get().get_course(), Some("4"));
@@ -27,14 +30,16 @@ fn submit_parameters_are_updated() -> Result<()> {
 #[test]
 fn submit_mock() -> Result<()> {
     let mut fake_resources = fake_resources_with_mock_api();
-    fake_resources.api.expect_submit_task()
+    fake_resources
+        .api
+        .expect_submit_task()
         .withf(|token, course_id, task_id, submission| {
-            token == "gnewwoiJ" &&
-            course_id == "17" &&
-            *task_id == 3 &&
-            submission.language.name == "Python" &&
-            submission.filename == "test" &&
-            submission.content == "testing"
+            token == "gnewwoiJ"
+                && course_id == "17"
+                && *task_id == 3
+                && submission.language.name == "Python"
+                && submission.filename == "test"
+                && submission.content == "testing"
         })
         .returning(|_, _, _, _| Ok(17));
     let mut storage_data: StorageData = Default::default();

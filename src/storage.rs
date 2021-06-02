@@ -56,7 +56,7 @@ impl StorageData {
 
 #[derive(Default, Debug)]
 pub struct FileStorage {
-    data: StorageData
+    data: StorageData,
 }
 
 impl FileStorage {
@@ -111,7 +111,10 @@ mod tests {
         assert_eq!(String::from("token"), storage_data.get_token().unwrap());
         assert_eq!(String::from("course"), storage_data.get_course().unwrap());
         assert_eq!(42, storage_data.get_task().unwrap());
-        assert_eq!(String::from("language"), storage_data.get_language().unwrap());
+        assert_eq!(
+            String::from("language"),
+            storage_data.get_language().unwrap()
+        );
         assert_eq!(String::from("option"), storage_data.get_option().unwrap());
         assert_eq!(String::from("file"), storage_data.get_file().unwrap());
     }

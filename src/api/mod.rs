@@ -2,9 +2,9 @@ use crate::entities::{Language, SubmissionInfo};
 use crate::service::Login;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
-use thiserror::Error;
 #[cfg(test)]
 use mockall::automock;
+use thiserror::Error;
 
 pub struct CsesHttpApi {
     url: String,

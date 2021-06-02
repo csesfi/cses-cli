@@ -1,11 +1,10 @@
 mod submit;
 
 use crate::api::CodeSubmit;
-use crate::{api::ApiResult, service::Login, api::MockCsesApi};
-use crate::{CsesApi, Filesystem, Resources, Storage};
 use crate::storage::StorageData;
+use crate::{api::ApiResult, api::MockCsesApi, service::Login};
+use crate::{CsesApi, Filesystem, Resources, Storage};
 use anyhow::Result;
-
 
 struct FakeCsesApi {}
 
@@ -41,7 +40,7 @@ impl CsesApi for FakeCsesApi {
 
 #[derive(Default, Debug)]
 struct FakeStorage {
-    data: StorageData
+    data: StorageData,
 }
 
 impl Storage for FakeStorage {

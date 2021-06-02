@@ -11,7 +11,6 @@ pub fn update_submit_parameters(
     res: &mut Resources<impl RP>,
     parameters: &command::Submit,
 ) -> Result<()> {
-
     let storage = res.storage.get_mut();
     if let Some(ref course_id) = parameters.course_id {
         storage.set_course(course_id.clone());
