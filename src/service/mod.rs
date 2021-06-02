@@ -1,7 +1,7 @@
 mod login;
-pub use login::{login, logout, login_exists, Login};
+pub use login::{login, login_exists, logout, Login};
 
-mod submit;
+pub(crate) mod submit;
 pub use submit::{submission_info, submit, update_submit_parameters};
 
 use crate::{Resources, Storage, RP};

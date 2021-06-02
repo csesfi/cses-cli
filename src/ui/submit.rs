@@ -1,5 +1,5 @@
+use crate::{command, service, RP};
 use anyhow::Result;
-use crate::{service, command, RP};
 
 use super::Ui;
 
