@@ -37,7 +37,11 @@ fn run() -> anyhow::Result<()> {
         storage,
         filesystem,
     };
-    let mut ui = Ui::with_resources(resources);
+    let test = match std::env::var("CSES_CLI_TEST") {
+        Ok(val) => !val.is_empty(),
+        Err(_) => false,
+    };
+    let mut ui = Ui::with_resources(test, resources);
     ui.run(command)?;
     Ok(())
 }
