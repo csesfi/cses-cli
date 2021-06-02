@@ -1,4 +1,5 @@
 mod login;
+mod submit;
 
 use anyhow::{Error, Result};
 use console::Term;
@@ -33,8 +34,10 @@ impl<R: ResourcesProvider> Ui<R> {
                 login::login(self)?;
             }
             Command::Logout => {
-                service::logout(&mut self.res)?;
-                self.term.write_line("Login invalidated successfully")?;
+                login::logout(self)?;
+            }
+            Command::Submit(submit) => {
+                submit::submit(self, submit)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
