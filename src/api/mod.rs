@@ -1,3 +1,5 @@
+mod escape;
+
 use crate::entities::{Language, SubmissionInfo};
 use crate::service::Login;
 use miniserde::{json, Deserialize, Serialize};
