@@ -365,46 +365,22 @@ paths:
         - $ref: "#/components/parameters/CourseId"
         - $ref: "#/components/parameters/TaskId"
         - $ref: "#/components/parameters/SubmissionId"
+        - in: query
+          name: poll
+          schema:
+            type: boolean
+            default: false
+          description: >
+            Whether or not to use long polling. If set to `true` and the
+            submission is still pending, the server will wait up to some
+            amount of time, before responding with a result. If grading of
+            this submission completes during this time, the response is
+            sent immediately.
 
       responses:
         "200":
           description: >
             Info about a submission is retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SubmissionInfo"
-        "4XX":
-          $ref: "#/components/responses/ClientError"
-        "5XX":
-          $ref: "#/components/responses/ServerError"
-
-
-
-  /courses/{course_id}/tasks/{task_id}/submissions/{submission_id}/poll:
-    get:
-      operationId: app.get_submission_poll
-
-      summary: Retrieve information about a submission (long polling).
-      description: >
-        This endpoint is otherwise the same as the normal version,
-        except long polling is employed. If the submission is still
-        pending, the server will wait up to some amount of time, before
-        responding with a result. If grading of this submission
-        completes during this time, the response is sent immediately.
-
-      security:
-        - apiKeyAuth: []
-
-      parameters:
-        - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
-        - $ref: "#/components/parameters/SubmissionId"
-
-      responses:
-        "200":
-          description: >
-            The submission information was retrieved successfully.
           content:
             application/json:
               schema:
