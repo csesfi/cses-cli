@@ -3,6 +3,7 @@ mod submit;
 use crate::api::CodeSubmit;
 use crate::{api::ApiResult, service::Login, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
+use crate::storage::StorageData;
 use anyhow::Result;
 
 
@@ -40,55 +41,20 @@ impl CsesApi for FakeCsesApi {
 
 #[derive(Default, Debug)]
 struct FakeStorage {
-    token: Option<String>,
-    course: Option<String>,
-    task: Option<u64>,
-    language: Option<String>,
-    option: Option<String>,
-    file: Option<String>,
+    data: StorageData
 }
 
 impl Storage for FakeStorage {
-    fn get_token(&self) -> Option<&str> {
-        self.token.as_deref()
+    fn get(&self) -> &StorageData {
+        &self.data
     }
-    fn get_course(&self) -> Option<&str> {
-        self.course.as_deref()
+    fn get_mut(&mut self) -> &mut StorageData {
+        &mut self.data
     }
-    fn get_task(&self) -> Option<u64> {
-        self.task
-    }
-    fn get_language(&self) -> Option<&str> {
-        self.language.as_deref()
-    }
-    fn get_option(&self) -> Option<&str> {
-        self.option.as_deref()
-    }
-    fn get_file(&self) -> Option<&str> {
-        self.file.as_deref()
-    }
-    fn set_token(&mut self, val: String) {
-        self.token = Some(val);
-    }
-    fn set_course(&mut self, val: String) {
-        self.course = Some(val);
-    }
-    fn set_task(&mut self, val: u64) {
-        self.task = Some(val);
-    }
-    fn set_language(&mut self, val: String) {
-        self.language = Some(val);
-    }
-    fn set_option(&mut self, val: String) {
-        self.option = Some(val);
-    }
-    fn set_file(&mut self, val: String) {
-        self.file = Some(val);
-    }
-    fn save(&mut self) -> Result<()> {
+    fn save(&self) -> Result<()> {
         Ok(())
     }
-    fn delete(&mut self) -> Result<()> {
+    fn delete(&self) -> Result<()> {
         Ok(())
     }
 }

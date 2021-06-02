@@ -3,6 +3,7 @@ use crate::service;
 use super::FakeStorage;
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
+use crate::storage::{Storage, StorageData};
 use anyhow::Result;
 
 #[test]
@@ -15,11 +16,11 @@ fn submit_parameters_are_updated() -> Result<()> {
         language_option: None,
         file_name: "submission.py".to_string(),
     };
-    fake_resources.storage.option = Some("PyPy".to_string());
+    fake_resources.storage.get_mut().set_option("PyPy".to_string());
     service::update_submit_parameters(&mut fake_resources, &submit)?;
 
-    assert_eq!(fake_resources.storage.course, Some("4".to_string()));
-    assert_eq!(fake_resources.storage.option, Some("PyPy".to_string()));
+    assert_eq!(fake_resources.storage.get().get_course(), Some("4"));
+    assert_eq!(fake_resources.storage.get().get_option(), Some("PyPy"));
     Ok(())
 }
 
@@ -36,13 +37,12 @@ fn submit_mock() -> Result<()> {
             submission.content == "testing"
         })
         .returning(|_, _, _, _| Ok(17));
-    fake_resources.storage = FakeStorage {
-        token: Some("gnewwoiJ".to_string()),
-        language: Some("Python".to_string()),
-        course: Some("17".to_string()),
-        task: Some(3),
-        ..Default::default()
-    };
+    let mut storage_data: StorageData = Default::default();
+    storage_data.set_token("gnewwoiJ".to_string());
+    storage_data.set_language("Python".to_string());
+    storage_data.set_course("17".to_string());
+    storage_data.set_task(3);
+    fake_resources.storage = FakeStorage { data: storage_data };
 
     let submission_id = service::submit(&mut fake_resources, "test".to_string())?;
     assert_eq!(submission_id, 17);
