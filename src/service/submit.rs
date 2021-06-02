@@ -54,10 +54,9 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
         filename,
         content,
     };
-    let submission_id =
-        res.api
-            .submit_task(require_login(res)?, &course_id, task_id, &submission)?;
-    Ok(submission_id)
+    Ok(res
+        .api
+        .submit_task(require_login(res)?, &course_id, task_id, &submission)?)
 }
 
 pub fn submission_info(
@@ -68,8 +67,7 @@ pub fn submission_info(
     let storage = res.storage.get();
     let course_id = storage.get_course().unwrap();
     let task_id = storage.get_task().unwrap();
-    let submission =
-        res.api
-            .get_submit(require_login(res)?, course_id, task_id, submission_id, poll);
-    Ok(submission?)
+    Ok(res
+        .api
+        .get_submit(require_login(res)?, course_id, task_id, submission_id, poll)?)
 }

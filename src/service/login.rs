@@ -13,7 +13,8 @@ pub struct Login {
 pub fn login(res: &mut Resources<impl RP>, login: &Login) -> Result<()> {
     let token = res.api.login(login)?;
     res.storage.get_mut().set_token(token);
-    res.storage.save()
+    res.storage.save()?;
+    Ok(())
 }
 
 pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
