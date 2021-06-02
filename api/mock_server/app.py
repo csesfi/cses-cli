@@ -190,6 +190,45 @@ state = ServerState(
                 ]}
 
             ]
+        ),
+        SubmissionScenario(
+            NewSubmission(course_id = "cses", task_id = 13,
+                submission_json = {
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                        },
+                    "filename": "13.rs",
+                    "content": "use std::io;\n\nfn main() {\n"}
+            ),
+            [
+                {"time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+                },
+
+                {
+                    "time": "2017-07-21T17:32:28Z",
+                    "language": {
+                        "name": "C++",
+                        "option": "C++17"
+                    },
+                    "status": "COMPILE ERROR",
+                    "pending": False,
+                    "compiler": """input/code.cpp:1:1: error: 'use' does not name a type
+use std::io;
+^~~
+input/code.cpp:3:1: error: 'fn' does not name a type
+fn main() {
+^~
+"""
+                },
+
+            ]
         )
     ]
 )

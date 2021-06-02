@@ -1,25 +1,22 @@
 use crate::common::*;
 
-const TEST_CPP_CONTENT: &[u8] = b"asd
-asd
-asd";
+const TEST_CPP_CONTENT: &[u8] = b"use std::io;
+
+fn main() {
+";
 
 #[distributed_slice(TESTS)]
 fn compiler_report_is_dispayed_with_compile_error() {
     log_in();
-    create_file(&"test.cpp", &TEST_CPP_CONTENT).unwrap();
+    create_file(&"13.rs", &TEST_CPP_CONTENT).unwrap();
 
     command()
         .args(&[
-            "submit",
-            "test.cpp",
-            "--course-id",
-            "comp",
-            "--task-id",
-            "1337",
+            "submit", "13.rs", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17",
         ])
         .assert()
         .success()
+        .stdout(regex_match(r"COMPILE ERROR"))
         .stdout(regex_match(r"(?i)compiler"))
         .stderr(predicate::str::is_empty());
 }
