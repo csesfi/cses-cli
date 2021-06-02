@@ -19,7 +19,10 @@ jobs:
           ~/.cargo/bin
           ~/.cargo/git
           ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          ~/.cargo/.crates.toml
+          ~/.cargo/.package-cache
+          ~/.cargo/.crates2.json
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-2
     - name: Rust toolchain setup
       uses: actions-rs/toolchain@v1
       with:
@@ -27,9 +30,9 @@ jobs:
         override: true
         components: llvm-tools-preview
     - name: Install grcov
-      run: if [[ ! -e ~/.cargo/bin/grcov ]]; then cargo install grcov; fi
+      run: cargo install grcov
     - name: Install rust-covfix
-      run: if [[ ! -e "~/.cargo/bin/rust-covfix" ]]; then cargo install rust-covfix; fi
+      run: cargo install rust-covfix
 
     - name: Setup Python
       uses: actions/setup-python@v2
