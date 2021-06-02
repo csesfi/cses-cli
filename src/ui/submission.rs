@@ -59,8 +59,6 @@ pub fn print_submission_info(
         .write_line(&format!("Status: {}", submission_info.status))?;
     while submission_info.pending {
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
-        submission_info.pending = false;
-        submission_info.status = String::from("READY");
         ui.term.clear_last_lines(1)?;
         ui.term
             .write_line(&format!("Status: {}", submission_info.status))?;
