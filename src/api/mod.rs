@@ -85,7 +85,7 @@ impl CsesApi for CsesHttpApi {
         submission: &CodeSubmit,
     ) -> ApiResult<u64> {
         let response = minreq::post(format!(
-            "{}/course/{}/task/{}/submit",
+            "{}/courses/{}/tasks/{}/submissions",
             self.url, course_id, task_id
         ))
         .with_body(json::to_string(submission))
@@ -108,7 +108,7 @@ impl CsesApi for CsesHttpApi {
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "/poll" } else { "" };
         let response = minreq::get(format!(
-            "{}/course/{}/task/{}/submit/{}{}",
+            "{}/courses/{}/tasks/{}/submissions/{}{}",
             self.url, course_id, task_id, submission_id, poll
         ))
         .with_header("X-Auth-Token", token)
