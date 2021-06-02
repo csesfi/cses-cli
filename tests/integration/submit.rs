@@ -38,6 +38,23 @@ fn compiler_report_is_not_displayed_without_any_content() {
         .stderr(predicate::str::is_empty());
 }
 
+#[distributed_slice(TESTS)]
+fn compiler_report_is_dispayed_with_compiler_warnings() {
+    log_in();
+    create_file(&"main.cpp", &MAIN_CPP_CONTENT).unwrap();
+
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "cses", "-t", "42", "-l", "C++", "-o", "C++17",
+        ])
+        .assert();
+    assert
+        .success()
+        .stdout(regex_match(r"READY"))
+        .stdout(regex_match(r"(?i)compiler"))
+        .stderr(predicate::str::is_empty());
+}
+
 fn create_file(filename: &str, content: &[u8]) -> anyhow::Result<()> {
     let mut file = std::fs::File::create(&filename)?;
     std::io::Write::write_all(&mut file, &content)?;
