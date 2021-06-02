@@ -1,39 +1,42 @@
 use crate::common::*;
 
-const TEST_CPP_CONTENT: &[u8] = b"use std::io;
-
-fn main() {
-";
+const RS_13_CONTENT: &[u8] = b"use std::io;\n\nfn main() {\n";
+const MAIN_CPP_CONTENT: &[u8] = b"#include <iostream>\n";
 
 #[distributed_slice(TESTS)]
 fn compiler_report_is_dispayed_with_compile_error() {
     log_in();
-    create_file(&"13.rs", &TEST_CPP_CONTENT).unwrap();
+    create_file(&"13.rs", &RS_13_CONTENT).unwrap();
 
-    command()
+    let assert = command()
         .args(&[
             "submit", "13.rs", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17",
         ])
-        .assert()
+        .assert();
+    assert
         .success()
         .stdout(regex_match(r"COMPILE ERROR"))
         .stdout(regex_match(r"(?i)compiler"))
         .stderr(predicate::str::is_empty());
 }
 
-// TODO: Figure out how to test that something isn't in the stdout
-// #[distributed_slice(TESTS)]
-// fn compiler_report_is_not_displayed_without_any_content() {
-//     log_in();
-//     create_file(&"test.cpp",  &TEST_CPP_CONTENT).unwrap();
+#[distributed_slice(TESTS)]
+fn compiler_report_is_not_displayed_without_any_content() {
+    log_in();
+    create_file(&"main.cpp", &MAIN_CPP_CONTENT).unwrap();
 
-//     command()
-//         .args(&["submit", "test.cpp", "--course-id", "comp", "--task-id", "1337"])
-//         .assert()
-//         .success()
-//         .stdout(regex_match(r"(?i)compiler"))
-//         .stderr(predicate::str::is_empty());
-// }
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "alon", "-t", "4", "-l", "C++", "-o", "C++17",
+        ])
+        .assert();
+    assert
+        .success()
+        .stdout(predicate::function(|string: &str| {
+            !string.contains("Compiler")
+        }))
+        .stderr(predicate::str::is_empty());
+}
 
 fn create_file(filename: &str, content: &[u8]) -> anyhow::Result<()> {
     let mut file = std::fs::File::create(&filename)?;
