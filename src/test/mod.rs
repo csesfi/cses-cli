@@ -1,8 +1,10 @@
 mod submit;
 
-use crate::{api::ApiResult, service::Login};
+use crate::api::CodeSubmit;
+use crate::{api::ApiResult, service::Login, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
 use anyhow::Result;
+
 
 struct FakeCsesApi {}
 
@@ -19,7 +21,7 @@ impl CsesApi for FakeCsesApi {
         _token: &str,
         _course_id: &str,
         _task_id: u64,
-        _submission: &crate::api::CodeSubmit,
+        _submission: &CodeSubmit,
     ) -> ApiResult<u64> {
         todo!()
     }
@@ -99,7 +101,7 @@ impl Filesystem for FakeFilesystem {
     }
 
     fn encode_base64(&self, _filecontent: &[u8]) -> String {
-        todo!()
+        "testing".to_string()
     }
 
     fn decode_base64(&self, _filecontent: &str) -> anyhow::Result<Vec<u8>> {
@@ -110,6 +112,14 @@ impl Filesystem for FakeFilesystem {
 fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
     Resources {
         api: FakeCsesApi {},
+        storage: Default::default(),
+        filesystem: FakeFilesystem {},
+    }
+}
+
+fn fake_resources_with_mock_api() -> Resources<(MockCsesApi, FakeStorage, FakeFilesystem)> {
+    Resources {
+        api: MockCsesApi::new(),
         storage: Default::default(),
         filesystem: FakeFilesystem {},
     }
