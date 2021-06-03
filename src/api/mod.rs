@@ -11,16 +11,14 @@ pub struct CsesHttpApi {
 }
 
 impl CsesHttpApi {
-    pub fn new() -> Self {
-        Self {
-            url: "http://127.0.0.1:4010".to_string(),
-        }
+    pub fn new(url: String) -> Self {
+        Self { url }
     }
 }
 
 impl Default for CsesHttpApi {
     fn default() -> Self {
-        Self::new()
+        Self::new(String::from("http://127.0.0.1:4010"))
     }
 }
 

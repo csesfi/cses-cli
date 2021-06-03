@@ -60,7 +60,7 @@ impl TestServer {
             .spawn()
             .unwrap();
         for _try in 0..10 {
-            let res = minreq::get("http://127.0.0.1:4010/ping")
+            let res = minreq::get("http://127.0.0.1:4011/ping")
                 .with_timeout(1)
                 .send();
             match res {

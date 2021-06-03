@@ -124,4 +124,4 @@ app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
 app.add_api("openapi.yaml", validate_responses=True,
             resolver=RestyResolver('api'))
-app.run(host="127.0.0.1", port=4010)
+app.run(host="127.0.0.1", port=4011 if integration else 4010)
