@@ -25,30 +25,30 @@ fn user_can_log_out() {
         .stderr(predicate::str::is_empty());
 }
 
-#[distributed_slice(TESTS)]
-fn application_knows_user_is_already_logged_in() {
-    let assert = successful_login_attempt();
-    verify_successful_login_output(assert);
-    let assert = command().args(&["login"]).write_stdin("no").assert();
-    assert
-        .success()
-        .stdout(regex_match(r"(?i)already logged in"))
-        .stderr(predicate::str::is_empty());
-}
+// #[distributed_slice(TESTS)]
+// fn application_knows_user_is_already_logged_in() {
+//     let assert = successful_login_attempt();
+//     verify_successful_login_output(assert);
+//     let assert = command().args(&["login"]).write_stdin("no").assert();
+//     assert
+//         .success()
+//         .stdout(regex_match(r"(?i)already logged in"))
+//         .stderr(predicate::str::is_empty());
+// }
 
-#[distributed_slice(TESTS)]
-fn user_can_overwrite_current_login() {
-    let assert = successful_login_attempt();
-    verify_successful_login_output(assert);
-    let assert = command()
-        .args(&["login"])
-        .write_stdin("yes\nkalle\nkissa2\n")
-        .assert();
-    assert
-        .success()
-        .stdout(regex_match(r"(?i)login successful"))
-        .stderr(predicate::str::is_empty());
-}
+// #[distributed_slice(TESTS)]
+// fn user_can_overwrite_current_login() {
+//     let assert = successful_login_attempt();
+//     verify_successful_login_output(assert);
+//     let assert = command()
+//         .args(&["login"])
+//         .write_stdin("yes\nkalle\nkissa2\n")
+//         .assert();
+//     assert
+//         .success()
+//         .stdout(regex_match(r"(?i)login successful"))
+//         .stderr(predicate::str::is_empty());
+// }
 
 fn successful_login_attempt() -> Assert {
     command()

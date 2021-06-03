@@ -28,9 +28,14 @@ fn create_path() -> Result<PathBuf> {
 }
 
 impl FileStorage {
-    pub fn new() -> Result<Self> {
-        let filename = create_path()?;
-        fs::create_dir_all(filename.parent().unwrap())?;
+    pub fn new(test: bool) -> Result<Self> {
+        let filename;
+        if test {
+            filename = PathBuf::from("filestorage.json");
+        } else {
+            filename = create_path()?;
+            fs::create_dir_all(filename.parent().unwrap())?;
+        }
         if !filename.exists() {
             return Ok(Default::default());
         };
