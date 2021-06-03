@@ -56,10 +56,10 @@ pub fn print_submission_info(
     */
 
     ui.term.write_line("Submission details\n")?;
-    ui.term
-        .write_line(&format!("Task: {}", submission_info.task))?;
-    ui.term
-        .write_line(&format!("Sender: {}", submission_info.sender))?;
+    // ui.term
+    //     .write_line(&format!("Task: {}", submission_info.task))?;
+    // ui.term
+    //     .write_line(&format!("Sender: {}", submission_info.sender))?;
     ui.term
         .write_line(&format!("Submission time: {}", submission_info.time))?;
     ui.term
