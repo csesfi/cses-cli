@@ -12,12 +12,54 @@ pub fn print_submission_info(
     long_poll: bool,
 ) -> Result<()> {
     let mut submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
+    /*
+    let task = String::from("Weird Algorithm");
+    let sender = String::from("username");
+    let time = String::from("2021-05-31 10:32:41");
+    let language = Language {
+        name: String::from("C++"),
+        option: Some(String::from("11")),
+    };
+    let status = String::from("PENDING");
+    let pending = false;
+    let result = Some(String::from("TIME LIMIT EXCEEDED"));
+    let test1 = SubmissionTestInfo {
+        number: 9,
+        verdict: String::from("ACCEPTED"),
+        time: Some(1),
+    };
+    let test2 = SubmissionTestInfo {
+        number: 99,
+        verdict: String::from("WRONG ANSWER"),
+        time: Some(1),
+    };
+    let test3 = SubmissionTestInfo {
+        number: 999,
+        verdict: String::from("TIME LIMIT EXCEEDED"),
+        time: None,
+    };
+    let mut tests = Vec::new();
+    tests.push(test1);
+    tests.push(test2);
+    tests.push(test3);
+    let tests = Some(tests);
+    let mut submission_info = SubmissionInfo {
+        task,
+        sender,
+        time,
+        language,
+        status,
+        pending,
+        result,
+        tests,
+    };
+    */
 
     ui.term.write_line("Submission details\n")?;
-    // ui.term
-    //     .write_line(&format!("Task: {}", submission_info.task))?;
-    // ui.term
-    //     .write_line(&format!("Sender: {}", submission_info.sender))?;
+    ui.term
+        .write_line(&format!("Task: {}", submission_info.task))?;
+    ui.term
+        .write_line(&format!("Sender: {}", submission_info.sender))?;
     ui.term
         .write_line(&format!("Submission time: {}", submission_info.time))?;
     ui.term

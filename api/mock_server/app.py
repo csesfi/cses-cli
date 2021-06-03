@@ -301,23 +301,6 @@ def submit_post(token_info, course_id, task_id):
         return ({"message": f"Invalid submission: {details}", "code": "client_error"}, 400)
     return ({"id": submission_id}, 200)
 
-def compile_error_submission_info():
-    return {
-        "time": "2017-07-21T17:32:28Z",
-        "language": {
-            "name": "C++",
-            "option": "C++17"
-        },
-        "status": "COMPILE ERROR",
-        "pending": False,
-        "compiler": """input/code.cpp:1:1: error: 'use' does not name a type
-use std::io;
-^~~
-input/code.cpp:3:1: error: 'fn' does not name a type
-fn main() {
-^~"""
-    }
-
 def get_submit(token_info, course_id, task_id, submission_id):
     print(f"get submit: {token_info}")
     print(f"course_id: {course_id}")
