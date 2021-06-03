@@ -40,12 +40,12 @@ pub fn print_submission_info(
             .write_line(&format!("Result: {}", with_color(result)))?;
     };
     if let Some(tests) = submission_info.tests {
-        ui.term.write_line("Test results\n")?;
-        ui.term.write_line("test |       verdict        | time")?;
-        ui.term.write_line("------------------------------------")?;
+        ui.term.write_line("\nTest results\n")?;
+        ui.term.write_line("  # |        verdict        | time")?;
+        ui.term.write_line("-------------------------------------")?;
         for test in tests {
             ui.term.write_str(&format!(
-                "#{:<3} | {:<20} | ",
+                "{:>3} | {:<21} | ",
                 test.number,
                 with_color(test.verdict)
             ))?;
