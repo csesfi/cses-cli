@@ -1,5 +1,5 @@
-use std::path::Path;
 use predicates::str::RegexPredicate;
+use std::path::Path;
 
 pub use assert_cmd::prelude::*;
 pub use assert_cmd::Command;

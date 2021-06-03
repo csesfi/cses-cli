@@ -13,7 +13,16 @@ fn fails_with_wrong_filename() {
     create_file("mian.rs", MAIN_RS_CONTENT);
 
     command()
-        .args(&["submit", "--course", "kurssi", "mian.rs", "-t", "2", "--language", "Rust"])
+        .args(&[
+            "submit",
+            "--course",
+            "kurssi",
+            "mian.rs",
+            "-t",
+            "2",
+            "--language",
+            "Rust",
+        ])
         .assert()
         .failure();
 }
@@ -28,9 +37,30 @@ fn succeeds_with_correct_filename_in_folder() {
     create_file(&path, MAIN_RS_CONTENT);
 
     command()
-        .args(&["submit", "--course", "kurssi", &path.display().to_string(), "-t", "2", "--language", "Rust"])
+        .args(&[
+            "submit",
+            "--course",
+            "kurssi",
+            &path.display().to_string(),
+            "-t",
+            "2",
+            "--language",
+            "Rust",
+        ])
         .assert()
         .success();
+}
+
+#[distributed_slice(TESTS)]
+fn shows_status_pending_then_ready() {
+    log_in("kalle");
+    create_file("main.rs", MAIN_RS_CONTENT);
+
+    command()
+        .args(&["submit", "-c", "kurssi", "main.rs", "-t", "2", "-l", "Rust"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)status.*pending(.|\n)*status.*ready"));
 }
 
 #[distributed_slice(TESTS)]
@@ -39,7 +69,16 @@ fn shows_verdict() {
     create_file("main.rs", MAIN_RS_CONTENT);
 
     command()
-        .args(&["submit", "--course", "kurssi", "main.rs", "-t", "2", "--language", "Rust"])
+        .args(&[
+            "submit",
+            "--course",
+            "kurssi",
+            "main.rs",
+            "-t",
+            "2",
+            "--language",
+            "Rust",
+        ])
         .assert()
         .success()
         .stdout(regex_match("(?i)result.*accepted"));
@@ -51,11 +90,33 @@ fn shows_each_test_result() {
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     command()
-        .args(&["submit", "-l", "C++", "--task", "4", "-c", "alon", "main.cpp", "-o", "C++17"])
+        .args(&[
+            "submit", "-l", "C++", "--task", "4", "-c", "alon", "main.cpp", "-o", "C++17",
+        ])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)1.*accepted"))
         .stdout(regex_match(r"(?i)2.*wrong answer"));
+}
+
+#[distributed_slice(TESTS)]
+fn remembers_course_and_language() {
+    log_in("uolevi");
+
+    create_file("13.rs", RS_13_CONTENT);
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17", "13.rs",
+        ])
+        .assert()
+        .success();
+
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+    command()
+        .args(&["submit", "-t", "42", "main.cpp"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)status.*ready"));
 }
 
 #[distributed_slice(TESTS)]
