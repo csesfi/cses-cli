@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
 use super::FakeStorage;
@@ -47,8 +49,8 @@ fn submit_mock() -> Result<()> {
     storage_data.set_language("Python".to_string());
     storage_data.set_course("17".to_string());
     storage_data.set_task(3);
-    fake_resources.storage = FakeStorage { data: storage_data };
-
+    let path_data = PathBuf::from("test/cses-cli/filestorage.json");
+    fake_resources.storage = FakeStorage { data: storage_data, path: path_data };
     let submission_id = service::submit(&mut fake_resources, "test".to_string())?;
     assert_eq!(submission_id, 17);
     Ok(())

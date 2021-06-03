@@ -95,6 +95,7 @@ pub trait Storage {
     fn get_mut(&mut self) -> &mut StorageData;
     fn save(&mut self) -> Result<()>;
     fn delete(&mut self) -> Result<()>;
+    fn get_path(&self) -> &PathBuf;
 }
 
 impl Storage for FileStorage {
@@ -109,6 +110,10 @@ impl Storage for FileStorage {
     }
     fn delete(&mut self) -> Result<()> {
         Ok(fs::remove_file(&self.path)?)
+    }
+
+    fn get_path(&self) -> &PathBuf {
+        &self.path
     }
 }
 

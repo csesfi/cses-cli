@@ -5,6 +5,7 @@ use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi, service::Login};
 use crate::{CsesApi, Filesystem, Resources, Storage};
 use anyhow::Result;
+use std::path::PathBuf;
 
 struct FakeCsesApi {}
 
@@ -41,6 +42,7 @@ impl CsesApi for FakeCsesApi {
 #[derive(Default, Debug)]
 struct FakeStorage {
     data: StorageData,
+    path: PathBuf,
 }
 
 impl Storage for FakeStorage {
@@ -55,6 +57,10 @@ impl Storage for FakeStorage {
     }
     fn delete(&mut self) -> Result<()> {
         Ok(())
+    }
+
+    fn get_path(&self) -> &std::path::PathBuf {
+        &self.path
     }
 }
 

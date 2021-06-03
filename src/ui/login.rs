@@ -1,7 +1,9 @@
+use crate::Storage;
 use crate::service;
 use crate::service::Login;
 use crate::RP;
 use anyhow::Result;
+use std::io::Write;
 
 use anyhow::Context;
 
@@ -20,7 +22,7 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
         password: prompt_password(ui)?,
     };
     service::login(&mut ui.res, &login)?;
-    ui.term.write_line("Login successful")?;
+    writeln!(ui.term, "Login successful. Saved login token to {:?}", ui.res.storage.get_path())?;
     Ok(())
 }
 
