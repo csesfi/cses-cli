@@ -24,7 +24,7 @@ fn create_path() -> Result<PathBuf> {
 #[cfg(target_os = "windows")]
 fn create_path() -> Result<PathBuf> {
     let mut path = PathBuf::from(std::env::var("APPDATA")?);
-    path.push_str("cses-cli\\filestorage.json");
+    path.push("cses-cli\\filestorage.json");
     Ok(path)
 }
 
