@@ -24,7 +24,7 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     service::login(&mut ui.res, &login)?;
     writeln!(
         ui.term,
-        "Login successful. Saved login token to {:?}",
+        "Login successful. Saved login token to {:?}.",
         ui.res.storage.get_path()
     )?;
     Ok(())
