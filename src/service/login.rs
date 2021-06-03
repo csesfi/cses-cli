@@ -1,7 +1,7 @@
+use crate::api::ApiError;
 use crate::{CsesApi, Resources, Storage, RP};
 use anyhow::{Context, Result};
 use miniserde::{Deserialize, Serialize};
-use crate::api::ApiError;
 
 use super::require_login;
 
@@ -29,7 +29,8 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
         };
         res.storage.delete()?;
         Ok(())
-    })().context("Failed to log out")
+    })()
+    .context("Failed to log out")
 }
 
 /// Checks if a session is active, disregarding whether it is still valid
