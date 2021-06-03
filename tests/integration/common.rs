@@ -1,3 +1,4 @@
+use std::path::Path;
 use predicates::str::RegexPredicate;
 
 pub use assert_cmd::prelude::*;
@@ -32,7 +33,7 @@ pub fn log_in(user: &str) {
         .success();
 }
 
-pub fn create_file<S: AsRef<[u8]>>(filename: &str, content: S) {
-    let mut file = std::fs::File::create(&filename).unwrap();
+pub fn create_file<P: AsRef<Path>, S: AsRef<[u8]>>(filename: P, content: S) {
+    let mut file = std::fs::File::create(filename.as_ref()).unwrap();
     std::io::Write::write_all(&mut file, content.as_ref()).unwrap();
 }
