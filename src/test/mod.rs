@@ -50,10 +50,10 @@ impl Storage for FakeStorage {
     fn get_mut(&mut self) -> &mut StorageData {
         &mut self.data
     }
-    fn save(&self) -> Result<()> {
+    fn save(&mut self) -> Result<()> {
         Ok(())
     }
-    fn delete(&self) -> Result<()> {
+    fn delete(&mut self) -> Result<()> {
         Ok(())
     }
 }

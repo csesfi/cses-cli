@@ -69,6 +69,7 @@ impl StorageData {
 #[derive(Default, Debug)]
 pub struct FileStorage {
     data: StorageData,
+    path: PathBuf,
 }
 
 impl FileStorage {
@@ -81,11 +82,11 @@ impl FileStorage {
             fs::create_dir_all(filename.parent().unwrap())?;
         }
         if !filename.exists() {
-            return Ok(Default::default());
-        };
-        let data = fs::read_to_string(filename)?;
+            return Ok(FileStorage {data: Default::default(), path: filename});
+        }
+        let data = fs::read_to_string(&filename)?;
         let res: StorageData = json::from_str(&data)?;
-        Ok(FileStorage {data: res})
+        Ok(FileStorage {data: res, path: filename})
     }
 }
 
@@ -104,10 +105,10 @@ impl Storage for FileStorage {
         &mut self.data
     }
     fn save(&mut self) -> Result<()> {
-        Ok(fs::write(create_path()?, json::to_string(&self.data))?)
+        Ok(fs::write(&self.path, json::to_string(&self.data))?)
     }
     fn delete(&mut self) -> Result<()> {
-        Ok(fs::remove_file(create_path()?)?)
+        Ok(fs::remove_file(&self.path)?)
     }
 }
 
