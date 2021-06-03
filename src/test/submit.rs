@@ -38,7 +38,7 @@ fn submit_mock() -> Result<()> {
                 && course_id == "17"
                 && *task_id == 3
                 && submission.language.name == "Python"
-                && submission.filename == "test"
+                && submission.filename == "extracted_filename"
                 && submission.content == "testing"
         })
         .returning(|_, _, _, _| Ok(17));

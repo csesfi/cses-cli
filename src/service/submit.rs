@@ -27,7 +27,7 @@ pub fn update_submit_parameters(
     Ok(())
 }
 
-pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
+pub fn submit(res: &mut Resources<impl RP>, path: String) -> Result<u64> {
     require_login(res)?;
     let storage = res.storage.get();
     let course_id = storage
@@ -44,7 +44,8 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
         .to_owned();
     let language_option = storage.get_option().map(|t| t.to_owned());
 
-    let content = res.filesystem.get_file(&filename)?;
+    let content = res.filesystem.get_file(&path)?;
+    let filename = res.filesystem.get_file_name(&path)?;
     let content = res.filesystem.encode_base64(&content);
     let submission = CodeSubmit {
         language: Language {
