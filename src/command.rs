@@ -1,9 +1,9 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 
 pub static HELP_STR: &str = r#"CSES CLI
 
 USAGE:
-    cses-cli <command>
+    cses-cli <command> [OPTIONS] [FLAGS]
 
 FLAGS:
     -h, --help          Prints this help message.
@@ -13,6 +13,12 @@ COMMANDS:
     login               Log in to cses.fi
     logout              Invalidate the current login session.
     submit <file>       Submit a file to cses.fi.
+
+OPTIONS:
+    --course-id COURSE_ID
+    --task-id TASK_ID
+    --language LANGUAGE
+    --lang-opt LANGUAGE_OPTIONS
 "#;
 
 #[derive(Debug)]
@@ -21,9 +27,33 @@ pub enum Command {
     Help,
     Login,
     Logout,
-    Submit(String),
+    Submit(Submit),
 }
-
+#[derive(Debug)]
+pub struct Submit {
+    pub course_id: Option<String>,
+    pub task_id: Option<u64>,
+    pub language_name: Option<String>,
+    pub language_option: Option<String>,
+    pub file_name: String,
+}
+impl Submit {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
+        Ok(Submit {
+            course_id: pargs.opt_value_from_str("--course-id")?,
+            task_id: pargs.opt_value_from_str("--task-id")?,
+            language_name: pargs.opt_value_from_str("--language")?,
+            language_option: pargs.opt_value_from_str("--lang-opt")?,
+            file_name: {
+                if let Ok(file_name) = pargs.free_from_str() {
+                    file_name
+                } else {
+                    anyhow::bail!("File name not specified")
+                }
+            },
+        })
+    }
+}
 impl Command {
     pub fn from_command_line() -> Result<Command> {
         let pargs = pico_args::Arguments::from_env();
@@ -42,13 +72,9 @@ impl Command {
             "help" => Ok(Command::Help),
             "login" => Ok(Command::Login),
             "logout" => Ok(Command::Logout),
-            "submit" => {
-                let file_name = pargs.free_from_str();
-                match file_name {
-                    Ok(file_name) => Ok(Command::Submit(file_name)),
-                    Err(_) => Err(anyhow!("File name not specified")),
-                }
-            }
+            "submit" => Ok(Command::Submit(
+                Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
+            )),
             _ => Err(anyhow!("Invalid command: {}", command)),
         }
     }
@@ -133,8 +159,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(file_name)
-            if file_name == "test.cpp"
+            Command::Submit(submit)
+            if submit.file_name == "test.cpp"
         ));
 
         let pargs = to_pargs(&["submit", "qwerty.rs"]);
@@ -142,8 +168,63 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(file_name)
-            if file_name == "qwerty.rs"
+            Command::Submit(submit)
+            if submit.file_name == "qwerty.rs"
+        ));
+    }
+
+    #[test]
+    fn submit_course_id_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--course-id", "alon"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { course_id: Some(course), .. })
+            if course == "alon"
+        ));
+    }
+
+    #[test]
+    fn submit_task_id_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--task-id", "123"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { task_id: Some(task), .. })
+            if task == 123
+        ));
+    }
+
+    #[test]
+    fn submit_task_id_should_be_integer() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--task-id", "asdf"]);
+
+        assert!(Command::parse_command(pargs).is_err());
+    }
+
+    #[test]
+    fn submit_language_name_parsed_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--language", "Rust"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { language_name: Some(lang), .. })
+            if lang == "Rust"
+        ));
+    }
+
+    #[test]
+    fn submit_language_option_correctly() {
+        let pargs = to_pargs(&["submit", "test.cpp", "--lang-opt", "C++17"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Submit { language_option: Some(opt), .. })
+            if opt == "C++17"
         ));
     }
 

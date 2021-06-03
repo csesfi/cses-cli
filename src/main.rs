@@ -20,6 +20,8 @@ pub use command::Command;
 pub mod ui;
 use ui::Ui;
 
+pub mod entities;
+
 #[cfg(test)]
 mod test;
 
