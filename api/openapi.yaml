@@ -123,6 +123,25 @@ components:
           description: >
             Optional language version specifier, e.g. "CPython" or "PyPy".
 
+    TestProgress:
+      additionalProperties: false
+      required:
+        - finished_tests
+        - total_tests
+      type: object
+
+      properties:
+        finished_tests:
+          type: integer
+          minimum: 0
+          description: >
+            The number of finished tests.
+        total_tests:
+          type: integer
+          minimum: 0
+          description: >
+            The total number of tests.
+
     SubmissionInfo:
       additionalProperties: false
       required:
@@ -149,6 +168,8 @@ components:
           description: >
             Whether the submission is still being graded,
             and the information may change soon.
+        test_progress:
+          $ref: "#/components/schemas/TestProgress"
         result:
           type: string
           description: >
