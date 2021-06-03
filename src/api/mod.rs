@@ -2,6 +2,8 @@ use crate::entities::{Language, SubmissionInfo};
 use crate::service::Login;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
+#[cfg(test)]
+use mockall::automock;
 use thiserror::Error;
 
 pub struct CsesHttpApi {
@@ -34,6 +36,7 @@ pub enum ApiError {
 
 pub type ApiResult<T> = Result<T, ApiError>;
 
+#[cfg_attr(test, automock)]
 pub trait CsesApi {
     fn login(&self, login: &Login) -> ApiResult<String>;
     fn logout(&self, token: &str) -> ApiResult<()>;

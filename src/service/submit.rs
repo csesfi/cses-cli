@@ -11,39 +11,38 @@ pub fn update_submit_parameters(
     res: &mut Resources<impl RP>,
     parameters: &command::Submit,
 ) -> Result<()> {
+    let storage = res.storage.get_mut();
     if let Some(ref course_id) = parameters.course_id {
-        res.storage.set_course(course_id.clone());
+        storage.set_course(course_id.clone());
     }
     if let Some(task_id) = parameters.task_id {
-        res.storage.set_task(task_id);
+        storage.set_task(task_id);
     }
     if let Some(ref language_name) = parameters.language_name {
-        res.storage.set_language(language_name.clone());
+        storage.set_language(language_name.clone());
     }
     if let Some(ref language_option) = parameters.language_option {
-        res.storage.set_option(language_option.clone());
+        storage.set_option(language_option.clone());
     }
     Ok(())
 }
 
 pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
     require_login(res)?;
-    let course_id = res
-        .storage
+    let storage = res.storage.get();
+    let course_id = storage
         .get_course()
         .ok_or_else(|| anyhow!("Course not provided"))?
         .to_owned();
-    let task_id = res
-        .storage
+    let task_id = storage
         .get_task()
         .ok_or_else(|| anyhow!("Task not provided"))?
         .to_owned();
-    let language_name = res
-        .storage
+    let language_name = storage
         .get_language()
         .ok_or_else(|| anyhow!("Language not provided"))?
         .to_owned();
-    let language_option = res.storage.get_option().map(|t| t.to_owned());
+    let language_option = storage.get_option().map(|t| t.to_owned());
 
     let content = res.filesystem.get_file(&filename)?;
     let content = res.filesystem.encode_base64(&content);
@@ -55,10 +54,9 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
         filename,
         content,
     };
-    let submission_id =
-        res.api
-            .submit_task(require_login(res)?, &course_id, task_id, &submission)?;
-    Ok(submission_id)
+    Ok(res
+        .api
+        .submit_task(require_login(res)?, &course_id, task_id, &submission)?)
 }
 
 pub fn submission_info(
@@ -66,10 +64,10 @@ pub fn submission_info(
     submission_id: u64,
     poll: bool,
 ) -> Result<SubmissionInfo> {
-    let course_id = res.storage.get_course().unwrap();
-    let task_id = res.storage.get_task().unwrap();
-    let submission =
-        res.api
-            .get_submit(require_login(res)?, course_id, task_id, submission_id, poll);
-    Ok(submission?)
+    let storage = res.storage.get();
+    let course_id = storage.get_course().unwrap();
+    let task_id = storage.get_task().unwrap();
+    Ok(res
+        .api
+        .get_submit(require_login(res)?, course_id, task_id, submission_id, poll)?)
 }

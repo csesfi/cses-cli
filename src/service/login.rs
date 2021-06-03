@@ -12,8 +12,9 @@ pub struct Login {
 
 pub fn login(res: &mut Resources<impl RP>, login: &Login) -> Result<()> {
     let token = res.api.login(login)?;
-    res.storage.set_token(token);
-    res.storage.save()
+    res.storage.get_mut().set_token(token);
+    res.storage.save()?;
+    Ok(())
 }
 
 pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
@@ -25,5 +26,5 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
 
 /// Checks if a session is active, disregarding whether it is still valid
 pub fn login_exists(res: &Resources<impl RP>) -> bool {
-    res.storage.get_token().is_some()
+    res.storage.get().get_token().is_some()
 }
