@@ -260,7 +260,8 @@ fn main() {
                 "result": "WRONG ANSWER",
                 "compiler": """input/code.cpp: In function 'int main()':
 input/code.cpp:27:29: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-  for (int i = 0; i < a.size(); i++) {""",
+  for (int i = 0; i < a.size(); i++) {
+""",
                 "tests": [
                     {
                     "number": 1,

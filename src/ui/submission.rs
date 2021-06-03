@@ -1,4 +1,3 @@
-use crate::entities::SubmissionInfo;
 use crate::service;
 use crate::RP;
 use anyhow::Result;
@@ -14,18 +13,19 @@ pub fn print_submission_info(
 ) -> Result<()> {
     let mut submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
 
+    ui.term.write_line("Submission details\n")?;
+    // ui.term
+    //     .write_line(&format!("Task: {}", submission_info.task))?;
+    // ui.term
+    //     .write_line(&format!("Sender: {}", submission_info.sender))?;
     ui.term
         .write_line(&format!("Submission time: {}", submission_info.time))?;
-    if let Some(option) = &submission_info.language.option {
-        ui.term.write_line(&format!(
-            "Language: {} {}",
-            submission_info.language.name, option
-        ))?
-    } else {
-        ui.term
-            .write_line(&format!("Language: {}", submission_info.language.name))?
-    }
-
+    ui.term
+        .write_str(&format!("Language: {}", submission_info.language.name))?;
+    if let Some(option) = submission_info.language.option {
+        ui.term.write_str(&option)?;
+    };
+    ui.term.write_line("")?;
     ui.term
         .write_line(&format!("Status: {}", submission_info.status))?;
     while submission_info.pending {
@@ -35,34 +35,31 @@ pub fn print_submission_info(
             .write_line(&format!("Status: {}", submission_info.status))?;
     }
 
-    if submission_info.status == "READY" {
-        print_ready(ui, &submission_info)?
-    }
-
     if let Some(compiler_report) = &submission_info.compiler {
         ui.term
-            .write_str(&format!("\nCompiler report:\n{}", compiler_report))?;
+            .write_line(&format!("\nCompiler report:\n{}", compiler_report))?;
     }
 
-    Ok(())
-}
-
-fn print_ready(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
-    if let Some(result) = &submission_info.result {
+    if let Some(result) = submission_info.result {
         ui.term
-            .write_line(&format!("Result: {}", with_color(String::from(result))))?;
-    }
-    ui.term.write_line("# | verdict | time (ms)")?;
-    ui.term.write_line("---------------------------")?;
-
-    if let Some(tests) = &submission_info.tests {
+            .write_line(&format!("Result: {}", with_color(result)))?;
+    };
+    if let Some(tests) = submission_info.tests {
+        ui.term.write_line("Test results\n")?;
+        ui.term.write_line("test |       verdict        | time")?;
+        ui.term.write_line("------------------------------------")?;
         for test in tests {
-            ui.term.write_line(&format!(
-                "{} | {} | {}",
+            ui.term.write_str(&format!(
+                "#{:<3} | {:<20} | ",
                 test.number,
-                with_color(String::from(&test.verdict)),
-                test.time
+                with_color(test.verdict)
             ))?;
+            match test.time {
+                Some(time) => ui
+                    .term
+                    .write_line(&format!("{:.2} s", time as f64 / 1000.0))?,
+                None => ui.term.write_line("--")?,
+            };
         }
     }
     Ok(())

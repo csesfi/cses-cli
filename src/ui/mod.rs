@@ -42,7 +42,7 @@ impl<R: ResourcesProvider> Ui<R> {
                 submission::print_submission_info(self, submission_id, true)?;
             }
             _ => {
-                submission::print_submission_info(self, 1, true)?;
+                self.term.write_line("Command not yet implemented")?;
             }
         }
         Ok(())
