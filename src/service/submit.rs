@@ -24,6 +24,7 @@ pub fn update_submit_parameters(
     if let Some(ref language_option) = parameters.language_option {
         storage.set_option(language_option.clone());
     }
+    res.storage.save()?;
     Ok(())
 }
 
