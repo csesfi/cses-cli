@@ -1,5 +1,8 @@
 # Linted with 'flake8 . --exclude=venv --count --show-source --statistics'
 
+import sys
+import time
+
 import connexion
 import werkzeug
 
@@ -15,6 +18,13 @@ from werkzeug.exceptions import MethodNotAllowed
 from server_state import ServerState
 from submission import NewSubmission
 from scenarios import scenarios
+
+
+integration = False
+try:
+    integration = bool(sys.argv[1])
+except(Exception):
+    pass
 
 
 state = ServerState(
@@ -74,6 +84,8 @@ def get_submit(token_info, course_id, task_id, submission_id):
 
 def get_submit_poll(token_info, course_id, task_id, submission_id):
     print(f"get submit poll: {token_info}")
+    if not integration:
+        time.sleep(1.5)
     return get_submit(token_info, course_id, task_id, submission_id)
 
 
