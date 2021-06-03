@@ -32,9 +32,7 @@ fn compiler_report_is_not_displayed_without_any_content() {
         .assert();
     assert
         .success()
-        .stdout(predicate::function(|string: &str| {
-            !string.contains("Compiler")
-        }))
+        .stdout(regex_match(r"(?i)compiler").not())
         .stderr(predicate::str::is_empty());
 }
 
