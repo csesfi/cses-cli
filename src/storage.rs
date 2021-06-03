@@ -17,14 +17,14 @@ pub struct StorageData {
 fn create_path() -> Result<PathBuf> {
     let mut path = PathBuf::from(std::env::var("HOME")?);
     path.push(".config/cses-cli/filestorage.json");
-    return Ok(path);
+    Ok(path)
 }
 
 #[cfg(target_os = "windows")]
 fn create_path() -> Result<PathBuf> {
     let mut path = PathBuf::from(std::env::var("APPDATA")?);
     path.push_str("cses-cli\\filestorage.json");
-    return Ok(path);
+    Ok(path)
 }
 
 impl StorageData {
@@ -82,11 +82,17 @@ impl FileStorage {
             fs::create_dir_all(filename.parent().unwrap())?;
         }
         if !filename.exists() {
-            return Ok(FileStorage {data: Default::default(), path: filename});
+            return Ok(FileStorage {
+                data: Default::default(),
+                path: filename,
+            });
         }
         let data = fs::read_to_string(&filename)?;
         let res: StorageData = json::from_str(&data)?;
-        Ok(FileStorage {data: res, path: filename})
+        Ok(FileStorage {
+            data: res,
+            path: filename,
+        })
     }
 }
 
