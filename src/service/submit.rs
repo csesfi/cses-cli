@@ -28,7 +28,7 @@ pub fn update_submit_parameters(
 }
 
 pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
-    (|| -> Result<u64> {
+    (|| -> Result<_> {
         require_login(res)?;
         let storage = res.storage.get();
         let course_id = storage
@@ -70,7 +70,7 @@ pub fn submission_info(
     submission_id: u64,
     poll: bool,
 ) -> Result<SubmissionInfo> {
-    (|| -> Result<SubmissionInfo> {
+    (|| -> Result<_> {
         let storage = res.storage.get();
         let course_id = storage.get_course().unwrap();
         let task_id = storage.get_task().unwrap();
