@@ -59,7 +59,7 @@ impl Storage for FakeStorage {
         Ok(())
     }
 
-    fn get_path(&self) -> &std::path::PathBuf {
+    fn get_path(&self) -> &std::path::Path {
         &self.path
     }
 }

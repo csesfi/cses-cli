@@ -1,6 +1,7 @@
 use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
 use std::fs;
+use std::path::Path;
 use std::path::PathBuf;
 
 #[derive(Default, Serialize, Deserialize, Debug)]
@@ -101,7 +102,7 @@ pub trait Storage {
     fn get_mut(&mut self) -> &mut StorageData;
     fn save(&mut self) -> Result<()>;
     fn delete(&mut self) -> Result<()>;
-    fn get_path(&self) -> &PathBuf;
+    fn get_path(&self) -> &Path;
 }
 
 impl Storage for FileStorage {
@@ -118,7 +119,7 @@ impl Storage for FileStorage {
         Ok(fs::remove_file(&self.path)?)
     }
 
-    fn get_path(&self) -> &PathBuf {
+    fn get_path(&self) -> &Path {
         &self.path
     }
 }
