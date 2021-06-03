@@ -17,3 +17,22 @@ pub fn command() -> Command {
 pub fn regex_match(expr: &str) -> RegexPredicate {
     predicate::str::is_match(expr).unwrap()
 }
+
+pub fn log_in(user: &str) {
+    let password = match user {
+        "kalle" => "kissa2",
+        "uolevi" => "12345",
+        "Olaf" => "ILoveSummer",
+        _ => panic!(),
+    };
+    command()
+        .args(&["login"])
+        .write_stdin(format!("{}\n{}\n", user, password))
+        .assert()
+        .success();
+}
+
+pub fn create_file<S: AsRef<[u8]>>(filename: &str, content: S) {
+    let mut file = std::fs::File::create(&filename).unwrap();
+    std::io::Write::write_all(&mut file, content.as_ref()).unwrap();
+}
