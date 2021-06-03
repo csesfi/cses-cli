@@ -63,7 +63,7 @@ fn create_file(filename: &str, content: &[u8]) -> anyhow::Result<()> {
 
 fn log_in() -> assert_cmd::assert::Assert {
     command()
-        .args(["login"])
+        .args(&["login"])
         .write_stdin("Olaf\nILoveSummer\n")
         .assert()
 }
