@@ -30,7 +30,7 @@ pub enum ApiError {
     HttpError(#[from] minreq::Error),
     #[error("JSON error")]
     JsonError(#[from] miniserde::Error),
-    #[error("{}", .0.message)]
+    #[error("Server error response: \"{}\"", .0.message)]
     ResponseError(ErrorResponse),
 }
 

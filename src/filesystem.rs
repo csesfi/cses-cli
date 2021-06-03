@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use base64::{decode, encode};
 use std::fs::{self, File};
 use std::io::Read;
@@ -27,15 +27,18 @@ pub trait Filesystem {
 
 impl Filesystem for ConcreteFilesystem {
     fn get_file(&self, filename: &str) -> Result<Vec<u8>> {
-        let mut file = File::open(&filename)?;
-        let length = fs::metadata(&filename)?.len() as usize;
-        if length > FILE_SIZE_LIMIT {
-            bail!("File is too large (limit {} kB)", FILE_SIZE_LIMIT / 1024);
-        }
-        let mut buffer = Vec::with_capacity(length);
-        file.read_to_end(&mut buffer)?;
+        (|| {
+            let mut file = File::open(&filename)?;
+            let length = fs::metadata(&filename)?.len() as usize;
+            if length > FILE_SIZE_LIMIT {
+                bail!("File is too large (limit {} kB)", FILE_SIZE_LIMIT / 1024);
+            }
+            let mut buffer = Vec::with_capacity(length);
+            file.read_to_end(&mut buffer)?;
 
-        Ok(buffer)
+            Ok(buffer)
+        })()
+        .context(format!("Failed reading file {}", filename))
     }
 
     fn encode_base64(&self, filecontent: &[u8]) -> String {
