@@ -30,8 +30,14 @@ pub enum ApiError {
     HttpError(#[from] minreq::Error),
     #[error("JSON error")]
     JsonError(#[from] miniserde::Error),
-    #[error("Server error response: \"{}\"", .0.message)]
-    ResponseError(ErrorResponse),
+    #[error("Invalid credentials")]
+    InvalidCredentialsError,
+    #[error("Invalid API key. Log in again.")]
+    ApiKeyError,
+    #[error("Server error: \"{}\"", .0)]
+    ServerError(String),
+    #[error("Client error: \"{}\"", .0)]
+    ClientError(String),
 }
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -124,7 +130,12 @@ fn check_error(response: &Response) -> ApiResult<()> {
         Ok(())
     } else {
         let error: ErrorResponse = json::from_str(response.as_str()?)?;
-        Err(ApiError::ResponseError(error))
+        Err(match error.code {
+            ErrorCode::InvalidApiKey => ApiError::ApiKeyError,
+            ErrorCode::InvalidCredentials => ApiError::InvalidCredentialsError,
+            ErrorCode::ServerError => ApiError::ServerError(error.message),
+            ErrorCode::ClientError => ApiError::ClientError(error.message),
+        })
     }
 }
 
