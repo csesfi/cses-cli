@@ -26,9 +26,9 @@ impl Default for CsesHttpApi {
 
 #[derive(Error, Debug)]
 pub enum ApiError {
-    #[error("HTTP error")]
+    #[error("Internet connection error")]
     HttpError(#[from] minreq::Error),
-    #[error("JSON error")]
+    #[error("Could not parse server response")]
     JsonError(#[from] miniserde::Error),
     #[error("Invalid credentials")]
     InvalidCredentialsError,
