@@ -17,9 +17,9 @@ pub fn print_submission_info(
     writeln!(ui.term, "Submission time: {}", submission_info.time)?;
     write!(ui.term, "Language: {}", submission_info.language.name)?;
     if let Some(option) = submission_info.language.option {
-        ui.term.write_str(&option)?;
+        write!(ui.term, " ({})", option)?;
     };
-    ui.term.write_line("")?;
+    writeln!(ui.term)?;
     writeln!(ui.term, "Status: {}", submission_info.status)?;
     while submission_info.pending {
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
