@@ -1,7 +1,8 @@
-use anyhow::{bail, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use base64::{decode, encode};
 use std::fs::{self, File};
 use std::io::Read;
+use std::path::Path;
 
 const FILE_SIZE_LIMIT: usize = 128 * 1024;
 
@@ -20,7 +21,8 @@ impl Default for ConcreteFilesystem {
 }
 
 pub trait Filesystem {
-    fn get_file(&self, filename: &str) -> Result<Vec<u8>>;
+    fn get_file(&self, path: &str) -> Result<Vec<u8>>;
+    fn get_file_name(&self, path: &str) -> Result<String>;
     fn encode_base64(&self, filecontent: &[u8]) -> String;
     fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>>;
 }
@@ -39,6 +41,14 @@ impl Filesystem for ConcreteFilesystem {
             Ok(buffer)
         })()
         .context(format!("Failed reading file {}", filename))
+    }
+
+    fn get_file_name(&self, path: &str) -> Result<String> {
+        Path::new(path)
+            .file_name()
+            .and_then(|f| f.to_str())
+            .map(|f| f.to_owned())
+            .ok_or_else(|| anyhow!("The path \"{}\" is not a valid file", path))
     }
 
     fn encode_base64(&self, filecontent: &[u8]) -> String {

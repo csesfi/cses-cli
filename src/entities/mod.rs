@@ -14,11 +14,12 @@ pub struct SubmissionInfo {
     pub pending: bool,
     pub result: Option<String>,
     pub tests: Option<Vec<SubmissionTestInfo>>,
+    pub compiler: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct SubmissionTestInfo {
     pub number: u64,
     pub verdict: String,
-    pub time: u64,
+    pub time: Option<u64>,
 }

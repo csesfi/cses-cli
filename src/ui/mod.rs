@@ -1,8 +1,9 @@
 mod login;
+mod submission;
 mod submit;
 
 use anyhow::{Error, Result};
-use console::Term;
+use console::{Style, Term};
 
 use crate::command::HELP_STR;
 use crate::service;
@@ -37,7 +38,8 @@ impl<R: ResourcesProvider> Ui<R> {
                 login::logout(self)?;
             }
             Command::Submit(submit) => {
-                submit::submit(self, submit)?;
+                let submission_id = submit::submit(self, submit)?;
+                submission::print_submission_info(self, submission_id, true)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
@@ -70,4 +72,12 @@ impl<R: ResourcesProvider> Ui<R> {
 
 pub fn print_error(err: &Error) {
     println!("{:?}", err);
+}
+
+pub fn print_with_color(line: String) {
+    let mut color = Style::new().red();
+    if line == "ACCEPTED" {
+        color = Style::new().green();
+    }
+    print!("{}", color.apply_to(line));
 }

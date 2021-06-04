@@ -24,10 +24,11 @@ pub fn update_submit_parameters(
     if let Some(ref language_option) = parameters.language_option {
         storage.set_option(language_option.clone());
     }
+    res.storage.save()?;
     Ok(())
 }
 
-pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
+pub fn submit(res: &mut Resources<impl RP>, path: String) -> Result<u64> {
     (|| -> Result<_> {
         require_login(res)?;
         let storage = res.storage.get();
@@ -45,10 +46,8 @@ pub fn submit(res: &mut Resources<impl RP>, filename: String) -> Result<u64> {
             .to_owned();
         let language_option = storage.get_option().map(|t| t.to_owned());
 
-        let content = res
-            .filesystem
-            .get_file(&filename)
-            .context("Failed reading code file")?;
+        let content = res.filesystem.get_file(&path)?;
+        let filename = res.filesystem.get_file_name(&path)?;
         let content = res.filesystem.encode_base64(&content);
         let submission = CodeSubmit {
             language: Language {
