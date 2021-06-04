@@ -8,8 +8,6 @@ pub struct Language {
 
 #[derive(Debug, Deserialize)]
 pub struct SubmissionInfo {
-    // pub task: String,
-    // pub sender: String,
     pub time: String,
     pub language: Language,
     pub status: String,

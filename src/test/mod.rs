@@ -65,6 +65,10 @@ impl Filesystem for FakeFilesystem {
         Ok(b"test".to_vec())
     }
 
+    fn get_file_name(&self, _path: &str) -> Result<String> {
+        Ok("extracted_filename".to_owned())
+    }
+
     fn encode_base64(&self, _filecontent: &[u8]) -> String {
         "testing".to_string()
     }
