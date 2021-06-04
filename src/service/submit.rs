@@ -5,7 +5,7 @@ use crate::{
     entities::{Language, SubmissionInfo},
 };
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 
 pub fn update_submit_parameters(
     res: &mut Resources<impl RP>,
@@ -29,36 +29,39 @@ pub fn update_submit_parameters(
 }
 
 pub fn submit(res: &mut Resources<impl RP>, path: String) -> Result<u64> {
-    require_login(res)?;
-    let storage = res.storage.get();
-    let course_id = storage
-        .get_course()
-        .ok_or_else(|| anyhow!("Course not provided"))?
-        .to_owned();
-    let task_id = storage
-        .get_task()
-        .ok_or_else(|| anyhow!("Task not provided"))?
-        .to_owned();
-    let language_name = storage
-        .get_language()
-        .ok_or_else(|| anyhow!("Language not provided"))?
-        .to_owned();
-    let language_option = storage.get_option().map(|t| t.to_owned());
+    (|| -> Result<_> {
+        require_login(res)?;
+        let storage = res.storage.get();
+        let course_id = storage
+            .get_course()
+            .ok_or_else(|| anyhow!("Course not provided"))?
+            .to_owned();
+        let task_id = storage
+            .get_task()
+            .ok_or_else(|| anyhow!("Task not provided"))?
+            .to_owned();
+        let language_name = storage
+            .get_language()
+            .ok_or_else(|| anyhow!("Language not provided"))?
+            .to_owned();
+        let language_option = storage.get_option().map(|t| t.to_owned());
 
-    let content = res.filesystem.get_file(&path)?;
-    let filename = res.filesystem.get_file_name(&path)?;
-    let content = res.filesystem.encode_base64(&content);
-    let submission = CodeSubmit {
-        language: Language {
-            name: language_name,
-            option: language_option,
-        },
-        filename,
-        content,
-    };
-    Ok(res
-        .api
-        .submit_task(require_login(res)?, &course_id, task_id, &submission)?)
+        let content = res.filesystem.get_file(&path)?;
+        let filename = res.filesystem.get_file_name(&path)?;
+        let content = res.filesystem.encode_base64(&content);
+        let submission = CodeSubmit {
+            language: Language {
+                name: language_name,
+                option: language_option,
+            },
+            filename,
+            content,
+        };
+        Ok(res
+            .api
+            .submit_task(require_login(res)?, &course_id, task_id, &submission)?)
+    })()
+    .context("Failed submitting file")
 }
 
 pub fn submission_info(
@@ -66,10 +69,13 @@ pub fn submission_info(
     submission_id: u64,
     poll: bool,
 ) -> Result<SubmissionInfo> {
-    let storage = res.storage.get();
-    let course_id = storage.get_course().unwrap();
-    let task_id = storage.get_task().unwrap();
-    Ok(res
-        .api
-        .get_submit(require_login(res)?, course_id, task_id, submission_id, poll)?)
+    (|| -> Result<_> {
+        let storage = res.storage.get();
+        let course_id = storage.get_course().unwrap();
+        let task_id = storage.get_task().unwrap();
+        Ok(res
+            .api
+            .get_submit(require_login(res)?, course_id, task_id, submission_id, poll)?)
+    })()
+    .context("Failed querying submission status from the server")
 }
