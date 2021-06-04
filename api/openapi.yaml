@@ -169,6 +169,8 @@ components:
             Whether the submission is still being graded,
             and the information may change soon.
         test_progress:
+          description: >
+            > An optional property describing the progress of the testing phase.
           $ref: "#/components/schemas/TestProgress"
         result:
           type: string
