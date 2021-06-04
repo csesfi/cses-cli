@@ -22,4 +22,4 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
 - [API](https://h4m5t3r.github.io/cses-cli/)
 
-- [Definition of Done and other project details](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
+- [Definition of Done and project guidelines](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
