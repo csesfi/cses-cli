@@ -40,8 +40,7 @@ pub fn print_submission_info(
 }
 
 // Returns true if the compiler report was printed successfully
-fn print_compiler_report(ui: &mut Ui<impl RP>,
-                         submission_info: &SubmissionInfo) -> Result<bool> {
+fn print_compiler_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<bool> {
     if let Some(compiler_report) = &submission_info.compiler {
         writeln!(ui.term, "\nCompiler report:\n{}", compiler_report)?;
         Ok(true)
@@ -50,22 +49,25 @@ fn print_compiler_report(ui: &mut Ui<impl RP>,
     }
 }
 
-fn print_status(ui: &mut Ui<impl RP>,
-                submission_info: &SubmissionInfo) -> Result<()> {
+fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref test_progress) = submission_info.test_progress {
-        let progress_fraction = test_progress.finished_tests as f64 / test_progress.total_tests as f64;
+        let progress_fraction =
+            test_progress.finished_tests as f64 / test_progress.total_tests as f64;
         let progress_bar = progress_bar(40, progress_fraction)?;
-        writeln!(ui.term, "Status: {} {}", submission_info.status, progress_bar)?;
+        writeln!(
+            ui.term,
+            "Status: {} {}",
+            submission_info.status, progress_bar
+        )?;
     } else {
         writeln!(ui.term, "Status: {}", submission_info.status)?;
     }
     Ok(())
 }
-fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
+fn progress_bar(_width: u64, progress_fraction: f64) -> Result<String> {
     Ok(format!("[=====>     {} ]", progress_fraction * 100.0))
 }
-fn print_test_results(ui: &mut Ui<impl RP>,
-                      submission_info: &SubmissionInfo) -> Result<()> {
+fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref tests) = submission_info.tests {
         ui.term.write_line("\nTest results\n")?;
         ui.term.write_line("  # |        verdict        | time")?;
