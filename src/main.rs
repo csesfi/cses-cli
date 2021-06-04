@@ -30,18 +30,23 @@ mod abort_handler;
 fn run() -> anyhow::Result<()> {
     #[cfg(custom_abort)]
     abort_handler::setup();
+    let test = match std::env::var("CSES_CLI_TEST") {
+        Ok(val) => !val.is_empty(),
+        Err(_) => false,
+    };
+
     let command = Command::from_command_line()?;
-    let api = CsesHttpApi::default();
+    let api = if !test {
+        CsesHttpApi::default()
+    } else {
+        CsesHttpApi::new(String::from("http://127.0.0.1:4011"))
+    };
     let storage = FileStorage::new();
     let filesystem = ConcreteFilesystem::default();
     let resources: Resources<DefaultResources> = Resources {
         api,
         storage,
         filesystem,
-    };
-    let test = match std::env::var("CSES_CLI_TEST") {
-        Ok(val) => !val.is_empty(),
-        Err(_) => false,
     };
     let mut ui = Ui::with_resources(test, resources);
     ui.run(command)?;
