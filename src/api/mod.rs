@@ -13,7 +13,7 @@ pub struct CsesHttpApi {
 impl CsesHttpApi {
     pub fn new() -> Self {
         Self {
-            url: "http://127.0.0.1:4010".to_string(),
+            url: "http://ollpu.fi:4010".to_string(),
         }
     }
 }
