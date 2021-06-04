@@ -36,7 +36,7 @@ pub enum ApiError {
     ApiKeyError,
     #[error("Server error: \"{}\"", .0)]
     ServerError(String),
-    #[error("Client error: \"{}\"", .0)]
+    #[error("API request failed: \"{}\"", .0)]
     ClientError(String),
 }
 
