@@ -21,3 +21,5 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 - [Architecture](https://github.com/H4m5t3r/cses-cli/wiki/Architecture)
 
 - [API](https://h4m5t3r.github.io/cses-cli/)
+
+- [Definition of Done and other project details](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
