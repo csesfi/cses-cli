@@ -287,7 +287,7 @@ def logout_post(token_info):
     state.logout(token_info["apikey"])
     return (NoContent, 204)
 
-def submit_post(token_info, course_id, task_id):
+def submissions_post(token_info, course_id, task_id):
     details = connexion.request.json
     try:
         details["content"] = base64.b64decode(details["content"]).decode("utf-8")
@@ -301,19 +301,16 @@ def submit_post(token_info, course_id, task_id):
         return ({"message": f"Invalid submission: {details}", "code": "client_error"}, 400)
     return ({"id": submission_id}, 200)
 
-def get_submit(token_info, course_id, task_id, submission_id):
+def get_submission(token_info, course_id, task_id, submission_id, poll=False):
     print(f"get submit: {token_info}")
     print(f"course_id: {course_id}")
     print(f"task_id: {task_id}")
     print(f"submission_id: {submission_id}")
+    print(f"poll: {poll}")
     submission_info = state.get_submission_info(course_id, task_id, submission_id)
     if submission_info is None:
         return ({"message": "Submission not found", "code": "client_error"}, 404)
     return (submission_info, 200)
-
-def get_submit_poll(token_info, course_id, task_id, submission_id):
-    print(f"get submit poll: {token_info}")
-    return get_submit(token_info, course_id, task_id, submission_id);
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.

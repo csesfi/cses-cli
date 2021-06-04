@@ -36,40 +36,41 @@ curl --header "Content-Type: application/json" \
 	--request POST \
 	--data '{
 		"language": {
-			"name": "Rust"
+			"name": "Rust",
+			"option": null
 		},
 		"filename": "main.rs",
-		"content": "dXNlIHN0ZDo6aW87"
+		"content": "dXNlIHN0ZDo6aW87Cg=="
 }' \
-	http://localhost:4010/course/kurssi/task/2/submit
+	http://localhost:4010/courses/kurssi/tasks/2/submissions
 
 echo
 
 curl --header "Content-Type: application/json" \
 	--header "X-Auth-Token: db8c3C8BE6F4eE2C" \
 	--request GET \
-	http://localhost:4010/course/1/task/2/submit/4
+	http://localhost:4010/courses/1/tasks/2/submissions/4
 
 echo
 
 curl --header "Content-Type: application/json" \
 	--header "X-Auth-Token: db8c3C8BE6F4eE2C" \
 	--request GET \
-	http://localhost:4010/course/1/task/2/submit/3/poll
+	http://localhost:4010/courses/1/tasks/2/submissions/3?poll=true
 
 echo
 
 curl --header "Content-Type: application/json" \
 	--header "X-Auth-Token: db8c3C8BE6F4eE2C" \
 	--request GET \
-	http://localhost:4010/course/1/task/2/submit/16604403594511500093/poll
+	http://localhost:4010/courses/1/tasks/2/submissions/16604403594511500093?poll=true
 
 echo
 
 curl --header "Content-Type: application/json" \
 	--header "X-Auth-Token: db8c3C8BE6F4eE2C" \
 	--request GET \
-	http://localhost:4010/course/1/task/2/submit/16604403594511500093
+	http://localhost:4010/courses/1/tasks/2/submissions/16604403594511500093
 
 curl --header "Content-Type: application/json" \
 	--header "X-Auth-Token: kissa" \
