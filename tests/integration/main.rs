@@ -29,6 +29,7 @@
 mod common;
 mod help;
 mod login;
+mod submit;
 
 use common::TESTS;
 
@@ -44,7 +45,7 @@ impl TestServer {
     fn start(capture: bool) -> Self {
         let mut child = Command::new("poetry")
             .current_dir(["api", "mock_server"].iter().collect::<PathBuf>())
-            .args(&["run", "python", "app.py"])
+            .args(&["run", "python", "app.py", "True"])
             .stdin(Stdio::null())
             .stdout(if capture {
                 Stdio::null()
@@ -59,7 +60,7 @@ impl TestServer {
             .spawn()
             .unwrap();
         for _try in 0..10 {
-            let res = minreq::get("http://127.0.0.1:4010/ping")
+            let res = minreq::get("http://127.0.0.1:4011/ping")
                 .with_timeout(1)
                 .send();
             match res {

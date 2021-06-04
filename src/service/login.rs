@@ -1,5 +1,6 @@
+use crate::api::ApiError;
 use crate::{CsesApi, Resources, Storage, RP};
-use anyhow::Result;
+use anyhow::{Context, Result};
 use miniserde::{Deserialize, Serialize};
 
 use super::require_login;
@@ -18,10 +19,18 @@ pub fn login(res: &mut Resources<impl RP>, login: &Login) -> Result<()> {
 }
 
 pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
-    let token = require_login(res)?;
-    res.api.logout(token)?;
-    res.storage.delete()?;
-    Ok(())
+    (|| -> Result<_> {
+        let token = require_login(res)?;
+        // Invalid API key error can be ignored because the goal of the server
+        // communication in logout is to invalidate the API key
+        match res.api.logout(token) {
+            Err(ApiError::ApiKeyError) => (),
+            val => val?,
+        };
+        res.storage.delete()?;
+        Ok(())
+    })()
+    .context("Failed to log out")
 }
 
 /// Checks if a session is active, disregarding whether it is still valid

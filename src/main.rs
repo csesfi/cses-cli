@@ -34,8 +34,13 @@ fn run() -> anyhow::Result<()> {
         Ok(val) => !val.is_empty(),
         Err(_) => false,
     };
+
     let command = Command::from_command_line()?;
-    let api = CsesHttpApi::default();
+    let api = if !test {
+        CsesHttpApi::default()
+    } else {
+        CsesHttpApi::new(String::from("http://127.0.0.1:4011"))
+    };
     let storage = FileStorage::new(test)?;
     let filesystem = ConcreteFilesystem::default();
     let resources: Resources<DefaultResources> = Resources {

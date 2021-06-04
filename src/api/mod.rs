@@ -11,27 +11,31 @@ pub struct CsesHttpApi {
 }
 
 impl CsesHttpApi {
-    pub fn new() -> Self {
-        Self {
-            url: "http://127.0.0.1:4010".to_string(),
-        }
+    pub fn new(url: String) -> Self {
+        Self { url }
     }
 }
 
 impl Default for CsesHttpApi {
     fn default() -> Self {
-        Self::new()
+        Self::new(String::from("http://127.0.0.1:4010"))
     }
 }
 
 #[derive(Error, Debug)]
 pub enum ApiError {
-    #[error("HTTP error")]
+    #[error("Internet connection error")]
     HttpError(#[from] minreq::Error),
-    #[error("JSON error")]
+    #[error("Could not parse server response")]
     JsonError(#[from] miniserde::Error),
-    #[error("{}", .0.message)]
-    ResponseError(ErrorResponse),
+    #[error("Invalid credentials")]
+    InvalidCredentialsError,
+    #[error("Invalid API key. Log in again.")]
+    ApiKeyError,
+    #[error("Server error: \"{}\"", .0)]
+    ServerError(String),
+    #[error("API request failed: \"{}\"", .0)]
+    ClientError(String),
 }
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -85,7 +89,7 @@ impl CsesApi for CsesHttpApi {
         submission: &CodeSubmit,
     ) -> ApiResult<u64> {
         let response = minreq::post(format!(
-            "{}/course/{}/task/{}/submit",
+            "{}/courses/{}/tasks/{}/submissions",
             self.url, course_id, task_id
         ))
         .with_body(json::to_string(submission))
@@ -106,9 +110,9 @@ impl CsesApi for CsesHttpApi {
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
-        let poll = if poll { "/poll" } else { "" };
+        let poll = if poll { "true" } else { "false" };
         let response = minreq::get(format!(
-            "{}/course/{}/task/{}/submit/{}{}",
+            "{}/courses/{}/tasks/{}/submissions/{}?poll={}",
             self.url, course_id, task_id, submission_id, poll
         ))
         .with_header("X-Auth-Token", token)
@@ -124,7 +128,12 @@ fn check_error(response: &Response) -> ApiResult<()> {
         Ok(())
     } else {
         let error: ErrorResponse = json::from_str(response.as_str()?)?;
-        Err(ApiError::ResponseError(error))
+        Err(match error.code {
+            ErrorCode::InvalidApiKey => ApiError::ApiKeyError,
+            ErrorCode::InvalidCredentials => ApiError::InvalidCredentialsError,
+            ErrorCode::ServerError => ApiError::ServerError(error.message),
+            ErrorCode::ClientError => ApiError::ClientError(error.message),
+        })
     }
 }
 

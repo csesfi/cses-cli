@@ -1,8 +1,5 @@
-use std::path::PathBuf;
-
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
-use super::FakeStorage;
 use crate::command::Submit;
 use crate::service;
 use crate::storage::{Storage, StorageData};
@@ -40,7 +37,7 @@ fn submit_mock() -> Result<()> {
                 && course_id == "17"
                 && *task_id == 3
                 && submission.language.name == "Python"
-                && submission.filename == "test"
+                && submission.filename == "extracted_filename"
                 && submission.content == "testing"
         })
         .returning(|_, _, _, _| Ok(17));
