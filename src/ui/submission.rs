@@ -13,14 +13,7 @@ pub fn print_submission_info(
     long_poll: bool,
 ) -> Result<()> {
     let mut submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
-    ui.term.write_line("Submission details\n")?;
-    writeln!(ui.term, "Submission time: {}", submission_info.time)?;
-    write!(ui.term, "Language: {}", submission_info.language.name)?;
-    if let Some(ref option) = submission_info.language.option {
-        write!(ui.term, " ({})", option)?;
-    };
-    writeln!(ui.term)?;
-
+    print_info_header(ui, &submission_info)?;
     let mut compiler_report_printed = print_compiler_report(ui, &submission_info)?;
     print_status(ui, &submission_info)?;
     while submission_info.pending {
@@ -32,11 +25,18 @@ pub fn print_submission_info(
         print_status(ui, &submission_info)?;
     }
     print_test_results(ui, &submission_info)?;
-
-    if let Some(result) = submission_info.result {
-        writeln!(ui.term, "Result: {}", with_color(result))?;
-    };
+    print_final_result(ui, &submission_info)?;
     Ok(())
+}
+
+fn print_info_header(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
+    ui.term.write_line("Submission details\n")?;
+    writeln!(ui.term, "Submission time: {}", submission_info.time)?;
+    write!(ui.term, "Language: {}", submission_info.language.name)?;
+    if let Some(ref option) = submission_info.language.option {
+        write!(ui.term, " ({})", option)?;
+    };
+    Ok(writeln!(ui.term)?)
 }
 
 // Returns true if the compiler report was printed successfully
@@ -86,6 +86,13 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
             };
         }
     }
+    Ok(())
+}
+
+fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
+    if let Some(ref result) = submission_info.result {
+        writeln!(ui.term, "Result: {}", with_color(result.clone()))?;
+    };
     Ok(())
 }
 
