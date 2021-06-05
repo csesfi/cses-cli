@@ -64,8 +64,14 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
     }
     Ok(())
 }
-fn progress_bar(_width: u64, progress_fraction: f64) -> Result<String> {
-    Ok(format!("[=====>     {} ]", progress_fraction * 100.0))
+fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
+    let mut s = String::from("");
+    let mut progress = progress_fraction * width as f64;
+    while progress >= 1.0 {
+        progress -= 1.0;
+        s.push_str("#");
+    }
+    Ok(format!("[{:w$}]", s, w = width as usize))
 }
 fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref tests) = submission_info.tests {
