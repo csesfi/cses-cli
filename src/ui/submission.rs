@@ -60,7 +60,8 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
             let mut text_width = console::measure_text_width(status_text) as u64;
             text_width += console::measure_text_width(&submission_info.status) as u64;
             text_width += 4;
-            let progress_bar = progress_bar((term_width as u64) - text_width, progress_fraction)?;
+            let bar_width = (term_width as u64).saturating_sub(text_width);
+            let progress_bar = progress_bar(bar_width, progress_fraction)?;
             write!(
                 ui.term,
                 "{} {} {}",
