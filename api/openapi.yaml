@@ -195,6 +195,7 @@ components:
                   Verdict of the test, e.g. "WRONG ANSWER".
               time:
                 type: integer
+                nullable: true
                 description: Run time of the test in milliseconds.
         compiler:
           type: string
