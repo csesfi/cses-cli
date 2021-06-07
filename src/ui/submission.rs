@@ -91,7 +91,7 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
                 ui.term,
                 "{:>3} | {:<21} | ",
                 test.number,
-                with_color(test.verdict.clone())
+                with_color(&test.verdict)
             )?;
             match test.time {
                 Some(time) => writeln!(ui.term, "{:.2} s", time as f64 / 1000.0)?,
@@ -104,15 +104,17 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
 
 fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref result) = submission_info.result {
-        writeln!(ui.term, "Result: {}", with_color(result.clone()))?;
+        writeln!(ui.term, "Result: {}", with_color(&result))?;
     };
     Ok(())
 }
 
-pub fn with_color(line: String) -> StyledObject<String> {
-    let mut color = Style::new().red();
+pub fn with_color(line: &str) -> StyledObject<&str> {
+    let color;
     if line == "ACCEPTED" {
         color = Style::new().green();
+    } else {
+        color = Style::new().red();
     }
     color.apply_to(line)
 }
