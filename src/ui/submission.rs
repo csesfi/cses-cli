@@ -18,12 +18,13 @@ pub fn print_submission_info(
     print_status(ui, &submission_info)?;
     while submission_info.pending {
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
-        ui.term.clear_last_lines(1)?;
+        ui.term.clear_line()?;
         if !compiler_report_printed {
             compiler_report_printed = print_compiler_report(ui, &submission_info)?;
         }
         print_status(ui, &submission_info)?;
     }
+    write!(ui.term, "\n")?;
     print_test_results(ui, &submission_info)?;
     print_final_result(ui, &submission_info)?;
     Ok(())
@@ -60,7 +61,7 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
             text_width += console::measure_text_width(&submission_info.status) as u64;
             text_width += 4;
             let progress_bar = progress_bar((term_width as u64) - text_width, progress_fraction)?;
-            writeln!(
+            write!(
                 ui.term,
                 "{} {} {}",
                 status_text, submission_info.status, progress_bar
@@ -68,7 +69,7 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
             return Ok(());
         }
     }
-    writeln!(ui.term, "{} {}", status_text, submission_info.status)?;
+    write!(ui.term, "{} {}", status_text, submission_info.status)?;
     Ok(())
 }
 fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
