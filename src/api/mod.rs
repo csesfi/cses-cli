@@ -1,3 +1,6 @@
+mod escape;
+use escape::Escape;
+
 use crate::entities::{Language, SubmissionInfo};
 use crate::service::Login;
 use miniserde::{json, Deserialize, Serialize};
@@ -90,7 +93,9 @@ impl CsesApi for CsesHttpApi {
     ) -> ApiResult<u64> {
         let response = minreq::post(format!(
             "{}/courses/{}/tasks/{}/submissions",
-            self.url, course_id, task_id
+            self.url,
+            Escape(course_id),
+            task_id
         ))
         .with_body(json::to_string(submission))
         .with_header("X-Auth-Token", token)
@@ -113,7 +118,11 @@ impl CsesApi for CsesHttpApi {
         let poll = if poll { "true" } else { "false" };
         let response = minreq::get(format!(
             "{}/courses/{}/tasks/{}/submissions/{}?poll={}",
-            self.url, course_id, task_id, submission_id, poll
+            self.url,
+            Escape(course_id),
+            task_id,
+            submission_id,
+            poll
         ))
         .with_header("X-Auth-Token", token)
         .send()?;
