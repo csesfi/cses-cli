@@ -24,7 +24,7 @@ pub fn print_submission_info(
         }
         print_status(ui, &submission_info)?;
     }
-    write!(ui.term, "\n")?;
+    writeln!(ui.term)?;
     print_test_results(ui, &submission_info)?;
     print_final_result(ui, &submission_info)?;
     Ok(())
