@@ -55,7 +55,7 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
         let (_r, term_width) = ui.term.size();
         let mut text_width = console::measure_text_width(status_text) as u64;
         text_width += console::measure_text_width(&submission_info.status) as u64;
-        text_width += 4; // whitespaces
+        text_width += 4;
         let progress_fraction =
             test_progress.finished_tests as f64 / test_progress.total_tests as f64;
         if (0.0..=1.0).contains(&progress_fraction) {
