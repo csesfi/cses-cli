@@ -25,3 +25,5 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 - [Definition of Done and project guidelines](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
 
 - [User manual](https://github.com/H4m5t3r/cses-cli/wiki/User-manual)
+
+- [Testing](https://github.com/H4m5t3r/cses-cli/wiki/Testing)
