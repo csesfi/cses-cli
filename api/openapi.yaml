@@ -217,9 +217,12 @@ components:
       in: path
       name: task_id
       schema:
-        type: integer
+        oneOf:
+          - type: integer
+          - type: string
+            enum: [ auto ]
       required: true
-      description: Task ID.
+      description: Task ID. "auto" tells the server to recognize the task automatically.
 
     SubmissionId:
       in: path
@@ -227,7 +230,7 @@ components:
       schema:
         type: integer
       required: true
-      description: Submission ID.
+      description: Submission ID. 
 
   # define possible authentication methods
   securitySchemes:
@@ -249,7 +252,7 @@ paths:
       summary: Logs in the user with CSES credentials
       description: >
         Logs the user in with CSES credentials. Returns an API token
-        that can be used to authenticate subsequent API queries.
+        that can be used toauthenticate subsequent API queries.
 
       security: []
 
@@ -381,7 +384,7 @@ paths:
         "5XX":
           $ref: "#/components/responses/ServerError"
 
-  /courses/{course_id}/tasks/{task_id}/submissions/{submission_id}:
+  /courses/{course_id}/submissions/{submission_id}:
     get:
       operationId: app.get_submission
 
@@ -392,7 +395,6 @@ paths:
 
       parameters:
         - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
         - $ref: "#/components/parameters/SubmissionId"
         - in: query
           name: poll
