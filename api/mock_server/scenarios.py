@@ -1,14 +1,31 @@
 from submission import SubmissionScenario, NewSubmission
 
+RUST_CODE = {
+    "language": {"name": "Rust", "option": None},
+    "filename": "main.rs",
+    "content": "use std::io;\n"
+}
+CPP_CODE = {
+    "language": {
+        "name": "C++",
+        "option": "C++17"
+    },
+    "filename": "main.cpp",
+    "content": "#include <iostream>\n"
+}
+RS_13_CODE = {
+    "language": {
+        "name": "C++",
+        "option": "C++17"
+    },
+    "filename": "13.rs",
+    "content": "use std::io;\n\nfn main() {\n"
+}
+
 
 scenarios = [
     SubmissionScenario(
-        NewSubmission(course_id="kurssi", task_id=2,
-                      submission_json={
-                          "language": {"name": "Rust", "option": None},
-                          "filename": "main.rs",
-                          "content": "use std::io;\n"
-                      }),
+        NewSubmission(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",
@@ -38,15 +55,7 @@ scenarios = [
         ],
     ),
     SubmissionScenario(
-        NewSubmission(course_id="alon", task_id=4,
-                      submission_json={
-                          "language": {
-                              "name": "C++",
-                              "option": "C++17"
-                          },
-                          "filename": "main.cpp",
-                          "content": "#include <iostream>\n"
-                      }),
+        NewSubmission(course_id="alon", task_id=4, submission_json=CPP_CODE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",
@@ -90,15 +99,7 @@ scenarios = [
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=13,
-                      submission_json={
-                          "language": {
-                              "name": "C++",
-                              "option": "C++17"
-                          },
-                          "filename": "13.rs",
-                          "content": "use std::io;\n\nfn main() {\n"
-                      }),
+        NewSubmission(course_id="cses", task_id=13, submission_json=RS_13_CODE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",
@@ -131,15 +132,7 @@ fn main() {
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=42,
-                      submission_json={
-                          "language": {
-                              "name": "C++",
-                              "option": "C++17"
-                          },
-                          "filename": "main.cpp",
-                          "content": "#include <iostream>\n"
-                      }),
+        NewSubmission(course_id="cses", task_id=42, submission_json=CPP_CODE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",
@@ -172,5 +165,117 @@ for (int i = 0; i < a.size(); i++) {
                 }]
             }
         ]
-    )
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="progress", task_id=7, submission_json=CPP_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+   while(x != 123);
+         ~~^~~~~~""",
+                "test_progress": {
+                    "finished_tests": 2,
+                    "total_tests": 71,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+   while(x != 123);
+         ~~^~~~~~""",
+                "test_progress": {
+                    "finished_tests": 18,
+                    "total_tests": 71,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+   while(x != 123);
+         ~~^~~~~~""",
+                "test_progress": {
+                    "finished_tests": 35,
+                    "total_tests": 71,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+   while(x != 123);
+         ~~^~~~~~""",
+                "test_progress": {
+                    "finished_tests": 53,
+                    "total_tests": 71,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+   while(x != 123);
+         ~~^~~~~~""",
+                "pending": False,
+                "result": "OUTPUT LIMIT EXCEEDED",
+                "tests": [
+                    {
+                        "number": 1,
+                        "verdict": "ACCEPTED",
+                        "time": 120
+                    },
+                    {
+                        "number": 2,
+                        "verdict": "OUTPUT LIMIT EXCEEDED",
+                        "time": 800
+                    },
+                    {
+                        "number": 3,
+                        "verdict": "WRONG ANSWER",
+                        "time": 314
+                    },
+                ]}
+        ]
+    ),
 ]
