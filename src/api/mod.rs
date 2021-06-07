@@ -21,7 +21,7 @@ impl CsesHttpApi {
 
 impl Default for CsesHttpApi {
     fn default() -> Self {
-        Self::new(String::from("http://127.0.0.1:4010"))
+        Self::new(String::from("http://ollpu.fi:4010"))
     }
 }
 
