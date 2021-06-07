@@ -6,7 +6,7 @@
 
 University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
-[CSES](https://cses.fi/) is used for learning algorithms. CSES is used in University of Helsinki courses Datastructures and Algorithms and Algorithms for Solving Problems . CSES CLI is a lightweight tool for submiting solutions to CSES problems from command line.
+[CSES](https://cses.fi/) is used for learning algorithms. CSES is used in University of Helsinki courses Datastructures and Algorithms and Algorithms for Solving Problems. CSES CLI is a lightweight tool for submitting solutions to CSES problems from command line.
 
 ## Application
 
