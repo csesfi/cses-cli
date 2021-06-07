@@ -50,17 +50,22 @@ fn print_compiler_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo)
 }
 
 fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
+    let status_text = "Status:";
     if let Some(ref test_progress) = submission_info.test_progress {
+        let (_r, term_width) = ui.term.size();
+        let mut text_width = console::measure_text_width(status_text) as u64;
+        text_width += console::measure_text_width(&submission_info.status) as u64;
+        text_width += 4; // whitespaces
         let progress_fraction =
             test_progress.finished_tests as f64 / test_progress.total_tests as f64;
-        let progress_bar = progress_bar(40, progress_fraction)?;
+        let progress_bar = progress_bar((term_width as u64) - text_width, progress_fraction)?;
         writeln!(
             ui.term,
-            "Status: {} {}",
-            submission_info.status, progress_bar
+            "{} {} {}",
+            status_text, submission_info.status, progress_bar
         )?;
     } else {
-        writeln!(ui.term, "Status: {}", submission_info.status)?;
+        writeln!(ui.term, "{} {}", status_text, submission_info.status)?;
     }
     Ok(())
 }
