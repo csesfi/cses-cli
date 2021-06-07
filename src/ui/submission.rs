@@ -58,15 +58,17 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
         text_width += 4; // whitespaces
         let progress_fraction =
             test_progress.finished_tests as f64 / test_progress.total_tests as f64;
-        let progress_bar = progress_bar((term_width as u64) - text_width, progress_fraction)?;
-        writeln!(
-            ui.term,
-            "{} {} {}",
-            status_text, submission_info.status, progress_bar
-        )?;
-    } else {
-        writeln!(ui.term, "{} {}", status_text, submission_info.status)?;
+        if (0.0..=1.0).contains(&progress_fraction) {
+            let progress_bar = progress_bar((term_width as u64) - text_width, progress_fraction)?;
+            writeln!(
+                ui.term,
+                "{} {} {}",
+                status_text, submission_info.status, progress_bar
+            )?;
+            return Ok(());
+        }
     }
+    writeln!(ui.term, "{} {}", status_text, submission_info.status)?;
     Ok(())
 }
 fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
