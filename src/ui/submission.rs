@@ -74,7 +74,7 @@ fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
     let mut progress = progress_fraction * width as f64;
     while progress >= 1.0 {
         progress -= 1.0;
-        s.push_str("#");
+        s.push('#');
     }
     Ok(format!("[{:w$}]", s, w = width as usize))
 }
