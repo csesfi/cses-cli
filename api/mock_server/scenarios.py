@@ -275,6 +275,11 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                         "verdict": "WRONG ANSWER",
                         "time": 314
                     },
+                    {
+                        "number": 4,
+                        "verdict": "TIME LIMIT EXCEEDED",
+                        "time": None
+                    },
                 ]}
         ]
     ),

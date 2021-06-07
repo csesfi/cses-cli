@@ -168,3 +168,19 @@ fn compiler_report_is_dispayed_with_compiler_warnings() {
         .stdout(regex_match(r"(?i)compiler"))
         .stderr(predicate::str::is_empty());
 }
+#[distributed_slice(TESTS)]
+fn null_test_time_finishes_and_is_printed_correctly() {
+    log_in("kalle");
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "progress", "-t", "7", "-l", "C++", "-o", "C++17",
+        ])
+        .assert();
+    assert
+        .success()
+        .stdout(regex_match(r"--"))
+        .stdout(regex_match(r"Result"))
+        .stderr(predicate::str::is_empty());
+}
