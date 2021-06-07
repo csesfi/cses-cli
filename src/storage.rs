@@ -2,8 +2,7 @@ use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
-
-const FILENAME: &str = "filestorage.json";
+use std::path::PathBuf;
 
 #[derive(Default, Serialize, Deserialize, Debug)]
 pub struct StorageData {
@@ -13,6 +12,20 @@ pub struct StorageData {
     language: Option<String>,
     option: Option<String>,
     file: Option<String>,
+}
+
+#[cfg(unix)]
+fn create_path() -> Result<PathBuf> {
+    let mut path = PathBuf::from(std::env::var("HOME")?);
+    path.push(".config/cses-cli/filestorage.json");
+    Ok(path)
+}
+
+#[cfg(windows)]
+fn create_path() -> Result<PathBuf> {
+    let mut path = PathBuf::from(std::env::var("APPDATA")?);
+    path.push("cses-cli\\filestorage.json");
+    Ok(path)
 }
 
 impl StorageData {
@@ -57,27 +70,39 @@ impl StorageData {
 #[derive(Default, Debug)]
 pub struct FileStorage {
     data: StorageData,
+    path: PathBuf,
 }
 
 impl FileStorage {
-    pub fn new() -> Self {
-        if !Path::new(FILENAME).exists() {
-            return Default::default();
-        };
-        let data = fs::read_to_string(FILENAME).unwrap();
-        let res = json::from_str(&data);
-        match res {
-            Ok(data) => FileStorage { data },
-            Err(_) => Default::default(),
+    pub fn new(test: bool) -> Result<FileStorage> {
+        let filename;
+        if test {
+            filename = PathBuf::from("filestorage.json");
+        } else {
+            filename = create_path()?;
+            fs::create_dir_all(filename.parent().unwrap())?;
         }
+        if !filename.exists() {
+            return Ok(FileStorage {
+                data: Default::default(),
+                path: filename,
+            });
+        }
+        let data = fs::read_to_string(&filename)?;
+        let res: StorageData = json::from_str(&data)?;
+        Ok(FileStorage {
+            data: res,
+            path: filename,
+        })
     }
 }
 
 pub trait Storage {
     fn get(&self) -> &StorageData;
     fn get_mut(&mut self) -> &mut StorageData;
-    fn save(&self) -> Result<()>;
-    fn delete(&self) -> Result<()>;
+    fn save(&mut self) -> Result<()>;
+    fn delete(&mut self) -> Result<()>;
+    fn get_path(&self) -> &Path;
 }
 
 impl Storage for FileStorage {
@@ -87,11 +112,15 @@ impl Storage for FileStorage {
     fn get_mut(&mut self) -> &mut StorageData {
         &mut self.data
     }
-    fn save(&self) -> Result<()> {
-        Ok(fs::write(FILENAME, json::to_string(&self.data))?)
+    fn save(&mut self) -> Result<()> {
+        Ok(fs::write(&self.path, json::to_string(&self.data))?)
     }
-    fn delete(&self) -> Result<()> {
-        Ok(fs::remove_file(FILENAME)?)
+    fn delete(&mut self) -> Result<()> {
+        Ok(fs::remove_file(&self.path)?)
+    }
+
+    fn get_path(&self) -> &Path {
+        &self.path
     }
 }
 

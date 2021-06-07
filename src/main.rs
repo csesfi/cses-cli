@@ -41,7 +41,7 @@ fn run() -> anyhow::Result<()> {
     } else {
         CsesHttpApi::new(String::from("http://127.0.0.1:4011"))
     };
-    let storage = FileStorage::new();
+    let storage = FileStorage::new(test)?;
     let filesystem = ConcreteFilesystem::default();
     let resources: Resources<DefaultResources> = Resources {
         api,
