@@ -14,13 +14,16 @@ class ServerState:
 
         self.submission_trackers = {}
 
-    def login(self, credentials):
-        if credentials not in self.valid_logins:
-            return None
-
+    def login(self):
         token = self._generate_token()
         self.valid_tokens.append(token)
         return token
+
+    def check_login(self, token):
+        if self.is_valid(token):
+            return "valid"
+        else:
+            return "invalid"
 
     def logout(self, token):
         """Logs out a valid api key"""

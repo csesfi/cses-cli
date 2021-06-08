@@ -38,14 +38,16 @@ state = ServerState(
 
 
 def login_post():
-    token = state.login(connexion.request.json)
+    token = state.login()
     print(f"got token: {token}")
     if token is not None:
-        return ({"X-Auth-Token": token}, 200)
+        return ({"X-Auth-Token": token, "authentication_url": "http://todo"}, 200)
 
     return ({"message": "Invalid username/password",
              "code": "invalid_credentials"}, 401)
 
+def login_get(token_info):
+    return (NoContent, 204)
 
 def logout_post(token_info):
     state.logout(token_info["apikey"])

@@ -8,11 +8,15 @@ fn login_is_successful_with_correct_username_and_password() {
     verify_successful_login_output(assert);
 }
 
-#[distributed_slice(TESTS)]
-fn login_fails_with_incorrect_username() {
-    let assert = unsuccessful_login();
-    assert.failure();
-}
+// #[distributed_slice(TESTS)]
+// fn login_fails_with_incorrect_username() {
+//     let assert = unsuccessful_login();
+//     command()
+//         .args(&["login"])
+//         .write_stdin("nonexistinguser\nincorrectpassword\n")
+//         .assert()
+//         .failure();
+// }
 
 #[distributed_slice(TESTS)]
 fn user_can_log_out() {
@@ -64,13 +68,6 @@ fn verify_successful_login_output(assert: Assert) {
         .stdout(regex_match(r"(?i)password: "))
         .stdout(regex_match(r"(?i)login successful"))
         .stderr(predicate::str::is_empty());
-}
-
-fn unsuccessful_login() -> Assert {
-    command()
-        .args(&["login"])
-        .write_stdin("nonexistinguser\nincorrectpassword\n")
-        .assert()
 }
 
 fn logout_user() -> Assert {
