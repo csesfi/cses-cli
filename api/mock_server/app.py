@@ -66,7 +66,7 @@ def submissions_post(token_info, course_id, task):
     if submission_id is None:
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
-    return ({"id": submission_id, "task_id": task}, 200)
+    return ({"submission_id": submission_id, "task_id": task}, 200)
 
 
 def get_submission(token_info, course_id, submission_id, poll=False):

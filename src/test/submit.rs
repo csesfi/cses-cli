@@ -41,7 +41,7 @@ fn submit_mock() -> Result<()> {
                 && submission.filename == "extracted_filename"
                 && submission.content == "testing"
         })
-        .returning(|_, _, _, _| Ok(SubmissionResponse { id: 17, task_id: 4 }));
+        .returning(|_, _, _, _| Ok(SubmissionResponse { submission_id: 17, task_id: 4 }));
     let mut storage_data: StorageData = Default::default();
     storage_data.set_token("gnewwoiJ".to_string());
     storage_data.set_language("Python".to_string());
@@ -49,6 +49,6 @@ fn submit_mock() -> Result<()> {
     storage_data.set_task(3);
     fake_resources.storage.data = storage_data;
     let submission_response = service::submit(&mut fake_resources, "test".to_string())?;
-    assert_eq!(submission_response.id, 17);
+    assert_eq!(submission_response.submission_id, 17);
     Ok(())
 }

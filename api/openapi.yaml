@@ -371,11 +371,11 @@ paths:
               schema:
                 type: object
                 required:
-                  - id
+                  - submission_id
                   - task_id
                 additionalProperties: false
                 properties:
-                  id:
+                  submission_id:
                     description: ID of the resulting submission.
                     type: integer
                   task_id:

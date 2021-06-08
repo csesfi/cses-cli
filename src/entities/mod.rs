@@ -20,7 +20,7 @@ pub struct SubmissionInfo {
 
 #[derive(Deserialize)]
 pub struct SubmissionResponse {
-    pub id: u64,
+    pub submission_id: u64,
     pub task_id: u64,
 }
 

@@ -39,7 +39,7 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::Submit(submit) => {
                 let submission_response = submit::submit(self, submit)?;
-                submission::print_submission_info(self, submission_response.id, true)?;
+                submission::print_submission_info(self, submission_response.submission_id, true)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
