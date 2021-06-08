@@ -72,10 +72,9 @@ pub fn submission_info(
     (|| -> Result<_> {
         let storage = res.storage.get();
         let course_id = storage.get_course().unwrap();
-        let task_id = storage.get_task().unwrap();
         Ok(res
             .api
-            .get_submit(require_login(res)?, course_id, task_id, submission_id, poll)?)
+            .get_submit(require_login(res)?, course_id, submission_id, poll)?)
     })()
     .context("Failed querying submission status from the server")
 }

@@ -69,15 +69,14 @@ def submissions_post(token_info, course_id, task_id):
     return ({"id": submission_id}, 200)
 
 
-def get_submission(token_info, course_id, task_id, submission_id, poll=False):
+def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"get submit: {token_info}")
     print(f"course_id: {course_id}")
-    print(f"task_id: {task_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
     if not integration and poll:
         time.sleep(1.5)
-    submission_info = state.get_submission_info(course_id, task_id,
+    submission_info = state.get_submission_info(course_id,
                                                 submission_id)
     if submission_info is None:
         return ({"message": "Submission not found",

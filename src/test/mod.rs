@@ -31,7 +31,6 @@ impl CsesApi for FakeCsesApi {
         &self,
         _token: &str,
         _course_id: &str,
-        _task_id: u64,
         _submission_id: u64,
         _poll: bool,
     ) -> ApiResult<crate::entities::SubmissionInfo> {

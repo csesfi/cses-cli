@@ -58,7 +58,6 @@ pub trait CsesApi {
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
@@ -92,7 +91,7 @@ impl CsesApi for CsesHttpApi {
         submission: &CodeSubmit,
     ) -> ApiResult<u64> {
         let response = minreq::post(format!(
-            "{}/courses/{}/tasks/{}/submissions",
+            "{}/courses/{}/submissions?task={}",
             self.url,
             Escape(course_id),
             task_id
@@ -111,16 +110,14 @@ impl CsesApi for CsesHttpApi {
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "true" } else { "false" };
         let response = minreq::get(format!(
-            "{}/courses/{}/tasks/{}/submissions/{}?poll={}",
+            "{}/courses/{}/submissions/{}?poll={}",
             self.url,
             Escape(course_id),
-            task_id,
             submission_id,
             poll
         ))

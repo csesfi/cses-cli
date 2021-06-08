@@ -214,15 +214,12 @@ components:
         Alphanumeric identifier of the course. Same as in course URLs.
 
     TaskId:
-      in: path
+      in: query
       name: task_id
       schema:
-        oneOf:
-          - type: integer
-          - type: string
-            enum: [ auto ]
-      required: true
-      description: Task ID. "auto" tells the server to recognize the task automatically.
+        type: integer
+      required: false
+      description: Task ID. If it is not provided the server checks it automatically based on the file name.
 
     SubmissionId:
       in: path
@@ -326,7 +323,7 @@ paths:
 
         "5XX":
           $ref: "#/components/responses/ServerError"
-  /courses/{course_id}/tasks/{task_id}/submissions:
+  /courses/{course_id}/submissions:
     post:
       operationId: app.submissions_post
 

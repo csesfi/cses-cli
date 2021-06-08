@@ -55,7 +55,7 @@ class ServerState:
 
         return submission_id
 
-    def get_submission_info(self, course_id, task_id, submission_id):
+    def get_submission_info(self, course_id, submission_id):
         """Returns the next state of the submission `submission_id`"""
         if submission_id not in self.submission_trackers:
             return None
