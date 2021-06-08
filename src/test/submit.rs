@@ -41,7 +41,12 @@ fn submit_mock() -> Result<()> {
                 && submission.filename == "extracted_filename"
                 && submission.content == "testing"
         })
-        .returning(|_, _, _, _| Ok(SubmissionResponse { submission_id: 17, task_id: 4 }));
+        .returning(|_, _, _, _| {
+            Ok(SubmissionResponse {
+                submission_id: 17,
+                task_id: 4,
+            })
+        });
     let mut storage_data: StorageData = Default::default();
     storage_data.set_token("gnewwoiJ".to_string());
     storage_data.set_language("Python".to_string());
