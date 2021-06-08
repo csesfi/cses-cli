@@ -36,11 +36,7 @@ fn print_info_header(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
     write!(
         ui.term,
         "Language: {}",
-        submission_info
-            .language
-            .name
-            .as_deref()
-            .unwrap_or("?")
+        submission_info.language.name.as_deref().unwrap_or("?")
     )?;
     if let Some(ref option) = submission_info.language.option {
         write!(ui.term, " ({})", option)?;
