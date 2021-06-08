@@ -134,7 +134,7 @@ fn does_not_remember_language_or_option() {
         .args(&["submit", "-c", "cses", "-t", "13", "-o", "C++17", "13.rs"])
         .assert()
         .failure()
-        .stdout(regex_match(r"Failed submitting file"));
+        .stdout(contains(r"Failed submitting file"));
 
     command()
         .args(&[
@@ -147,7 +147,7 @@ fn does_not_remember_language_or_option() {
         .args(&["submit", "-c", "cses", "-t", "13", "-l", "C++", "13.rs"])
         .assert()
         .failure()
-        .stdout(regex_match(r"Failed submitting file"));
+        .stdout(contains(r"Failed submitting file"));
 }
 
 #[distributed_slice(TESTS)]
@@ -162,7 +162,7 @@ fn compiler_report_is_dispayed_with_compile_error() {
         .assert();
     assert
         .success()
-        .stdout(regex_match(r"COMPILE ERROR"))
+        .stdout(contains(r"COMPILE ERROR"))
         .stdout(regex_match(r"(?i)compiler"))
         .stderr(predicate::str::is_empty());
 }
@@ -195,7 +195,7 @@ fn compiler_report_is_dispayed_with_compiler_warnings() {
         .assert();
     assert
         .success()
-        .stdout(regex_match(r"READY"))
+        .stdout(contains(r"READY"))
         .stdout(regex_match(r"(?i)compiler"))
         .stderr(predicate::str::is_empty());
 }
@@ -211,8 +211,8 @@ fn null_test_time_finishes_and_is_printed_correctly() {
         .assert();
     assert
         .success()
-        .stdout(regex_match(r"--"))
-        .stdout(regex_match(r"Result"))
+        .stdout(contains(r"--"))
+        .stdout(contains(r"Result"))
         .stderr(predicate::str::is_empty());
 }
 #[distributed_slice(TESTS)]
@@ -227,8 +227,8 @@ fn null_test_time_finishes_and_is_print() {
         .assert();
     assert
         .success()
-        .stdout(regex_match(r"--"))
-        .stdout(regex_match(r"Result"))
+        .stdout(contains(r"--"))
+        .stdout(contains(r"Result"))
         .stderr(predicate::str::is_empty());
 }
 #[distributed_slice(TESTS)]
@@ -240,8 +240,8 @@ fn submission_works_without_language_and_option() {
         .args(&["submit", "-c", "cses", "-t", "444", "main.cpp"])
         .assert()
         .success()
-        .stdout(regex_match(r"Result: WRONG ANSWER"))
-        .stdout(regex_match(r"Language: C\+\+ \(C\+\+17\)"));
+        .stdout(contains(r"Result: WRONG ANSWER"))
+        .stdout(contains(r"Language: C++ (C++17)"));
 }
 #[distributed_slice(TESTS)]
 fn submission_works_without_language_with_option() {
@@ -254,8 +254,8 @@ fn submission_works_without_language_with_option() {
         ])
         .assert()
         .success()
-        .stdout(regex_match(r"Result: WRONG ANSWER"))
-        .stdout(regex_match(r"Language: C\+\+ \(C\+\+17\)"));
+        .stdout(contains(r"Result: WRONG ANSWER"))
+        .stdout(contains(r"Language: C++ (C++17)"));
 }
 #[distributed_slice(TESTS)]
 fn test_server_returns_null_language() {
@@ -263,9 +263,7 @@ fn test_server_returns_null_language() {
 
     create_file("main.asdf", MAIN_CPP_CONTENT);
     command()
-        .args(&[
-            "submit", "-c", "cses", "-t", "111", "main.asdf",
-        ])
+        .args(&["submit", "-c", "cses", "-t", "111", "main.asdf"])
         .assert()
         .success()
         .stdout(contains(r"Result: INVALID LANGUAGE"))
