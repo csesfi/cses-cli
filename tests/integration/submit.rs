@@ -257,3 +257,17 @@ fn submission_works_without_language_with_option() {
         .stdout(regex_match(r"Result: WRONG ANSWER"))
         .stdout(regex_match(r"Language: C\+\+ \(C\+\+17\)"));
 }
+#[distributed_slice(TESTS)]
+fn test_server_returns_null_language() {
+    log_in("uolevi");
+
+    create_file("main.asdf", MAIN_CPP_CONTENT);
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "111", "main.asdf",
+        ])
+        .assert()
+        .success()
+        .stdout(contains(r"Result: INVALID LANGUAGE"))
+        .stdout(contains(r"Language: ?"));
+}

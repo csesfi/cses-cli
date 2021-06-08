@@ -21,6 +21,14 @@ CPP_CODE_NO_LANGUAGE_NO_OPTION = {
     "filename": "main.cpp",
     "content": "#include <iostream>\n"
 }
+UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION = {
+    "language": {
+        "name": None,
+        "option": None
+    },
+    "filename": "main.asdf",
+    "content": "#include <iostream>\n"
+}
 CPP_CODE_NO_LANGUAGE = {
     "language": {
         "name": None,
@@ -179,6 +187,21 @@ for (int i = 0; i < a.size(); i++) {
                     "verdict": "ACCEPTED",
                     "time": 120
                 }]
+            }
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": None,
+                    "option": None
+                },
+                "status": "READY",
+                "result": "INVALID LANGUAGE",
+                "pending": False,
             }
         ]
     ),
