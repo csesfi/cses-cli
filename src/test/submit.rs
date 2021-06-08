@@ -50,5 +50,6 @@ fn submit_mock() -> Result<()> {
     fake_resources.storage.data = storage_data;
     let submission_response = service::submit(&mut fake_resources, "test".to_string())?;
     assert_eq!(submission_response.submission_id, 17);
+    assert_eq!(submission_response.task_id, 4);
     Ok(())
 }
