@@ -283,4 +283,145 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 ]}
         ]
     ),
+    SubmissionScenario(
+        NewSubmission(course_id="progress", task_id=8, submission_json=CPP_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 0,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 6,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 9,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 9,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 9,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 10,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "OUTPUT LIMIT EXCEEDED",
+                "tests": [
+                    {
+                        "number": 1,
+                        "verdict": "ACCEPTED",
+                        "time": 120
+                    },
+                    {
+                        "number": 2,
+                        "verdict": "OUTPUT LIMIT EXCEEDED",
+                        "time": 800
+                    },
+                    {
+                        "number": 3,
+                        "verdict": "WRONG ANSWER",
+                        "time": 314
+                    },
+                    {
+                        "number": 4,
+                        "verdict": "TIME LIMIT EXCEEDED",
+                        "time": None
+                    },
+                ]}
+        ]
+    ),
 ]
