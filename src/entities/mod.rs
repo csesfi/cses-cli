@@ -1,8 +1,8 @@
 use miniserde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Language {
-    pub name: String,
+    pub name: Option<String>,
     pub option: Option<String>,
 }
 
@@ -35,4 +35,12 @@ pub struct SubmissionTestInfo {
 pub struct TestProgress {
     pub finished_tests: u64,
     pub total_tests: u64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubmitParameters {
+    pub course: String,
+    pub file: String,
+    pub task: Option<u64>,
+    pub language: Language,
 }

@@ -22,7 +22,7 @@ impl CsesApi for FakeCsesApi {
         &self,
         _token: &str,
         _course_id: &str,
-        _task_id: u64,
+        _task_id: Option<u64>,
         _submission: &CodeSubmit,
     ) -> ApiResult<SubmissionResponse> {
         todo!()
