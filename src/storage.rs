@@ -4,7 +4,7 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 
-#[derive(Default, Serialize, Deserialize, Debug)]
+#[derive(Default, Serialize, Deserialize, Debug, Clone)]
 pub struct StorageData {
     token: Option<String>,
     course: Option<String>,
@@ -113,7 +113,10 @@ impl Storage for FileStorage {
         &mut self.data
     }
     fn save(&mut self) -> Result<()> {
-        Ok(fs::write(&self.path, json::to_string(&self.data))?)
+        let mut tmp = self.data.clone();
+        tmp.language = None;
+        tmp.option = None;
+        Ok(fs::write(&self.path, json::to_string(&tmp))?)
     }
     fn delete(&mut self) -> Result<()> {
         Ok(fs::remove_file(&self.path)?)

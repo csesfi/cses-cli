@@ -100,7 +100,7 @@ fn shows_each_test_result() {
 }
 
 #[distributed_slice(TESTS)]
-fn remembers_course_and_language() {
+fn remembers_course() {
     log_in("uolevi");
 
     create_file("13.rs", RS_13_CONTENT);
@@ -113,10 +113,45 @@ fn remembers_course_and_language() {
 
     create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
-        .args(&["submit", "-t", "42", "main.cpp"])
+        .args(&["submit", "-t", "42", "-l", "C++", "-o", "C++17", "main.cpp"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)status.*ready"));
+}
+#[distributed_slice(TESTS)]
+fn does_not_remember_language_or_option() {
+    log_in("uolevi");
+
+    create_file("13.rs", RS_13_CONTENT);
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17", "13.rs",
+        ])
+        .assert()
+        .success();
+
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "13", "-o", "C++17", "13.rs",
+        ])
+        .assert()
+        .failure()
+        .stdout(regex_match(r"Failed submitting file"));
+
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17", "13.rs",
+        ])
+        .assert()
+        .success();
+
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "13", "-l", "C++", "13.rs",
+        ])
+        .assert()
+        .failure()
+        .stdout(regex_match(r"Failed submitting file"));
 }
 
 #[distributed_slice(TESTS)]
@@ -170,6 +205,22 @@ fn compiler_report_is_dispayed_with_compiler_warnings() {
 }
 #[distributed_slice(TESTS)]
 fn null_test_time_finishes_and_is_printed_correctly() {
+    log_in("kalle");
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "progress", "-t", "7", "-l", "C++", "-o", "C++17",
+        ])
+        .assert();
+    assert
+        .success()
+        .stdout(regex_match(r"--"))
+        .stdout(regex_match(r"Result"))
+        .stderr(predicate::str::is_empty());
+}
+#[distributed_slice(TESTS)]
+fn null_test_time_finishes_and_is_print() {
     log_in("kalle");
     create_file("main.cpp", MAIN_CPP_CONTENT);
 

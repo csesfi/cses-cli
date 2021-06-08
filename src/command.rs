@@ -251,7 +251,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_name: Some(lang), .. })
+            Command::Submit(Submit { language: Language { name: Some(lang), ..}, .. })
             if lang == "Rust"
         ));
     }
@@ -263,7 +263,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_name: Some(lang), .. })
+            Command::Submit(Submit { language: Language { name: Some(lang), .. }, .. })
             if lang == "Rust"
         ));
     }
@@ -275,7 +275,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_option: Some(opt), .. })
+            Command::Submit(Submit { language: Language{ option: Some(opt), .. }, .. })
             if opt == "C++17"
         ));
     }
@@ -286,7 +286,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_option: Some(opt), .. })
+            Command::Submit(Submit { language: Language{ option: Some(opt), .. }, ..} )
             if opt == "C++17"
         ));
     }

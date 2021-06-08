@@ -4,6 +4,7 @@ use crate::command::Submit;
 use crate::service;
 use crate::storage::{Storage, StorageData};
 use anyhow::Result;
+use crate::entities::Language;
 
 #[test]
 fn submit_parameters_are_updated() -> Result<()> {
@@ -11,8 +12,10 @@ fn submit_parameters_are_updated() -> Result<()> {
     let submit = Submit {
         course_id: Some("4".to_string()),
         task_id: Some(17),
-        language_name: Some("Python2".to_string()),
-        language_option: None,
+        language: Language {
+            name: Some("Python2".to_string()),
+            option: None,
+        },
         file_name: "submission.py".to_string(),
     };
     fake_resources
@@ -36,7 +39,7 @@ fn submit_mock() -> Result<()> {
             token == "gnewwoiJ"
                 && course_id == "17"
                 && *task_id == 3
-                && submission.language.name == "Python"
+                && submission.language.name == Some("Python".to_owned())
                 && submission.filename == "extracted_filename"
                 && submission.content == "testing"
         })
