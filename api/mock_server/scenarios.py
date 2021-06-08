@@ -21,7 +21,16 @@ RS_13_CODE = {
     "filename": "13.rs",
     "content": "use std::io;\n\nfn main() {\n"
 }
-
+PY_TODO_CODE = {
+    "language": {"name": "CPython", "option": None},
+    "filename": "todo.py",
+    "content": "def check(n):\n    # TODO\n"
+}
+PY_CODE = {
+    "language": {"name": "CPython", "option": None},
+    "filename": "lucky.py",
+    "content": "def check(n):\n    s = 0\n"
+}
 
 scenarios = [
     SubmissionScenario(
@@ -143,7 +152,6 @@ fn main() {
                 "status": "PENDING",
                 "pending": True,
             },
-
             {
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
@@ -283,4 +291,54 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 ]}
         ]
     ),
+    SubmissionScenario(
+        NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_TODO_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "CPython",
+                    "option": None
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "CPython",
+                    "option": None
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "TEST FAILED",
+                "test_report": "Test failed when given the following input:\n1\nError Message:\nSyntaxError: unexpeted EOF while parsing (todo.py, line 3)"
+            },
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "CPython",
+                    "option": None
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "CPython",
+                    "option": None
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "ACCEPTED",
+                "test_report": "All tests accepted 😎"
+            },
+        ]
+    )
 ]
