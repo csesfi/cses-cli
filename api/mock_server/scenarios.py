@@ -13,6 +13,22 @@ CPP_CODE = {
     "filename": "main.cpp",
     "content": "#include <iostream>\n"
 }
+CPP_CODE_NO_LANGUAGE_NO_OPTION = {
+    "language": {
+        "name": None,
+        "option": None
+    },
+    "filename": "main.cpp",
+    "content": "#include <iostream>\n"
+}
+CPP_CODE_NO_LANGUAGE = {
+    "language": {
+        "name": None,
+        "option": "C++17"
+    },
+    "filename": "main.cpp",
+    "content": "#include <iostream>\n"
+}
 RS_13_CODE = {
     "language": {
         "name": "C++",
@@ -133,6 +149,76 @@ fn main() {
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=42, submission_json=CPP_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "WRONG ANSWER",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
+expressions [-Wsign-compare]
+for (int i = 0; i < a.size(); i++) {
+""",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                }]
+            }
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "WRONG ANSWER",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
+expressions [-Wsign-compare]
+for (int i = 0; i < a.size(); i++) {
+""",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                }]
+            }
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",

@@ -235,3 +235,31 @@ fn null_test_time_finishes_and_is_print() {
         .stdout(regex_match(r"Result"))
         .stderr(predicate::str::is_empty());
 }
+#[distributed_slice(TESTS)]
+fn submission_works_without_language_and_option() {
+    log_in("uolevi");
+
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "444", "main.cpp",
+        ])
+        .assert()
+        .success()
+        .stdout(regex_match(r"Result: WRONG ANSWER"))
+        .stdout(regex_match(r"Language: C\+\+ \(C\+\+17\)"));
+}
+#[distributed_slice(TESTS)]
+fn submission_works_without_language_with_option() {
+    log_in("uolevi");
+
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-t", "555", "-o", "C++17", "main.cpp",
+        ])
+        .assert()
+        .success()
+        .stdout(regex_match(r"Result: WRONG ANSWER"))
+        .stdout(regex_match(r"Language: C\+\+ \(C\+\+17\)"));
+}
