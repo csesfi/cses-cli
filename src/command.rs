@@ -1,3 +1,4 @@
+use crate::entities::Language;
 use anyhow::{anyhow, Context, Result};
 
 pub static HELP_STR: &str = r#"CSES CLI
@@ -46,8 +47,7 @@ pub enum Command {
 pub struct Submit {
     pub course_id: Option<String>,
     pub task_id: Option<u64>,
-    pub language_name: Option<String>,
-    pub language_option: Option<String>,
+    pub language: Language,
     pub file_name: String,
 }
 impl Submit {
@@ -55,8 +55,10 @@ impl Submit {
         Ok(Submit {
             course_id: pargs.opt_value_from_str(["-c", "--course"])?,
             task_id: pargs.opt_value_from_str(["-t", "--task"])?,
-            language_name: pargs.opt_value_from_str(["-l", "--language"])?,
-            language_option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
+            language: Language {
+                name: pargs.opt_value_from_str(["-l", "--language"])?,
+                option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
+            },
             file_name: {
                 if let Ok(file_name) = pargs.free_from_str() {
                     file_name

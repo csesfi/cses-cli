@@ -33,7 +33,15 @@ pub fn print_submission_info(
 fn print_info_header(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     ui.term.write_line("Submission details\n")?;
     writeln!(ui.term, "Submission time: {}", submission_info.time)?;
-    write!(ui.term, "Language: {}", submission_info.language.name)?;
+    write!(
+        ui.term,
+        "Language: {}",
+        submission_info
+            .language
+            .name
+            .as_ref()
+            .unwrap_or(&"?".to_owned())
+    )?;
     if let Some(ref option) = submission_info.language.option {
         write!(ui.term, " ({})", option)?;
     };

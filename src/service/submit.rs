@@ -18,10 +18,10 @@ pub fn update_submit_parameters(
     if let Some(task_id) = parameters.task_id {
         storage.set_task(task_id);
     }
-    if let Some(ref language_name) = parameters.language_name {
+    if let Some(ref language_name) = parameters.language.name {
         storage.set_language(language_name.clone());
     }
-    if let Some(ref language_option) = parameters.language_option {
+    if let Some(ref language_option) = parameters.language.option {
         storage.set_option(language_option.clone());
     }
     res.storage.save()?;
@@ -40,10 +40,7 @@ pub fn submit(res: &mut Resources<impl RP>, path: String) -> Result<u64> {
             .get_task()
             .ok_or_else(|| anyhow!("Task not provided"))?
             .to_owned();
-        let language_name = storage
-            .get_language()
-            .ok_or_else(|| anyhow!("Language not provided"))?
-            .to_owned();
+        let language_name = storage.get_language().map(|t| t.to_owned());
         let language_option = storage.get_option().map(|t| t.to_owned());
 
         let content = res.filesystem.get_file(&path)?;
