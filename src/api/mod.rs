@@ -51,7 +51,7 @@ pub trait CsesApi {
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
+        task_id: Option<u64>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionResponse>;
     fn get_submit(
@@ -87,19 +87,25 @@ impl CsesApi for CsesHttpApi {
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
+        task_id: Option<u64>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionResponse> {
-        let response = minreq::post(format!(
-            "{}/courses/{}/submissions?task={}",
+        let mut request = minreq::post(format!(
+            "{}/courses/{}/submissions",
             self.url,
-            Escape(course_id),
-            task_id
+            Escape(course_id)
         ))
         .with_body(json::to_string(submission))
         .with_header("X-Auth-Token", token)
-        .with_header("Content-Type", "application/json")
-        .send()?;
+        .with_header("Content-Type", "application/json");
+
+        if let Some(task_id) = task_id {
+            request = request
+                .with_param("task", task_id.to_string());
+        }
+
+        let response = request.
+            send()?;
         check_error(&response)?;
         let response_body: SubmissionResponse = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -114,14 +120,13 @@ impl CsesApi for CsesHttpApi {
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "true" } else { "false" };
         let response = minreq::get(format!(
-            "{}/courses/{}/submissions/{}?poll={}",
+            "{}/courses/{}/submissions/{}",
             self.url,
             Escape(course_id),
-            submission_id,
-            poll
+            submission_id
         ))
         .with_header("X-Auth-Token", token)
-        .send()?;
+        .with_param("poll", poll).send()?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
