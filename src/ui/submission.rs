@@ -18,7 +18,7 @@ pub fn print_submission_info(
     print_status(ui, &submission_info)?;
     let mut spin = '|';
     while submission_info.pending {
-        spin = spinner(ui, spin)?;
+        spinner(ui, &mut spin)?;
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
         ui.term.clear_last_lines(2)?;
         if !compiler_report_printed {
@@ -112,22 +112,23 @@ fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
     Ok(())
 }
 
-pub fn spinner(ui: &mut Ui<impl RP>, c: char) -> Result<char> {
+fn spinner(ui: &mut Ui<impl RP>, c: &mut char) -> Result<()> {
     let width = 9;
     writeln!(
         ui.term,
         "{:>w$}",
-        Style::new().bold().apply_to(c),
+        Style::new().bold().apply_to(&c),
         w = width
     )?;
     match c {
-        '|' => Ok('/'),
-        '/' => Ok('-'),
-        '-' => Ok('\\'),
-        _ => Ok('|'),
+        '|' => *c = '/',
+        '/' => *c = '-',
+        '-' => *c = '\\',
+        _ => *c = '|',
     }
+    Ok(())
 }
-pub fn with_color(line: &str) -> StyledObject<&str> {
+fn with_color(line: &str) -> StyledObject<&str> {
     let color;
     if line == "ACCEPTED" {
         color = Style::new().green();
