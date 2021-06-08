@@ -52,7 +52,7 @@ def logout_post(token_info):
     return (NoContent, 204)
 
 
-def submissions_post(token_info, course_id, task_id):
+def submissions_post(token_info, course_id, task):
     details = connexion.request.json
     try:
         details["content"] = base64.b64decode(details["content"]) \
@@ -61,12 +61,12 @@ def submissions_post(token_info, course_id, task_id):
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
-    new_submission = NewSubmission(course_id, task_id, connexion.request.json)
+    new_submission = NewSubmission(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
     if submission_id is None:
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
-    return ({"id": submission_id}, 200)
+    return ({"id": submission_id, "task_id": task}, 200)
 
 
 def get_submission(token_info, course_id, submission_id, poll=False):

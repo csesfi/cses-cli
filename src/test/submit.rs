@@ -1,6 +1,7 @@
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
 use crate::command::Submit;
+use crate::entities::SubmissionResponse;
 use crate::service;
 use crate::storage::{Storage, StorageData};
 use anyhow::Result;
@@ -40,14 +41,14 @@ fn submit_mock() -> Result<()> {
                 && submission.filename == "extracted_filename"
                 && submission.content == "testing"
         })
-        .returning(|_, _, _, _| Ok(17));
+        .returning(|_, _, _, _| Ok(SubmissionResponse { id: 17, task_id: 4 }));
     let mut storage_data: StorageData = Default::default();
     storage_data.set_token("gnewwoiJ".to_string());
     storage_data.set_language("Python".to_string());
     storage_data.set_course("17".to_string());
     storage_data.set_task(3);
     fake_resources.storage.data = storage_data;
-    let submission_id = service::submit(&mut fake_resources, "test".to_string())?;
-    assert_eq!(submission_id, 17);
+    let submission_response = service::submit(&mut fake_resources, "test".to_string())?;
+    assert_eq!(submission_response.id, 17);
     Ok(())
 }

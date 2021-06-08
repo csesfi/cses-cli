@@ -18,6 +18,12 @@ pub struct SubmissionInfo {
     pub compiler: Option<String>,
 }
 
+#[derive(Deserialize)]
+pub struct SubmissionResponse {
+    pub id: u64,
+    pub task_id: u64,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct SubmissionTestInfo {
     pub number: u64,

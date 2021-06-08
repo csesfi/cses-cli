@@ -1,5 +1,6 @@
 use super::require_login;
 use crate::command;
+use crate::entities::SubmissionResponse;
 use crate::{
     api::CodeSubmit,
     entities::{Language, SubmissionInfo},
@@ -28,7 +29,7 @@ pub fn update_submit_parameters(
     Ok(())
 }
 
-pub fn submit(res: &mut Resources<impl RP>, path: String) -> Result<u64> {
+pub fn submit(res: &mut Resources<impl RP>, path: String) -> Result<SubmissionResponse> {
     (|| -> Result<_> {
         require_login(res)?;
         let storage = res.storage.get();

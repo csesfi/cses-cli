@@ -1,6 +1,7 @@
 mod submit;
 
 use crate::api::CodeSubmit;
+use crate::entities::SubmissionResponse;
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi, service::Login};
 use crate::{CsesApi, Filesystem, Resources, Storage};
@@ -23,7 +24,7 @@ impl CsesApi for FakeCsesApi {
         _course_id: &str,
         _task_id: u64,
         _submission: &CodeSubmit,
-    ) -> ApiResult<u64> {
+    ) -> ApiResult<SubmissionResponse> {
         todo!()
     }
 

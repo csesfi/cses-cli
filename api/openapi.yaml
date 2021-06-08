@@ -215,7 +215,7 @@ components:
 
     TaskId:
       in: query
-      name: task_id
+      name: task
       schema:
         type: integer
       required: false
@@ -323,6 +323,7 @@ paths:
 
         "5XX":
           $ref: "#/components/responses/ServerError"
+
   /courses/{course_id}/submissions:
     post:
       operationId: app.submissions_post
@@ -371,10 +372,14 @@ paths:
                 type: object
                 required:
                   - id
+                  - task_id
                 additionalProperties: false
                 properties:
                   id:
                     description: ID of the resulting submission.
+                    type: integer
+                  task_id:
+                    description: ID of the submitted task.
                     type: integer
         "4XX":
           $ref: "#/components/responses/ClientError"
