@@ -39,8 +39,8 @@ fn print_info_header(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
         submission_info
             .language
             .name
-            .as_ref()
-            .unwrap_or(&"?".to_owned())
+            .as_deref()
+            .unwrap_or("?")
     )?;
     if let Some(ref option) = submission_info.language.option {
         write!(ui.term, " ({})", option)?;
