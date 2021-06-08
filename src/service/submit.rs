@@ -2,10 +2,7 @@ use super::require_login;
 use crate::command;
 use crate::entities::SubmissionResponse;
 use crate::entities::SubmitParameters;
-use crate::{
-    api::CodeSubmit,
-    entities::SubmissionInfo,
-};
+use crate::{api::CodeSubmit, entities::SubmissionInfo};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{anyhow, Context, Result};
 
@@ -20,7 +17,8 @@ pub fn create_submit_parameters(
     res.storage.save()?;
     let storage = res.storage.get();
     Ok(SubmitParameters {
-        course: storage.get_course()
+        course: storage
+            .get_course()
             .ok_or_else(|| anyhow!("Course not provided"))?
             .to_owned(),
         file: parameters.file_name.clone(),
@@ -29,7 +27,10 @@ pub fn create_submit_parameters(
     })
 }
 
-pub fn submit(res: &mut Resources<impl RP>, submit_parameters: SubmitParameters) -> Result<SubmissionResponse> {
+pub fn submit(
+    res: &mut Resources<impl RP>,
+    submit_parameters: SubmitParameters,
+) -> Result<SubmissionResponse> {
     (|| -> Result<_> {
         require_login(res)?;
         let course_id = submit_parameters.course;

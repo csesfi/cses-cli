@@ -54,7 +54,10 @@ fn submit_mock() -> Result<()> {
         course: "17".to_owned(),
         file: "extracted_filename".to_owned(),
         task: Some(3),
-        language: Language { name: Some("Python".to_owned()), option: None },
+        language: Language {
+            name: Some("Python".to_owned()),
+            option: None,
+        },
     };
     let submission_response = service::submit(&mut fake_resources, submit_params)?;
     assert_eq!(submission_response.submission_id, 17);

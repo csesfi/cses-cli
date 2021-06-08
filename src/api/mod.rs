@@ -100,12 +100,10 @@ impl CsesApi for CsesHttpApi {
         .with_header("Content-Type", "application/json");
 
         if let Some(task_id) = task_id {
-            request = request
-                .with_param("task", task_id.to_string());
+            request = request.with_param("task", task_id.to_string());
         }
 
-        let response = request.
-            send()?;
+        let response = request.send()?;
         check_error(&response)?;
         let response_body: SubmissionResponse = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -126,7 +124,8 @@ impl CsesApi for CsesHttpApi {
             submission_id
         ))
         .with_header("X-Auth-Token", token)
-        .with_param("poll", poll).send()?;
+        .with_param("poll", poll)
+        .send()?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
