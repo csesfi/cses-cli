@@ -1,10 +1,10 @@
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
 use crate::command::Submit;
+use crate::entities::Language;
 use crate::service;
 use crate::storage::{Storage, StorageData};
 use anyhow::Result;
-use crate::entities::Language;
 
 #[test]
 fn submit_parameters_are_updated() -> Result<()> {

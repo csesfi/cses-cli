@@ -131,9 +131,7 @@ fn does_not_remember_language_or_option() {
         .success();
 
     command()
-        .args(&[
-            "submit", "-c", "cses", "-t", "13", "-o", "C++17", "13.rs",
-        ])
+        .args(&["submit", "-c", "cses", "-t", "13", "-o", "C++17", "13.rs"])
         .assert()
         .failure()
         .stdout(regex_match(r"Failed submitting file"));
@@ -146,9 +144,7 @@ fn does_not_remember_language_or_option() {
         .success();
 
     command()
-        .args(&[
-            "submit", "-c", "cses", "-t", "13", "-l", "C++", "13.rs",
-        ])
+        .args(&["submit", "-c", "cses", "-t", "13", "-l", "C++", "13.rs"])
         .assert()
         .failure()
         .stdout(regex_match(r"Failed submitting file"));
@@ -241,9 +237,7 @@ fn submission_works_without_language_and_option() {
 
     create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
-        .args(&[
-            "submit", "-c", "cses", "-t", "444", "main.cpp",
-        ])
+        .args(&["submit", "-c", "cses", "-t", "444", "main.cpp"])
         .assert()
         .success()
         .stdout(regex_match(r"Result: WRONG ANSWER"))
