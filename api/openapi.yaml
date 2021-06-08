@@ -115,6 +115,7 @@ components:
       properties:
         name:
           type: string
+          nullable: true
           description: >
             Name of the language, e.g. "C++", "Haskell", "Python2".
         option:
