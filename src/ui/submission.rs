@@ -123,12 +123,11 @@ fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
 }
 
 fn with_color(line: &str) -> StyledObject<&str> {
-    let color;
-    if line == "ACCEPTED" {
-        color = Style::new().green();
-    } else {
-        color = Style::new().red();
-    }
+    let color = match line {
+        "ACCEPTED" => Style::new().green(),
+        "UNKNOWN" => Style::new().white(),
+        _ => Style::new().red(),
+    };
     color.apply_to(line)
 }
 
