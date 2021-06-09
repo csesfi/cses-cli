@@ -16,9 +16,9 @@ pub fn print_submission_info(
     print_info_header(ui, &submission_info)?;
     let mut compiler_report_printed = print_compiler_report(ui, &submission_info)?;
     print_status(ui, &submission_info)?;
-    let mut spin = '|';
+    let mut spinner = Spinner::new();
     while submission_info.pending {
-        spinner(ui, &mut spin)?;
+        spinner.rotate_and_print(ui)?;
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
         ui.term.clear_last_lines(2)?;
         if !compiler_report_printed {
@@ -112,22 +112,6 @@ fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
     Ok(())
 }
 
-fn spinner(ui: &mut Ui<impl RP>, c: &mut char) -> Result<()> {
-    let width = 9;
-    writeln!(
-        ui.term,
-        "{:>w$}",
-        Style::new().bold().apply_to(&c),
-        w = width
-    )?;
-    match c {
-        '|' => *c = '/',
-        '/' => *c = '-',
-        '-' => *c = '\\',
-        _ => *c = '|',
-    }
-    Ok(())
-}
 fn with_color(line: &str) -> StyledObject<&str> {
     let color;
     if line == "ACCEPTED" {
@@ -136,4 +120,37 @@ fn with_color(line: &str) -> StyledObject<&str> {
         color = Style::new().red();
     }
     color.apply_to(line)
+}
+
+pub struct Spinner {
+    state: String,
+}
+impl Spinner {
+    pub fn new() -> Spinner {
+        Spinner {
+            state: String::from(""),
+        }
+    }
+    fn rotate(&mut self) {
+        match self.state.as_str() {
+            "|" => self.state = String::from("/"),
+            "/" => self.state = String::from("-"),
+            "-" => self.state = String::from("\\"),
+            _ => self.state = String::from("|"),
+        }
+    }
+    fn print(&self, ui: &mut Ui<impl RP>) -> Result<()> {
+        let width = 9;
+        writeln!(
+            ui.term,
+            "{:>w$}",
+            Style::new().bold().apply_to(&self.state),
+            w = width
+        )?;
+        Ok(())
+    }
+    pub fn rotate_and_print(&mut self, ui: &mut Ui<impl RP>) -> Result<()> {
+        self.rotate();
+        self.print(ui)
+    }
 }
