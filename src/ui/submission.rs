@@ -16,7 +16,7 @@ pub fn print_submission_info(
     print_info_header(ui, &submission_info)?;
     let mut compiler_report_printed = print_compiler_report(ui, &submission_info)?;
     print_status(ui, &submission_info)?;
-    let mut spinner = Spinner::new();
+    let mut spinner = Spinner::new(9);
     while submission_info.pending {
         spinner.rotate_and_print(ui)?;
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
@@ -124,11 +124,13 @@ fn with_color(line: &str) -> StyledObject<&str> {
 
 pub struct Spinner {
     state: String,
+    width: usize,
 }
 impl Spinner {
-    pub fn new() -> Spinner {
+    pub fn new(width: usize) -> Spinner {
         Spinner {
             state: String::from(""),
+            width,
         }
     }
     fn rotate(&mut self) {
@@ -140,12 +142,11 @@ impl Spinner {
         }
     }
     fn print(&self, ui: &mut Ui<impl RP>) -> Result<()> {
-        let width = 9;
         writeln!(
             ui.term,
             "{:>w$}",
             Style::new().bold().apply_to(&self.state),
-            w = width
+            w = self.width
         )?;
         Ok(())
     }
