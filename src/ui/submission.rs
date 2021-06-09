@@ -16,15 +16,16 @@ pub fn print_submission_info(
     print_info_header(ui, &submission_info)?;
     let mut compiler_report_printed = print_compiler_report(ui, &submission_info)?;
     print_status(ui, &submission_info)?;
+    let mut spinner = Spinner::new(9);
     while submission_info.pending {
+        spinner.rotate_and_print(ui)?;
         submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
-        ui.term.clear_line()?;
+        ui.term.clear_last_lines(2)?;
         if !compiler_report_printed {
             compiler_report_printed = print_compiler_report(ui, &submission_info)?;
         }
         print_status(ui, &submission_info)?;
     }
-    writeln!(ui.term)?;
     print_test_results(ui, &submission_info)?;
     print_final_result(ui, &submission_info)?;
     Ok(())
@@ -62,7 +63,7 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
             text_width += 4;
             let bar_width = (term_width as u64).saturating_sub(text_width);
             let progress_bar = progress_bar(bar_width, progress_fraction)?;
-            write!(
+            writeln!(
                 ui.term,
                 "{} {} {}",
                 status_text, submission_info.status, progress_bar
@@ -70,7 +71,7 @@ fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Resul
             return Ok(());
         }
     }
-    write!(ui.term, "{} {}", status_text, submission_info.status)?;
+    writeln!(ui.term, "{} {}", status_text, submission_info.status)?;
     Ok(())
 }
 fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
@@ -111,7 +112,7 @@ fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
     Ok(())
 }
 
-pub fn with_color(line: &str) -> StyledObject<&str> {
+fn with_color(line: &str) -> StyledObject<&str> {
     let color;
     if line == "ACCEPTED" {
         color = Style::new().green();
@@ -119,4 +120,38 @@ pub fn with_color(line: &str) -> StyledObject<&str> {
         color = Style::new().red();
     }
     color.apply_to(line)
+}
+
+pub struct Spinner {
+    state: String,
+    width: usize,
+}
+impl Spinner {
+    pub fn new(width: usize) -> Spinner {
+        Spinner {
+            state: String::from(""),
+            width,
+        }
+    }
+    fn rotate(&mut self) {
+        match self.state.as_str() {
+            "|" => self.state = String::from("/"),
+            "/" => self.state = String::from("-"),
+            "-" => self.state = String::from("\\"),
+            _ => self.state = String::from("|"),
+        }
+    }
+    fn print(&self, ui: &mut Ui<impl RP>) -> Result<()> {
+        writeln!(
+            ui.term,
+            "{:>w$}",
+            Style::new().bold().apply_to(&self.state),
+            w = self.width
+        )?;
+        Ok(())
+    }
+    pub fn rotate_and_print(&mut self, ui: &mut Ui<impl RP>) -> Result<()> {
+        self.rotate();
+        self.print(ui)
+    }
 }
