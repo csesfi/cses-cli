@@ -11,9 +11,9 @@ pub struct Login {
     pub password: String,
 }
 
-pub fn login(res: &mut Resources<impl RP>, login: &Login) -> Result<()> {
-    let token = res.api.login(login)?;
-    res.storage.get_mut().set_token(token);
+pub fn login(res: &mut Resources<impl RP>, _login: &Login) -> Result<()> {
+    let login_response = res.api.login()?;
+    res.storage.get_mut().set_token(login_response.token);
     res.storage.save()?;
     Ok(())
 }
