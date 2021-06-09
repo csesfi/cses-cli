@@ -283,6 +283,8 @@ fn submission_works_without_task() {
         .success()
         .stdout(contains(r"Result: ACCEPTED"))
         .stdout(contains(r"Language: C++ (C++17)"));
+}
+#[distributed_slice(TESTS)]
 fn test_report_is_displayed_with_content() {
     log_in("Olaf");
     create_file("lucky.py", LUCKY_PY_CONTENT);
