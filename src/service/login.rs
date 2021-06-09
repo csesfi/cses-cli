@@ -37,3 +37,15 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
 pub fn login_exists(res: &Resources<impl RP>) -> bool {
     res.storage.get().get_token().is_some()
 }
+
+// Returns true if token is valid and false if not or is missing.
+pub fn login_status(res: &Resources<impl RP>) -> Result<bool> {
+    if !login_exists(res) {
+        return Ok(false);
+    }
+    match res.api.login_status(res.storage.get().get_token().unwrap()) {
+        Err(ApiError::PendingApiKeyError) | Err(ApiError::ApiKeyError) => return Ok(false),
+        val => val?,
+    };
+    Ok(true)
+}
