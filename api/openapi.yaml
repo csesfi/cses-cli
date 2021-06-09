@@ -118,6 +118,7 @@ components:
       properties:
         name:
           type: string
+          nullable: true
           description: >
             Name of the language, e.g. "C++", "Haskell", "Python2".
         option:
@@ -223,12 +224,12 @@ components:
         Alphanumeric identifier of the course. Same as in course URLs.
 
     TaskId:
-      in: path
-      name: task_id
+      in: query
+      name: task
       schema:
         type: integer
-      required: true
-      description: Task ID.
+      required: false
+      description: Task ID. If not provided the server tries to deduce it from the file name.
 
     SubmissionId:
       in: path
@@ -236,7 +237,7 @@ components:
       schema:
         type: integer
       required: true
-      description: Submission ID.
+      description: Submission ID. 
 
   # define possible authentication methods
   securitySchemes:
@@ -340,7 +341,8 @@ paths:
 
         "5XX":
           $ref: "#/components/responses/ServerError"
-  /courses/{course_id}/tasks/{task_id}/submissions:
+
+  /courses/{course_id}/submissions:
     post:
       operationId: app.submissions_post
 
@@ -387,18 +389,22 @@ paths:
               schema:
                 type: object
                 required:
-                  - id
+                  - submission_id
+                  - task_id
                 additionalProperties: false
                 properties:
-                  id:
+                  submission_id:
                     description: ID of the resulting submission.
+                    type: integer
+                  task_id:
+                    description: ID of the submitted task.
                     type: integer
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
 
-  /courses/{course_id}/tasks/{task_id}/submissions/{submission_id}:
+  /courses/{course_id}/submissions/{submission_id}:
     get:
       operationId: app.get_submission
 
@@ -409,7 +415,6 @@ paths:
 
       parameters:
         - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
         - $ref: "#/components/parameters/SubmissionId"
         - in: query
           name: poll

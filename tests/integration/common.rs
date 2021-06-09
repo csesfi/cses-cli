@@ -1,4 +1,4 @@
-use predicates::str::RegexPredicate;
+use predicates::str::{ContainsPredicate, RegexPredicate};
 use std::path::Path;
 
 pub use assert_cmd::prelude::*;
@@ -17,6 +17,10 @@ pub fn command() -> Command {
 
 pub fn regex_match(expr: &str) -> RegexPredicate {
     predicate::str::is_match(expr).unwrap()
+}
+
+pub fn contains(expr: &str) -> ContainsPredicate {
+    predicate::str::contains(expr)
 }
 
 pub fn log_in(user: &str) {

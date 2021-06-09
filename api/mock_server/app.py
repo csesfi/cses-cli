@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import NewSubmission
-from scenarios import scenarios
+from scenarios import scenarios, DEFAULT_TASK
 
 
 integration = False
@@ -67,7 +67,9 @@ def logout_post(token_info):
     state.logout(token_info["apikey"])
     return (NoContent, 204)
 
-def submissions_post(token_info, course_id, task_id):
+  
+def submissions_post(token_info, course_id, task=DEFAULT_TASK):
+
     details = connexion.request.json
     try:
         details["content"] = base64.b64decode(details["content"]) \
@@ -76,23 +78,22 @@ def submissions_post(token_info, course_id, task_id):
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
-    new_submission = NewSubmission(course_id, task_id, connexion.request.json)
+    new_submission = NewSubmission(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
     if submission_id is None:
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
-    return ({"id": submission_id}, 200)
+    return ({"submission_id": submission_id, "task_id": task}, 200)
 
 
-def get_submission(token_info, course_id, task_id, submission_id, poll=False):
+def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"get submit: {token_info}")
     print(f"course_id: {course_id}")
-    print(f"task_id: {task_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
     if not integration and poll:
         time.sleep(1.5)
-    submission_info = state.get_submission_info(course_id, task_id,
+    submission_info = state.get_submission_info(course_id,
                                                 submission_id)
     if submission_info is None:
         return ({"message": "Submission not found",

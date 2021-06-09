@@ -13,6 +13,30 @@ CPP_CODE = {
     "filename": "main.cpp",
     "content": "#include <iostream>\n"
 }
+CPP_CODE_NO_LANGUAGE_NO_OPTION = {
+    "language": {
+        "name": None,
+        "option": None
+    },
+    "filename": "main.cpp",
+    "content": "#include <iostream>\n"
+}
+UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION = {
+    "language": {
+        "name": None,
+        "option": None
+    },
+    "filename": "main.asdf",
+    "content": "#include <iostream>\n"
+}
+CPP_CODE_NO_LANGUAGE = {
+    "language": {
+        "name": None,
+        "option": "C++17"
+    },
+    "filename": "main.cpp",
+    "content": "#include <iostream>\n"
+}
 RS_13_CODE = {
     "language": {
         "name": "C++",
@@ -21,6 +45,8 @@ RS_13_CODE = {
     "filename": "13.rs",
     "content": "use std::io;\n\nfn main() {\n"
 }
+
+DEFAULT_TASK = 34
 
 PY_TODO_CODE = {
     "language": {"name": "CPython", "option": None},
@@ -32,6 +58,7 @@ PY_CODE = {
     "filename": "lucky.py",
     "content": "def check(n):\n    s = 0\n"
 }
+
 
 
 scenarios = [
@@ -144,6 +171,91 @@ fn main() {
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=42, submission_json=CPP_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "WRONG ANSWER",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
+expressions [-Wsign-compare]
+for (int i = 0; i < a.size(); i++) {
+""",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                }]
+            }
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": None,
+                    "option": None
+                },
+                "status": "READY",
+                "result": "INVALID LANGUAGE",
+                "pending": False,
+            }
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "WRONG ANSWER",
+                "compiler": """input/code.cpp: In function 'int main()':
+input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
+expressions [-Wsign-compare]
+for (int i = 0; i < a.size(); i++) {
+""",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                }]
+            }
+        ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",
@@ -435,30 +547,35 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 ]}
         ]
     ),
-  SubmissionScenario(
-        NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_TODO_CODE),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
         [
             {
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
-                    "name": "CPython",
-                    "option": None
+                    "name": "C++",
+                    "option": "C++17"
                 },
                 "status": "PENDING",
                 "pending": True,
             },
+
             {
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
-                    "name": "CPython",
+                    "name": "C++",
                     "option": None
                 },
                 "status": "READY",
                 "pending": False,
-                "result": "TEST FAILED",
-                "test_report": "Test failed when given the following input:\n1\nError Message:\nSyntaxError: unexpeted EOF while parsing (todo.py, line 3)"
-            },
-        ]
+                "result": "ACCEPTED",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                }]
+            }
+        ],
     ),
     SubmissionScenario(
         NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_CODE),
@@ -484,5 +601,5 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "test_report": "All tests accepted"
             },
         ]
-    )
+    ),
 ]
