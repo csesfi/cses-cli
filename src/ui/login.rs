@@ -17,15 +17,11 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
         return Ok(());
     }
 
-    let login = Login {
-        username: prompt_username(ui)?,
-        password: prompt_password(ui)?,
-    };
-    service::login(&mut ui.res, &login)?;
+    let login_url = service::login(&mut ui.res)?;
     writeln!(
         ui.term,
-        "Login successful. Saved login token to {}",
-        ui.res.storage.get_path().display()
+        "Please visit {} to login",
+        login_url
     )?;
     Ok(())
 }

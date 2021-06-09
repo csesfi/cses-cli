@@ -11,11 +11,11 @@ pub struct Login {
     pub password: String,
 }
 
-pub fn login(res: &mut Resources<impl RP>, _login: &Login) -> Result<()> {
+pub fn login(res: &mut Resources<impl RP>) -> Result<String> {
     let login_response = res.api.login()?;
     res.storage.get_mut().set_token(login_response.token);
     res.storage.save()?;
-    Ok(())
+    Ok(login_response.authentication_url)
 }
 
 pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
