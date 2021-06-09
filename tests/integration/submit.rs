@@ -4,6 +4,7 @@ use std::path::PathBuf;
 const MAIN_RS_CONTENT: &str = "use std::io;\n";
 const RS_13_CONTENT: &str = "use std::io;\n\nfn main() {\n";
 const MAIN_CPP_CONTENT: &str = "#include <iostream>\n";
+const LUCKY_PY_CONTENT: &str = "def check(n):\n    s = 0\n";
 
 #[distributed_slice(TESTS)]
 fn fails_with_wrong_filename() {
@@ -282,4 +283,34 @@ fn submission_works_without_task() {
         .success()
         .stdout(contains(r"Result: ACCEPTED"))
         .stdout(contains(r"Language: C++ (C++17)"));
+fn test_report_is_displayed_with_content() {
+    log_in("Olaf");
+    create_file("lucky.py", LUCKY_PY_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit", "lucky.py", "-c", "tira21k", "-t", "23", "-l", "CPython",
+        ])
+        .assert();
+    assert
+        .success()
+        .stdout(regex_match(r"READY"))
+        .stdout(regex_match(r"(?i)Test report"))
+        .stderr(predicate::str::is_empty());
+}
+#[distributed_slice(TESTS)]
+fn test_report_is_not_displayed_without_any_content() {
+    log_in("kalle");
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "progress", "-t", "7", "-l", "C++", "-o", "C++17",
+        ])
+        .assert();
+    assert
+        .success()
+        .stdout(regex_match(r"READY"))
+        .stdout(regex_match(r"(?i)Test report").not())
+        .stderr(predicate::str::is_empty());
 }
