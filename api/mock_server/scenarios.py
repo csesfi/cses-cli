@@ -46,6 +46,8 @@ RS_13_CODE = {
     "content": "use std::io;\n\nfn main() {\n"
 }
 
+DEFAULT_TASK = 34
+
 
 scenarios = [
     SubmissionScenario(
@@ -391,5 +393,35 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                     },
                 ]}
         ]
+    ),
+    SubmissionScenario(
+        NewSubmission(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": None
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "ACCEPTED",
+                "tests": [{
+                    "number": 1,
+                    "verdict": "ACCEPTED",
+                    "time": 120
+                }]
+            }
+        ],
     ),
 ]

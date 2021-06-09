@@ -269,3 +269,17 @@ fn test_server_returns_null_language() {
         .stdout(contains(r"Result: INVALID LANGUAGE"))
         .stdout(contains(r"Language: ?"));
 }
+#[distributed_slice(TESTS)]
+fn submission_works_without_task() {
+    log_in("uolevi");
+
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+    command()
+        .args(&[
+            "submit", "-c", "cses", "-l", "C++", "-o", "C++17", "main.cpp",
+        ])
+        .assert()
+        .success()
+        .stdout(contains(r"Result: ACCEPTED"))
+        .stdout(contains(r"Language: C++ (C++17)"));
+}

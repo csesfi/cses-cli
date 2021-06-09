@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import NewSubmission
-from scenarios import scenarios
+from scenarios import scenarios, DEFAULT_TASK
 
 
 integration = False
@@ -52,7 +52,7 @@ def logout_post(token_info):
     return (NoContent, 204)
 
 
-def submissions_post(token_info, course_id, task):
+def submissions_post(token_info, course_id, task=DEFAULT_TASK):
     details = connexion.request.json
     try:
         details["content"] = base64.b64decode(details["content"]) \
