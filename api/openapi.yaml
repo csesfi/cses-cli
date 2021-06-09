@@ -17,13 +17,15 @@ components:
           schema:
             $ref: "#/components/schemas/InvalidApiKeyError"
 
-    PendingApiKeyError:
+    GetLoginError:
       description: >
-        API key pending authentication. Only given by `GET /login`.
+        API key pending authentication or invalid. Only given by `GET /login`.
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/PendingApiKeyError"
+            oneOf:
+              - $ref: "#/components/schemas/InvalidApiKeyError"
+              - $ref: "#/components/schemas/PendingApiKeyError"
 
     ClientError:
       description: General error response from the server.
@@ -275,7 +277,6 @@ paths:
                   authentication_url:
                     description: URL the user should visit to log in.
                     type: string
-                    format: url
 
         "4XX":
           $ref: "#/components/responses/ClientError"
@@ -301,10 +302,7 @@ paths:
             API key is valid.
 
         "401":
-          $ref: "#/components/responses/PendingApiKeyError"
-
-        "401":
-          $ref: "#/components/responses/InvalidApiKeyError"
+          $ref: "#/components/responses/GetLoginError"
 
         "4XX":
           $ref: "#/components/responses/ClientError"
