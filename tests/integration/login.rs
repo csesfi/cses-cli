@@ -8,9 +8,9 @@ fn login_is_successful_with_correct_username_and_password() {
     verify_successful_login_output(assert);
 }
 
+// FIXME: Add equivalent test for web-based auth
 // #[distributed_slice(TESTS)]
 // fn login_fails_with_incorrect_username() {
-//     let assert = unsuccessful_login();
 //     command()
 //         .args(&["login"])
 //         .write_stdin("nonexistinguser\nincorrectpassword\n")

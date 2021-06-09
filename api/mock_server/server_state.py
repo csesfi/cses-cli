@@ -44,7 +44,7 @@ class ServerState:
             self.valid_tokens.remove(token)
 
     def is_valid(self, token):
-        # TODO: Fix this when test are aware of token authorization
+        # FIXME: Fix this when test are aware of token authorization
         return token in self.valid_tokens or token in self.pending_tokens
 
     def _generate_token(self):
