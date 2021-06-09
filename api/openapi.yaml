@@ -220,7 +220,7 @@ components:
       schema:
         type: integer
       required: false
-      description: Task ID. If it is not provided the server checks it automatically based on the file name.
+      description: Task ID. If not provided the server tries to deduce it from the file name.
 
     SubmissionId:
       in: path
