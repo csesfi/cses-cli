@@ -36,21 +36,36 @@ state = ServerState(
     scenarios=scenarios
 )
 
+app = connexion.App(__name__, specification_dir="../",
+                    options={"swagger_ui": False})
+
 
 def login_post():
-    token = state.login(connexion.request.json)
+    token = state.login()
     print(f"got token: {token}")
-    if token is not None:
-        return ({"X-Auth-Token": token}, 200)
+    host = connexion.request.host
+    return (
+        {
+            "X-Auth-Token": token,
+            "authentication_url": f"http://{host}/authorize-login?token={token}"
+        },
+        200
+    )
 
-    return ({"message": "Invalid username/password",
-             "code": "invalid_credentials"}, 401)
+@app.route('/authorize-login')
+def authorize_login_post():
+    token = connexion.request.args.get("token")
+    fail = connexion.request.args.get("fail") is not None
+    state.authorize_login(token, fail)
+    return "", 204
 
+def login_get(token_info):
+    # Errors returned by security scheme
+    return (NoContent, 204)
 
 def logout_post(token_info):
     state.logout(token_info["apikey"])
     return (NoContent, 204)
-
 
 def submissions_post(token_info, course_id, task_id):
     details = connexion.request.json
@@ -94,11 +109,14 @@ def apikey_auth(apikey, required_scopes=None):
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
 
-    if state.is_valid(apikey):
+    status = state.check_login(apikey)
+    if status == "valid":
         return {"apikey": apikey}
-
-    # this will be overriden by the render_api_authentication_failed function
-    raise werkzeug.exceptions.Unauthorized()
+    elif status == "pending":
+        raise Unauthorized(description="pending")
+    else:
+        # this will be overriden by the render_api_authentication_failed function
+        raise Unauthorized()
 
 
 def render_invalid_query(exception):
@@ -106,15 +124,16 @@ def render_invalid_query(exception):
 
 
 def render_api_authentication_failed(exception):
-    return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
+    if exception.description == "pending":
+        return ({"message": "API key pending login", "code": "pending_api_key"}, 401)
+    else:
+        return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
 
 
 def render_method_not_allowed(exception):
     return ({"message": "Invalid HTTP method", "code": "client_error"}, 405)
 
 
-app = connexion.App(__name__, specification_dir="../",
-                    options={"swagger_ui": False})
 app.add_error_handler(BadRequestProblem, render_invalid_query)
 app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
