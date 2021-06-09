@@ -300,7 +300,7 @@ paths:
           description: >
             API key is valid.
 
-        "404":
+        "401":
           $ref: "#/components/responses/PendingApiKeyError"
 
         "401":
