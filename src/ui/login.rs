@@ -20,7 +20,7 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     let login_url = service::login(&mut ui.res)?;
     writeln!(
         ui.term,
-        "Please visit {} to login",
+        "Please visit\n{}\nto login",
         login_url
     )?;
     Ok(())
