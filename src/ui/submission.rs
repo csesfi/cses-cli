@@ -26,6 +26,8 @@ pub fn print_submission_info(
         }
         print_status(ui, &submission_info)?;
     }
+    writeln!(ui.term)?;
+    print_test_report(ui, &submission_info)?;
     print_test_results(ui, &submission_info)?;
     print_final_result(ui, &submission_info)?;
     Ok(())
@@ -105,9 +107,17 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
     Ok(())
 }
 
+fn print_test_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
+    if let Some(ref report) = submission_info.test_report {
+        ui.term.write_line("\nTest report:")?;
+        writeln!(ui.term, "{}", report)?;
+    };
+    Ok(())
+}
+
 fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref result) = submission_info.result {
-        writeln!(ui.term, "Result: {}", with_color(&result))?;
+        writeln!(ui.term, "\nResult: {}", with_color(&result))?;
     };
     Ok(())
 }

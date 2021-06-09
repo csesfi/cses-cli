@@ -16,6 +16,7 @@ pub struct SubmissionInfo {
     pub result: Option<String>,
     pub tests: Option<Vec<SubmissionTestInfo>>,
     pub compiler: Option<String>,
+    pub test_report: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
