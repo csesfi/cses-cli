@@ -21,6 +21,7 @@ RS_13_CODE = {
     "filename": "13.rs",
     "content": "use std::io;\n\nfn main() {\n"
 }
+
 PY_TODO_CODE = {
     "language": {"name": "CPython", "option": None},
     "filename": "todo.py",
@@ -31,6 +32,7 @@ PY_CODE = {
     "filename": "lucky.py",
     "content": "def check(n):\n    s = 0\n"
 }
+
 
 scenarios = [
     SubmissionScenario(
@@ -152,6 +154,7 @@ fn main() {
                 "status": "PENDING",
                 "pending": True,
             },
+
             {
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
@@ -292,6 +295,147 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ]
     ),
     SubmissionScenario(
+        NewSubmission(course_id="progress", task_id=8, submission_json=CPP_CODE),
+        [
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 0,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 6,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 9,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 9,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 9,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "TESTING",
+                "test_progress": {
+                    "finished_tests": 10,
+                    "total_tests": 10,
+                },
+                "pending": True,
+            },
+            {
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "C++",
+                    "option": "C++17"
+                },
+                "status": "READY",
+                "pending": False,
+                "result": "OUTPUT LIMIT EXCEEDED",
+                "tests": [
+                    {
+                        "number": 1,
+                        "verdict": "ACCEPTED",
+                        "time": 120
+                    },
+                    {
+                        "number": 2,
+                        "verdict": "OUTPUT LIMIT EXCEEDED",
+                        "time": 800
+                    },
+                    {
+                        "number": 3,
+                        "verdict": "WRONG ANSWER",
+                        "time": 314
+                    },
+                    {
+                        "number": 4,
+                        "verdict": "TIME LIMIT EXCEEDED",
+                        "time": None
+                    },
+                ]}
+        ]
+    ),
+  SubmissionScenario(
         NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_TODO_CODE),
         [
             {
@@ -337,7 +481,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "status": "READY",
                 "pending": False,
                 "result": "ACCEPTED",
-                "test_report": "All tests accepted 😎"
+                "test_report": "All tests accepted"
             },
         ]
     )
