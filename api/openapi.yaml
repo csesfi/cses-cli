@@ -146,9 +146,29 @@ components:
           description: >
             The total number of tests.
 
+    TaskOutline:
+      additionalProperties: false
+      required:
+        - id
+        - name
+      type: object
+
+      properties:
+        id:
+          type: integer
+          description: >
+            Task ID.
+        name:
+          type: string
+          description: >
+            The name of the task.
+
+
     SubmissionInfo:
       additionalProperties: false
       required:
+        - id
+        - task
         - time
         - language
         - status
@@ -156,6 +176,12 @@ components:
       type: object
 
       properties:
+        id:
+          type: integer
+          description: >
+            ID of the submission.
+        task:
+          $ref: "#/components/schemas/TaskOutline"
         time:
           type: string
           format: date-time
@@ -348,7 +374,7 @@ paths:
 
       summary: Make new submission.
       description: >
-        Submit code file encoded as base64..
+        Submit code file encoded as base64.
 
       security:
         - apiKeyAuth: []
@@ -383,22 +409,11 @@ paths:
         "200":
           description: >
             Submission was sent successfully. The new submission ID is
-            given in the response.
+            included in the response.
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - submission_id
-                  - task_id
-                additionalProperties: false
-                properties:
-                  submission_id:
-                    description: ID of the resulting submission.
-                    type: integer
-                  task_id:
-                    description: ID of the submitted task.
-                    type: integer
+                $ref: "#/components/schemas/SubmissionInfo"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
@@ -431,7 +446,7 @@ paths:
       responses:
         "200":
           description: >
-            Info about a submission is retrieved successfully.
+            Info about a submission was retrieved successfully.
           content:
             application/json:
               schema:

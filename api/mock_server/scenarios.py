@@ -1,5 +1,7 @@
 from submission import SubmissionScenario, NewSubmission
 
+DEFAULT_TASK = 34
+
 RUST_CODE = {
     "language": {"name": "Rust", "option": None},
     "filename": "main.rs",
@@ -45,9 +47,6 @@ RS_13_CODE = {
     "filename": "13.rs",
     "content": "use std::io;\n\nfn main() {\n"
 }
-
-DEFAULT_TASK = 34
-
 PY_TODO_CODE = {
     "language": {"name": "CPython", "option": None},
     "filename": "todo.py",
@@ -59,13 +58,17 @@ PY_CODE = {
     "content": "def check(n):\n    s = 0\n"
 }
 
-
+SUMMA_TASK = {
+    "id": 123,
+    "name": "Summa",
+}
 
 scenarios = [
     SubmissionScenario(
         NewSubmission(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "Rust",
@@ -74,8 +77,8 @@ scenarios = [
                 "status": "PENDING",
                 "pending": True,
             },
-
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "Rust",
@@ -96,6 +99,7 @@ scenarios = [
         NewSubmission(course_id="alon", task_id=4, submission_json=CPP_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -105,6 +109,7 @@ scenarios = [
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -114,6 +119,7 @@ scenarios = [
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -140,6 +146,7 @@ scenarios = [
         NewSubmission(course_id="cses", task_id=13, submission_json=RS_13_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -150,6 +157,7 @@ scenarios = [
             },
 
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -173,6 +181,7 @@ fn main() {
         NewSubmission(course_id="cses", task_id=42, submission_json=CPP_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -183,6 +192,7 @@ fn main() {
             },
 
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -208,6 +218,7 @@ for (int i = 0; i < a.size(); i++) {
         NewSubmission(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": None,
@@ -223,6 +234,7 @@ for (int i = 0; i < a.size(); i++) {
         NewSubmission(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -231,8 +243,8 @@ for (int i = 0; i < a.size(); i++) {
                 "status": "PENDING",
                 "pending": True,
             },
-
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -258,6 +270,7 @@ for (int i = 0; i < a.size(); i++) {
         NewSubmission(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -266,8 +279,8 @@ for (int i = 0; i < a.size(); i++) {
                 "status": "PENDING",
                 "pending": True,
             },
-
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -293,6 +306,7 @@ for (int i = 0; i < a.size(); i++) {
         NewSubmission(course_id="progress", task_id=7, submission_json=CPP_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -302,6 +316,7 @@ for (int i = 0; i < a.size(); i++) {
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -319,6 +334,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -336,6 +352,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -353,6 +370,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -370,6 +388,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -410,6 +429,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         NewSubmission(course_id="progress", task_id=8, submission_json=CPP_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -419,6 +439,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -428,6 +449,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -437,6 +459,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -450,6 +473,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -463,6 +487,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -476,6 +501,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -489,6 +515,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -502,6 +529,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -515,6 +543,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -551,6 +580,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         NewSubmission(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -559,8 +589,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "status": "PENDING",
                 "pending": True,
             },
-
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -581,6 +611,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_CODE),
         [
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "CPython",
@@ -590,6 +621,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 "pending": True,
             },
             {
+                "task": SUMMA_TASK,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "CPython",
