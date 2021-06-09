@@ -179,6 +179,12 @@ components:
           type: string
           description: >
             Verdict of the submission, e.g. "ACCEPTED".
+        test_report:
+          type: string
+          description: >
+            An optional description of the tests for when more specific
+            information of the tests is not shown to the user. Used at least
+            on the TiRa course.
         tests:
           type: array
           items:
