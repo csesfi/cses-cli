@@ -39,6 +39,10 @@ pub enum ApiError {
     ServerError(String),
     #[error("API request failed: \"{}\"", .0)]
     ClientError(String),
+    #[error("Task deduction error.")]
+    TaskDeductionError(String),
+    #[error("Language deduction error.")]
+    LanguageDeductionError(String),
 }
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -142,6 +146,8 @@ fn check_error(response: &Response) -> ApiResult<()> {
             ErrorCode::InvalidCredentials => ApiError::InvalidCredentialsError,
             ErrorCode::ServerError => ApiError::ServerError(error.message),
             ErrorCode::ClientError => ApiError::ClientError(error.message),
+            ErrorCode::TaskDeductionError => ApiError::TaskDeductionError(error.message),
+            ErrorCode::LanguageDeductionError => ApiError::LanguageDeductionError(error.message),
         })
     }
 }
@@ -172,6 +178,10 @@ pub enum ErrorCode {
     ServerError,
     #[serde(rename = "client_error")]
     ClientError,
+    #[serde(rename = "task_deduction_error")]
+    TaskDeductionError,
+    #[serde(rename = "language_deduction_error")]
+    LanguageDeductionError,
 }
 
 #[derive(Debug, Serialize)]
