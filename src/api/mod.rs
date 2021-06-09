@@ -1,7 +1,7 @@
 mod escape;
 use escape::Escape;
 
-use crate::entities::{Language, SubmissionInfo, SubmissionResponse};
+use crate::entities::{Language, SubmissionInfo};
 use crate::service::Login;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
@@ -53,7 +53,7 @@ pub trait CsesApi {
         course_id: &str,
         task_id: Option<u64>,
         submission: &CodeSubmit,
-    ) -> ApiResult<SubmissionResponse>;
+    ) -> ApiResult<SubmissionInfo>;
     fn get_submit(
         &self,
         token: &str,
@@ -89,7 +89,7 @@ impl CsesApi for CsesHttpApi {
         course_id: &str,
         task_id: Option<u64>,
         submission: &CodeSubmit,
-    ) -> ApiResult<SubmissionResponse> {
+    ) -> ApiResult<SubmissionInfo> {
         let mut request = minreq::post(format!(
             "{}/courses/{}/submissions",
             self.url,
@@ -105,7 +105,7 @@ impl CsesApi for CsesHttpApi {
 
         let response = request.send()?;
         check_error(&response)?;
-        let response_body: SubmissionResponse = json::from_str(response.as_str()?)?;
+        let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
     }
 

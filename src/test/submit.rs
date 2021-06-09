@@ -2,7 +2,7 @@ use super::fake_resources;
 use super::fake_resources_with_mock_api;
 use crate::command::Submit;
 use crate::entities::Language;
-use crate::entities::SubmissionResponse;
+use crate::entities::SubmissionInfo;
 use crate::entities::SubmitParameters;
 use crate::service;
 use crate::storage::{Storage, StorageData};
@@ -41,9 +41,9 @@ fn submit_mock() -> Result<()> {
                 && submission.content == "testing"
         })
         .returning(|_, _, _, _| {
-            Ok(SubmissionResponse {
-                submission_id: 17,
-                task_id: 4,
+            Ok(SubmissionInfo {
+                id: 17,
+                .. Default::default()
             })
         });
     let mut storage_data: StorageData = Default::default();
@@ -60,7 +60,6 @@ fn submit_mock() -> Result<()> {
         },
     };
     let submission_response = service::submit(&mut fake_resources, submit_params)?;
-    assert_eq!(submission_response.submission_id, 17);
-    assert_eq!(submission_response.task_id, 4);
+    assert_eq!(submission_response.id, 17);
     Ok(())
 }

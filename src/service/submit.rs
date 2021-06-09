@@ -1,8 +1,7 @@
 use super::require_login;
 use crate::command;
-use crate::entities::SubmissionResponse;
-use crate::entities::SubmitParameters;
-use crate::{api::CodeSubmit, entities::SubmissionInfo};
+use crate::entities::{SubmissionInfo, SubmitParameters};
+use crate::api::CodeSubmit;
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{anyhow, Context, Result};
 
@@ -30,7 +29,7 @@ pub fn create_submit_parameters(
 pub fn submit(
     res: &mut Resources<impl RP>,
     submit_parameters: SubmitParameters,
-) -> Result<SubmissionResponse> {
+) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         require_login(res)?;
         let course_id = submit_parameters.course;

@@ -9,17 +9,16 @@ use crate::entities::SubmissionInfo;
 
 pub fn print_submission_info(
     ui: &mut Ui<impl RP>,
-    submission_id: u64,
+    mut submission_info: SubmissionInfo,
     long_poll: bool,
 ) -> Result<()> {
-    let mut submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
     print_info_header(ui, &submission_info)?;
     let mut compiler_report_printed = print_compiler_report(ui, &submission_info)?;
     print_status(ui, &submission_info)?;
     let mut spinner = Spinner::new(9);
     while submission_info.pending {
         spinner.rotate_and_print(ui)?;
-        submission_info = service::submission_info(&mut ui.res, submission_id, long_poll)?;
+        submission_info = service::submission_info(&mut ui.res, submission_info.id, long_poll)?;
         ui.term.clear_last_lines(2)?;
         if !compiler_report_printed {
             compiler_report_printed = print_compiler_report(ui, &submission_info)?;
