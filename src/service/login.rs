@@ -66,8 +66,8 @@ pub enum LoginStatus {
 impl fmt::Display for LoginStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            LoginStatus::Missing => write!(f, "Not logged in, please login."),
-            LoginStatus::Pending => write!(f, "Login being finished in browser, please wait."),
+            LoginStatus::Missing => write!(f, "Not logged in."),
+            LoginStatus::Pending => write!(f, "Login waiting to be finished in browser."),
             LoginStatus::Invalid => write!(f, "Login is invalid, please login again."),
             LoginStatus::Valid(username) => write!(f, "Logged in as {}", username),
         }
