@@ -43,11 +43,11 @@ app = connexion.App(__name__, specification_dir="../",
 def login_post():
     token = state.login()
     print(f"got token: {token}")
-    host = connexion.request.host
+    host = connexion.request.root_url
     return (
         {
             "X-Auth-Token": token,
-            "authentication_url": f"http://{host}/authorize-login?token={token}"
+            "authentication_url": f"{host}authorize-login?token={token}"
         },
         200
     )
@@ -67,7 +67,7 @@ def logout_post(token_info):
     state.logout(token_info["apikey"])
     return (NoContent, 204)
 
-  
+
 def submissions_post(token_info, course_id, task=DEFAULT_TASK):
 
     details = connexion.request.json
@@ -80,17 +80,17 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
 
     new_submission = NewSubmission(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
-    if submission_id is None:
+    submission_info = state.get_initial_submission_info(submission_id)
+    if submission_info is None:
         if task == DEFAULT_TASK:
             return ({"message": f"Failed to deduce the task for the submission",
                      "code": "task_deduction_error"}, 400)
         if details["language"]["name"] is None:
             return ({"message": f"Failed to deduce the language for the submission",
                      "code": "language_deduction_error"}, 400)
-
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
-    return ({"submission_id": submission_id, "task_id": task}, 200)
+    return (submission_info, 200)
 
 
 def get_submission(token_info, course_id, submission_id, poll=False):
@@ -100,8 +100,7 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"poll: {poll}")
     if not integration and poll:
         time.sleep(1.5)
-    submission_info = state.get_submission_info(course_id,
-                                                submission_id)
+    submission_info = state.get_submission_info(submission_id)
     if submission_info is None:
         return ({"message": "Submission not found",
                 "code": "client_error"}, 404)

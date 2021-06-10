@@ -1,9 +1,8 @@
 mod submit;
-
-use crate::api::CodeSubmit;
-use crate::entities::SubmissionResponse;
+use crate::api::{CodeSubmit, LoginResponse};
+use crate::entities::SubmissionInfo;
 use crate::storage::StorageData;
-use crate::{api::ApiResult, api::MockCsesApi, service::Login};
+use crate::{api::ApiResult, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
 use anyhow::Result;
 use std::path::PathBuf;
@@ -11,7 +10,10 @@ use std::path::PathBuf;
 struct FakeCsesApi {}
 
 impl CsesApi for FakeCsesApi {
-    fn login(&self, _login: &Login) -> ApiResult<String> {
+    fn login(&self) -> ApiResult<LoginResponse> {
+        todo!()
+    }
+    fn login_status(&self, _token: &str) -> ApiResult<()> {
         todo!()
     }
     fn logout(&self, _token: &str) -> ApiResult<()> {
@@ -24,7 +26,7 @@ impl CsesApi for FakeCsesApi {
         _course_id: &str,
         _task_id: Option<u64>,
         _submission: &CodeSubmit,
-    ) -> ApiResult<SubmissionResponse> {
+    ) -> ApiResult<SubmissionInfo> {
         todo!()
     }
 
@@ -34,7 +36,7 @@ impl CsesApi for FakeCsesApi {
         _course_id: &str,
         _submission_id: u64,
         _poll: bool,
-    ) -> ApiResult<crate::entities::SubmissionInfo> {
+    ) -> ApiResult<SubmissionInfo> {
         todo!()
     }
 }

@@ -38,9 +38,12 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Logout => {
                 login::logout(self)?;
             }
+            Command::Status => {
+                login::status(self)?;
+            }
             Command::Submit(submit) => {
-                let submission_response = submit::submit(self, submit)?;
-                submission::print_submission_info(self, submission_response.submission_id, true)?;
+                let submission_info = submit::submit(self, submit)?;
+                submission::print_submission_info(self, submission_info, true)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
@@ -62,6 +65,7 @@ impl<R: ResourcesProvider> Ui<R> {
         }
     }
 
+    #[allow(unused)]
     fn prompt_secure_line(&self) -> Result<String> {
         if self.raw_stdin {
             self.prompt_line()

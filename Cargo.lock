@@ -319,9 +319,9 @@ dependencies = [
 
 [[package]]
 name = "minreq"
-version = "2.4.1"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7439d8f140e38812d07ccec2ac34c28f494e0e50074b402969d2a6b9d37d84a3"
+checksum = "44995f40971293bc7515239a49e2f7e24c87581a12a9bba8ded89d769d069c67"
 dependencies = [
  "log",
  "native-tls",
