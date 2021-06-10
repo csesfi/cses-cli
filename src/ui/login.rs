@@ -1,6 +1,4 @@
 use crate::service;
-use crate::service::Login;
-use crate::Storage;
 use crate::RP;
 use anyhow::Result;
 use std::io::Write;
@@ -26,16 +24,6 @@ pub fn logout(ui: &mut Ui<impl RP>) -> Result<()> {
     service::logout(&mut ui.res)?;
     ui.term.write_line("Login invalidated successfully")?;
     Ok(())
-}
-
-fn prompt_username(ui: &mut Ui<impl RP>) -> Result<String> {
-    ui.term.write_str("Username: ")?;
-    ui.prompt_line().context("Failed reading username")
-}
-
-fn prompt_password(ui: &mut Ui<impl RP>) -> Result<String> {
-    ui.term.write_str("Password: ")?;
-    ui.prompt_secure_line().context("Failed reading password")
 }
 
 fn prompt_overwrite(ui: &mut Ui<impl RP>) -> Result<bool> {
