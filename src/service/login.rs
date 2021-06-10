@@ -38,14 +38,18 @@ pub fn login_exists(res: &Resources<impl RP>) -> bool {
     res.storage.get().get_token().is_some()
 }
 
-// Returns true if token is valid and false if not or is missing.
-pub fn login_status(res: &Resources<impl RP>) -> Result<bool> {
+pub fn login_status(res: &Resources<impl RP>) -> Result<String> {
     if !login_exists(res) {
-        return Ok(false);
+        return Ok(String::from("Login token is missing."));
     }
     match res.api.login_status(res.storage.get().get_token().unwrap()) {
-        Err(ApiError::PendingApiKeyError) | Err(ApiError::ApiKeyError) => return Ok(false),
+        Err(ApiError::PendingApiKeyError) => {
+            return Ok(String::from("Login token is being validated"))
+        }
+        Err(ApiError::ApiKeyError) => return Ok(String::from("Login token is invalid")),
         val => val?,
     };
-    Ok(true)
+    let user = "username"; // TODO
+    let s = format!("Logged in as {}", user);
+    Ok(String::from(s))
 }

@@ -12,6 +12,7 @@ COMMANDS:
     help                Prints this help message.
     login               Log in to cses.fi
     logout              Invalidate the current login session.
+    status              Prints the login status.
     submit <file>       Submit a file to cses.fi.
 
         Submit options:
@@ -40,6 +41,7 @@ pub enum Command {
     Help,
     Login,
     Logout,
+    Status,
     Submit(Submit),
 }
 #[derive(Debug)]
@@ -85,6 +87,7 @@ impl Command {
             "help" => Ok(Command::Help),
             "login" => Ok(Command::Login),
             "logout" => Ok(Command::Logout),
+            "status" => Ok(Command::Status),
             "submit" => Ok(Command::Submit(
                 Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
             )),

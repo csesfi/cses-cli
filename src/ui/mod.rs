@@ -37,6 +37,9 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Logout => {
                 login::logout(self)?;
             }
+            Command::Status => {
+                login::status(self)?;
+            }
             Command::Submit(submit) => {
                 let submission_id = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_id, true)?;

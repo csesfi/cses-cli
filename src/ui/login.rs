@@ -18,11 +18,7 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     }
 
     let login_url = service::login(&mut ui.res)?;
-    writeln!(
-        ui.term,
-        "Please visit\n{}\nto login",
-        login_url
-    )?;
+    writeln!(ui.term, "Please visit\n{}\nto login", login_url)?;
     Ok(())
 }
 
@@ -46,4 +42,10 @@ fn prompt_overwrite(ui: &mut Ui<impl RP>) -> Result<bool> {
     ui.term.write_str("Already logged in. Are you sure you want to overwrite the current login session (yes/No)? ")?;
     let answer = ui.prompt_line().context("Failed reading confirmation")?;
     Ok(answer == "yes")
+}
+
+pub fn status(ui: &mut Ui<impl RP>) -> Result<()> {
+    let login_status = service::login_status(&ui.res)?;
+    writeln!(ui.term, "Login status: {}", login_status)?;
+    Ok(())
 }
