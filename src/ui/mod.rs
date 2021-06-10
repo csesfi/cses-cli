@@ -37,6 +37,9 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Logout => {
                 login::logout(self)?;
             }
+            Command::Status => {
+                login::status(self)?;
+            }
             Command::Submit(submit) => {
                 let submission_info = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
@@ -61,6 +64,7 @@ impl<R: ResourcesProvider> Ui<R> {
         }
     }
 
+    #[allow(unused)]
     fn prompt_secure_line(&self) -> Result<String> {
         if self.raw_stdin {
             self.prompt_line()

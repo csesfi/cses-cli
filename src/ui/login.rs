@@ -1,5 +1,4 @@
 use crate::service;
-use crate::service::Login;
 use crate::Storage;
 use crate::RP;
 use anyhow::Result;
@@ -13,19 +12,16 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
     try_login(ui).context("Login failed!")
 }
 fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
-    if service::login_exists(&ui.res) && !prompt_overwrite(ui)? {
+    if service::login_is_valid(&ui.res)? && !prompt_overwrite(ui)? {
         return Ok(());
     }
 
-    let login = Login {
-        username: prompt_username(ui)?,
-        password: prompt_password(ui)?,
-    };
-    service::login(&mut ui.res, &login)?;
+    let login_url = service::login(&mut ui.res)?;
     writeln!(
         ui.term,
-        "Login successful. Saved login token to {}",
-        ui.res.storage.get_path().display()
+        "Saving token to {}\n\nPlease visit\n{}\nto log in",
+        ui.res.storage.get_path().display(),
+        login_url
     )?;
     Ok(())
 }
@@ -36,18 +32,14 @@ pub fn logout(ui: &mut Ui<impl RP>) -> Result<()> {
     Ok(())
 }
 
-fn prompt_username(ui: &mut Ui<impl RP>) -> Result<String> {
-    ui.term.write_str("Username: ")?;
-    ui.prompt_line().context("Failed reading username")
-}
-
-fn prompt_password(ui: &mut Ui<impl RP>) -> Result<String> {
-    ui.term.write_str("Password: ")?;
-    ui.prompt_secure_line().context("Failed reading password")
-}
-
 fn prompt_overwrite(ui: &mut Ui<impl RP>) -> Result<bool> {
     ui.term.write_str("Already logged in. Are you sure you want to overwrite the current login session (yes/No)? ")?;
     let answer = ui.prompt_line().context("Failed reading confirmation")?;
     Ok(answer == "yes")
+}
+
+pub fn status(ui: &mut Ui<impl RP>) -> Result<()> {
+    let login_status = service::login_status(&ui.res)?;
+    writeln!(ui.term, "Login status: {}", login_status)?;
+    Ok(())
 }

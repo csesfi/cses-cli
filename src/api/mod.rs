@@ -2,7 +2,6 @@ mod escape;
 use escape::Escape;
 
 use crate::entities::{Language, SubmissionInfo};
-use crate::service::Login;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
 #[cfg(test)]
@@ -31,8 +30,8 @@ pub enum ApiError {
     HttpError(#[from] minreq::Error),
     #[error("Could not parse server response")]
     JsonError(#[from] miniserde::Error),
-    #[error("Invalid credentials")]
-    InvalidCredentialsError,
+    #[error("API key pending authentication.")]
+    PendingApiKeyError,
     #[error("Invalid API key. Log in again.")]
     ApiKeyError,
     #[error("Server error: \"{}\"", .0)]
@@ -45,7 +44,8 @@ pub type ApiResult<T> = Result<T, ApiError>;
 
 #[cfg_attr(test, automock)]
 pub trait CsesApi {
-    fn login(&self, login: &Login) -> ApiResult<String>;
+    fn login(&self) -> ApiResult<LoginResponse>;
+    fn login_status(&self, token: &str) -> ApiResult<()>;
     fn logout(&self, token: &str) -> ApiResult<()>;
     fn submit_task(
         &self,
@@ -64,15 +64,18 @@ pub trait CsesApi {
 }
 
 impl CsesApi for CsesHttpApi {
-    fn login(&self, login: &Login) -> ApiResult<String> {
-        let response = minreq::post(format!("{}/login", self.url))
-            .with_body(json::to_string(login))
-            .with_header("Content-Type", "application/json")
+    fn login(&self) -> ApiResult<LoginResponse> {
+        let response = minreq::post(format!("{}/login", self.url)).send()?;
+        check_error(&response)?;
+        Ok(json::from_str(response.as_str()?)?)
+    }
+
+    fn login_status(&self, token: &str) -> ApiResult<()> {
+        let response = minreq::get(format!("{}/login", self.url))
+            .with_header("X-Auth-Token", token)
             .send()?;
         check_error(&response)?;
-        let response_body: LoginResponse = json::from_str(response.as_str()?)?;
-        let token = response_body.x_auth_token;
-        Ok(token)
+        Ok(())
     }
 
     fn logout(&self, token: &str) -> ApiResult<()> {
@@ -139,7 +142,7 @@ fn check_error(response: &Response) -> ApiResult<()> {
         let error: ErrorResponse = json::from_str(response.as_str()?)?;
         Err(match error.code {
             ErrorCode::InvalidApiKey => ApiError::ApiKeyError,
-            ErrorCode::InvalidCredentials => ApiError::InvalidCredentialsError,
+            ErrorCode::PendingApiKey => ApiError::PendingApiKeyError,
             ErrorCode::ServerError => ApiError::ServerError(error.message),
             ErrorCode::ClientError => ApiError::ClientError(error.message),
         })
@@ -148,12 +151,6 @@ fn check_error(response: &Response) -> ApiResult<()> {
 
 fn successful_response(response: &Response) -> bool {
     (200..300).contains(&response.status_code)
-}
-
-#[derive(Deserialize)]
-struct LoginResponse {
-    #[serde(rename = "X-Auth-Token")]
-    x_auth_token: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -166,8 +163,8 @@ pub struct ErrorResponse {
 pub enum ErrorCode {
     #[serde(rename = "invalid_api_key")]
     InvalidApiKey,
-    #[serde(rename = "invalid_credentials")]
-    InvalidCredentials,
+    #[serde(rename = "pending_api_key")]
+    PendingApiKey,
     #[serde(rename = "server_error")]
     ServerError,
     #[serde(rename = "client_error")]
@@ -179,4 +176,11 @@ pub struct CodeSubmit {
     pub language: Language,
     pub filename: String,
     pub content: String,
+}
+
+#[derive(Deserialize)]
+pub struct LoginResponse {
+    #[serde(rename = "X-Auth-Token")]
+    pub token: String,
+    pub authentication_url: String,
 }
