@@ -1,7 +1,7 @@
 use super::require_login;
+use crate::api::CodeSubmit;
 use crate::command;
 use crate::entities::{SubmissionInfo, SubmitParameters};
-use crate::api::CodeSubmit;
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{anyhow, Context, Result};
 

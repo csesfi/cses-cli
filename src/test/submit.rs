@@ -43,7 +43,7 @@ fn submit_mock() -> Result<()> {
         .returning(|_, _, _, _| {
             Ok(SubmissionInfo {
                 id: 17,
-                .. Default::default()
+                ..Default::default()
             })
         });
     let mut storage_data: StorageData = Default::default();
