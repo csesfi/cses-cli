@@ -61,6 +61,7 @@ impl<R: ResourcesProvider> Ui<R> {
         }
     }
 
+    #[allow(unused)]
     fn prompt_secure_line(&self) -> Result<String> {
         if self.raw_stdin {
             self.prompt_line()
