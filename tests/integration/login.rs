@@ -8,9 +8,9 @@ fn login_is_successful_with_correct_username_and_password() {
     verify_successful_login_output(assert);
 }
 
+// FIXME: Add equivalent test for web-based auth
 // #[distributed_slice(TESTS)]
 // fn login_fails_with_incorrect_username() {
-//     let assert = unsuccessful_login();
 //     command()
 //         .args(&["login"])
 //         .write_stdin("nonexistinguser\nincorrectpassword\n")
@@ -44,29 +44,22 @@ fn application_knows_user_is_already_logged_in() {
 fn user_can_overwrite_current_login() {
     let assert = successful_login_attempt();
     verify_successful_login_output(assert);
-    let assert = command()
-        .args(&["login"])
-        .write_stdin("yes\nkalle\nkissa2\n")
-        .assert();
+    let assert = command().args(&["login"]).write_stdin("yes\n").assert();
     assert
         .success()
-        .stdout(regex_match(r"(?i)login successful"))
+        .stdout(regex_match(r"(?i)overwrite"))
+        .stdout(regex_match(r"(?i)please visit"))
         .stderr(predicate::str::is_empty());
 }
 
 fn successful_login_attempt() -> Assert {
-    command()
-        .args(&["login"])
-        .write_stdin("kalle\nkissa2\n")
-        .assert()
+    command().args(&["login"]).assert()
 }
 
 fn verify_successful_login_output(assert: Assert) {
     assert
         .success()
-        .stdout(regex_match(r"(?i)username: "))
-        .stdout(regex_match(r"(?i)password: "))
-        .stdout(regex_match(r"(?i)login successful"))
+        .stdout(regex_match(r"(?i)please visit"))
         .stderr(predicate::str::is_empty());
 }
 

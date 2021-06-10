@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import NewSubmission
-from scenarios import scenarios
+from scenarios import scenarios, DEFAULT_TASK
 
 
 integration = False
@@ -36,25 +36,40 @@ state = ServerState(
     scenarios=scenarios
 )
 
+app = connexion.App(__name__, specification_dir="../",
+                    options={"swagger_ui": False})
+
 
 def login_post():
     token = state.login()
     print(f"got token: {token}")
-    if token is not None:
-        return ({"X-Auth-Token": token, "authentication_url": "http://todo"}, 200)
+    host = connexion.request.root_url
+    return (
+        {
+            "X-Auth-Token": token,
+            "authentication_url": f"{host}authorize-login?token={token}"
+        },
+        200
+    )
 
-    return ({"message": "Invalid username/password",
-             "code": "invalid_credentials"}, 401)
+@app.route('/authorize-login')
+def authorize_login_post():
+    token = connexion.request.args.get("token")
+    fail = connexion.request.args.get("fail") is not None
+    state.authorize_login(token, fail)
+    return "", 204
 
 def login_get(token_info):
+    # Errors returned by security scheme
     return (NoContent, 204)
 
 def logout_post(token_info):
     state.logout(token_info["apikey"])
     return (NoContent, 204)
 
+  
+def submissions_post(token_info, course_id, task=DEFAULT_TASK):
 
-def submissions_post(token_info, course_id, task_id):
     details = connexion.request.json
     try:
         details["content"] = base64.b64decode(details["content"]) \
@@ -63,23 +78,22 @@ def submissions_post(token_info, course_id, task_id):
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
-    new_submission = NewSubmission(course_id, task_id, connexion.request.json)
+    new_submission = NewSubmission(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
     if submission_id is None:
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
-    return ({"id": submission_id}, 200)
+    return ({"submission_id": submission_id, "task_id": task}, 200)
 
 
-def get_submission(token_info, course_id, task_id, submission_id, poll=False):
+def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"get submit: {token_info}")
     print(f"course_id: {course_id}")
-    print(f"task_id: {task_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
     if not integration and poll:
         time.sleep(1.5)
-    submission_info = state.get_submission_info(course_id, task_id,
+    submission_info = state.get_submission_info(course_id,
                                                 submission_id)
     if submission_info is None:
         return ({"message": "Submission not found",
@@ -96,11 +110,14 @@ def apikey_auth(apikey, required_scopes=None):
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
 
-    if state.is_valid(apikey):
+    status = state.check_login(apikey)
+    if status == "valid":
         return {"apikey": apikey}
-
-    # this will be overriden by the render_api_authentication_failed function
-    raise werkzeug.exceptions.Unauthorized()
+    elif status == "pending":
+        raise Unauthorized(description="pending")
+    else:
+        # this will be overriden by the render_api_authentication_failed function
+        raise Unauthorized()
 
 
 def render_invalid_query(exception):
@@ -108,15 +125,16 @@ def render_invalid_query(exception):
 
 
 def render_api_authentication_failed(exception):
-    return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
+    if exception.description == "pending":
+        return ({"message": "API key pending login", "code": "pending_api_key"}, 401)
+    else:
+        return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
 
 
 def render_method_not_allowed(exception):
     return ({"message": "Invalid HTTP method", "code": "client_error"}, 405)
 
 
-app = connexion.App(__name__, specification_dir="../",
-                    options={"swagger_ui": False})
 app.add_error_handler(BadRequestProblem, render_invalid_query)
 app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)

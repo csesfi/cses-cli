@@ -41,8 +41,8 @@ impl<R: ResourcesProvider> Ui<R> {
                 login::status(self)?;
             }
             Command::Submit(submit) => {
-                let submission_id = submit::submit(self, submit)?;
-                submission::print_submission_info(self, submission_id, true)?;
+                let submission_response = submit::submit(self, submit)?;
+                submission::print_submission_info(self, submission_response.submission_id, true)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;

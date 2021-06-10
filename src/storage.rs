@@ -8,10 +8,6 @@ use std::path::PathBuf;
 pub struct StorageData {
     token: Option<String>,
     course: Option<String>,
-    task: Option<u64>,
-    language: Option<String>,
-    option: Option<String>,
-    file: Option<String>,
 }
 
 #[cfg(unix)]
@@ -35,35 +31,11 @@ impl StorageData {
     pub fn get_course(&self) -> Option<&str> {
         self.course.as_deref()
     }
-    pub fn get_task(&self) -> Option<u64> {
-        self.task
-    }
-    pub fn get_language(&self) -> Option<&str> {
-        self.language.as_deref()
-    }
-    pub fn get_option(&self) -> Option<&str> {
-        self.option.as_deref()
-    }
-    pub fn get_file(&self) -> Option<&str> {
-        self.file.as_deref()
-    }
     pub fn set_token(&mut self, val: String) {
         self.token = Some(val);
     }
     pub fn set_course(&mut self, val: String) {
         self.course = Some(val);
-    }
-    pub fn set_task(&mut self, val: u64) {
-        self.task = Some(val);
-    }
-    pub fn set_language(&mut self, val: String) {
-        self.language = Some(val);
-    }
-    pub fn set_option(&mut self, val: String) {
-        self.option = Some(val);
-    }
-    pub fn set_file(&mut self, val: String) {
-        self.file = Some(val);
     }
 }
 
@@ -133,18 +105,7 @@ mod tests {
         let mut storage_data: StorageData = Default::default();
         storage_data.set_token(String::from("token"));
         storage_data.set_course(String::from("course"));
-        storage_data.set_task(42);
-        storage_data.set_language(String::from("language"));
-        storage_data.set_option(String::from("option"));
-        storage_data.set_file(String::from("file"));
         assert_eq!(String::from("token"), storage_data.get_token().unwrap());
         assert_eq!(String::from("course"), storage_data.get_course().unwrap());
-        assert_eq!(42, storage_data.get_task().unwrap());
-        assert_eq!(
-            String::from("language"),
-            storage_data.get_language().unwrap()
-        );
-        assert_eq!(String::from("option"), storage_data.get_option().unwrap());
-        assert_eq!(String::from("file"), storage_data.get_file().unwrap());
     }
 }
