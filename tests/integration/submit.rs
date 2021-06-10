@@ -316,3 +316,31 @@ fn test_report_is_not_displayed_without_any_content() {
         .stdout(regex_match(r"(?i)Test report").not())
         .stderr(predicate::str::is_empty());
 }
+#[distributed_slice(TESTS)]
+fn test_task_deduction_hint_printed() {
+    log_in("kalle");
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "test_server_deduction", "-l", "C++", "-o", "C++17",
+        ])
+        .assert();
+    assert
+        .failure()
+        .stdout(contains("cses-cli submit hello_world.rs -t 1337"));
+}
+#[distributed_slice(TESTS)]
+fn test_language_deduction_hint_printed() {
+    log_in("kalle");
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit", "main.cpp", "-c", "test_server_deduction", "-t", "1337",
+        ])
+        .assert();
+    assert
+        .failure()
+        .stdout(contains("cses-cli submit hello_world.rs -l Rust"));
+}
