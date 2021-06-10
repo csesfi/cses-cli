@@ -51,5 +51,5 @@ pub fn login_status(res: &Resources<impl RP>) -> Result<String> {
     };
     let user = "username"; // TODO
     let s = format!("Logged in as {}", user);
-    Ok(String::from(s))
+    Ok(s)
 }
