@@ -189,7 +189,7 @@ components:
       required:
         - id
         - task
-        - submitter
+        - sender
         - time
         - language
         - status
@@ -203,7 +203,7 @@ components:
             ID of the submission.
         task:
           $ref: "#/components/schemas/TaskOutline"
-        submitter:
+        sender:
           $ref: "#/components/schemas/UserOutline"
         time:
           type: string

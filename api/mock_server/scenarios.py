@@ -75,7 +75,7 @@ scenarios = [
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "Rust",
@@ -86,7 +86,7 @@ scenarios = [
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "Rust",
@@ -108,7 +108,7 @@ scenarios = [
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -119,7 +119,7 @@ scenarios = [
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -130,7 +130,7 @@ scenarios = [
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -158,7 +158,7 @@ scenarios = [
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -170,7 +170,7 @@ scenarios = [
 
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -195,7 +195,7 @@ fn main() {
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -207,7 +207,7 @@ fn main() {
 
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -234,7 +234,7 @@ for (int i = 0; i < a.size(); i++) {
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": None,
@@ -251,7 +251,7 @@ for (int i = 0; i < a.size(); i++) {
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -262,7 +262,7 @@ for (int i = 0; i < a.size(); i++) {
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -289,7 +289,7 @@ for (int i = 0; i < a.size(); i++) {
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -300,7 +300,7 @@ for (int i = 0; i < a.size(); i++) {
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -327,7 +327,7 @@ for (int i = 0; i < a.size(); i++) {
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -338,7 +338,7 @@ for (int i = 0; i < a.size(); i++) {
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -357,7 +357,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -376,7 +376,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -395,7 +395,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -414,7 +414,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -456,7 +456,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -467,7 +467,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -478,7 +478,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -489,7 +489,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -504,7 +504,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -519,7 +519,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -534,7 +534,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -549,7 +549,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -564,7 +564,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -579,7 +579,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -617,7 +617,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -628,7 +628,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "C++",
@@ -650,7 +650,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         [
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "CPython",
@@ -661,7 +661,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
             },
             {
                 "task": SUMMA_TASK,
-                "submitter": UOLEVI,
+                "sender": UOLEVI,
                 "time": "2017-07-21T17:32:28Z",
                 "language": {
                     "name": "CPython",

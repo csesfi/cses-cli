@@ -39,6 +39,7 @@ fn print_info_header(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
         "Task: {} ({})",
         submission_info.task.name, submission_info.task.id
     )?;
+    writeln!(ui.term, "Sender: {}", submission_info.sender.name())?;
     writeln!(ui.term, "Submission time: {}", submission_info.time)?;
     write!(
         ui.term,

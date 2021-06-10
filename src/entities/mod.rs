@@ -23,7 +23,7 @@ impl UserOutline {
 pub struct SubmissionInfo {
     pub id: u64,
     pub task: TaskOutline,
-    pub submitter: UserOutline,
+    pub sender: UserOutline,
     pub time: String,
     pub language: Language,
     pub status: String,
