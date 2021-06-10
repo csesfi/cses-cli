@@ -11,7 +11,7 @@ pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
     try_login(ui).context("Login failed!")
 }
 fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
-    if service::login_exists(&ui.res) && !prompt_overwrite(ui)? {
+    if service::login_is_valid(&ui.res)? && !prompt_overwrite(ui)? {
         return Ok(());
     }
 

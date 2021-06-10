@@ -53,3 +53,8 @@ pub fn login_status(res: &Resources<impl RP>) -> Result<String> {
     let s = format!("Logged in as {}", user);
     Ok(s)
 }
+
+pub fn login_is_valid(res: &Resources<impl RP>) -> Result<bool> {
+    let status = login_status(res)?;
+    Ok(status.contains("Logged in"))
+}
