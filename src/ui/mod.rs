@@ -5,7 +5,8 @@ mod submit;
 use anyhow::{Error, Result};
 use console::{Style, Term};
 
-use crate::command::HELP_STR;
+use crate::api::ApiError;
+use crate::command::{HELP_STR, LANGUAGE_HINT, TASK_HINT};
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider};
 
@@ -71,7 +72,36 @@ impl<R: ResourcesProvider> Ui<R> {
 }
 
 pub fn print_error(err: &Error) {
-    println!("{:?}", err);
+    for (i, error) in err.chain().enumerate() {
+        let prefix = if i == 0 {
+            "".to_owned()
+        } else {
+            "\t".to_owned()
+        };
+        println!("{}", add_indentation(&error.to_string(), &prefix));
+        if let Some(hint) = get_error_hint(error) {
+            let prefix = prefix.to_owned() + "\t";
+            println!("{}\n", add_indentation("Hint:", &prefix));
+            println!("{}", add_indentation(&hint, &prefix));
+        }
+    }
+}
+
+fn get_error_hint(error: &(dyn std::error::Error + 'static)) -> Option<&'static str> {
+    match error.downcast_ref::<ApiError>() {
+        Some(ApiError::LanguageDeductionError(_)) => Some(LANGUAGE_HINT),
+        Some(ApiError::TaskDeductionError(_)) => Some(TASK_HINT),
+        _ => None,
+    }
+}
+
+fn add_indentation(text: &str, prefix: &str) -> String {
+    let mut result = String::new();
+    for line in text.split_inclusive('\n') {
+        result.push_str(prefix);
+        result.push_str(&line);
+    }
+    result
 }
 
 pub fn print_with_color(line: String) {

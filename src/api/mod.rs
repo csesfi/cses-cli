@@ -39,9 +39,9 @@ pub enum ApiError {
     ServerError(String),
     #[error("API request failed: \"{}\"", .0)]
     ClientError(String),
-    #[error("Task deduction error.")]
+    #[error("Task deduction error: \"{}\"", .0)]
     TaskDeductionError(String),
-    #[error("Language deduction error.")]
+    #[error("Language deduction error: \"{}\"", .0)]
     LanguageDeductionError(String),
 }
 
