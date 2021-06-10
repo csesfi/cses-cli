@@ -1,5 +1,5 @@
-use crate::Storage;
 use crate::service;
+use crate::Storage;
 use crate::RP;
 use anyhow::Result;
 use std::io::Write;
@@ -17,7 +17,12 @@ fn try_login(ui: &mut Ui<impl RP>) -> Result<()> {
     }
 
     let login_url = service::login(&mut ui.res)?;
-    writeln!(ui.term, "Saving token to {}\n\nPlease visit\n{}\nto log in", ui.res.storage.get_path().display(), login_url)?;
+    writeln!(
+        ui.term,
+        "Saving token to {}\n\nPlease visit\n{}\nto log in",
+        ui.res.storage.get_path().display(),
+        login_url
+    )?;
     Ok(())
 }
 
