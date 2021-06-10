@@ -72,11 +72,21 @@ class ServerState:
 
         return submission_id
 
-    def get_submission_info(self, course_id, submission_id):
+    def get_initial_submission_info(self, submission_id):
+        """Returns the initial state of the submission `submission_id`"""
+        if submission_id not in self.submission_trackers:
+            return None
+        info = self.submission_trackers[submission_id].first().copy()
+        info["id"] = submission_id
+        return info
+
+    def get_submission_info(self, submission_id):
         """Returns the next state of the submission `submission_id`"""
         if submission_id not in self.submission_trackers:
             return None
-        return self.submission_trackers[submission_id].next()
+        info = self.submission_trackers[submission_id].next().copy()
+        info["id"] = submission_id
+        return info
 
 
 class SubmissionTracker:
@@ -84,6 +94,9 @@ class SubmissionTracker:
         assert len(submission_infos) > 0
         self.infos = submission_infos
         self._position = 0
+
+    def first(self):
+        return self.infos[0]
 
     def next(self):
         info = self.infos[self._position]

@@ -67,7 +67,7 @@ def logout_post(token_info):
     state.logout(token_info["apikey"])
     return (NoContent, 204)
 
-  
+
 def submissions_post(token_info, course_id, task=DEFAULT_TASK):
 
     details = connexion.request.json
@@ -80,10 +80,11 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
 
     new_submission = NewSubmission(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
-    if submission_id is None:
+    submission_info = state.get_initial_submission_info(submission_id)
+    if submission_info is None:
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
-    return ({"submission_id": submission_id, "task_id": task}, 200)
+    return (submission_info, 200)
 
 
 def get_submission(token_info, course_id, submission_id, poll=False):
@@ -93,8 +94,7 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"poll: {poll}")
     if not integration and poll:
         time.sleep(1.5)
-    submission_info = state.get_submission_info(course_id,
-                                                submission_id)
+    submission_info = state.get_submission_info(submission_id)
     if submission_info is None:
         return ({"message": "Submission not found",
                 "code": "client_error"}, 404)
