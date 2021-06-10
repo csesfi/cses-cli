@@ -323,7 +323,14 @@ fn test_task_deduction_hint_printed() {
 
     let assert = command()
         .args(&[
-            "submit", "main.cpp", "-c", "test_server_deduction", "-l", "C++", "-o", "C++17",
+            "submit",
+            "main.cpp",
+            "-c",
+            "test_server_deduction",
+            "-l",
+            "C++",
+            "-o",
+            "C++17",
         ])
         .assert();
     assert
@@ -337,7 +344,12 @@ fn test_language_deduction_hint_printed() {
 
     let assert = command()
         .args(&[
-            "submit", "main.cpp", "-c", "test_server_deduction", "-t", "1337",
+            "submit",
+            "main.cpp",
+            "-c",
+            "test_server_deduction",
+            "-t",
+            "1337",
         ])
         .assert();
     assert

@@ -111,3 +111,19 @@ pub fn print_with_color(line: String) {
     }
     print!("{}", color.apply_to(line));
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const TEST: &str = "ei\noppi\nojaan\nkaada";
+
+    #[test]
+    fn test_add_indentation_empty_prefix_does_noting() {
+        assert_eq!(add_indentation(&TEST, ""), TEST);
+    }
+    #[test]
+    fn test_add_indentation_simple() {
+        assert_eq!(add_indentation(&TEST, " "), " ei\n oppi\n ojaan\n kaada");
+    }
+}
