@@ -184,4 +184,3 @@ pub struct LoginResponse {
     pub token: String,
     pub authentication_url: String,
 }
-

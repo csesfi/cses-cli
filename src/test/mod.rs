@@ -1,6 +1,4 @@
 mod submit;
-
-mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
 use crate::entities::SubmissionInfo;
 use crate::storage::StorageData;
@@ -103,4 +101,3 @@ fn fake_resources_with_mock_api() -> Resources<(MockCsesApi, FakeStorage, FakeFi
         filesystem: FakeFilesystem {},
     }
 }
-
