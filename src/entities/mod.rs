@@ -1,13 +1,15 @@
 use miniserde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone)]
 pub struct Language {
     pub name: Option<String>,
     pub option: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 pub struct SubmissionInfo {
+    pub id: u64,
+    pub task: TaskOutline,
     pub time: String,
     pub language: Language,
     pub status: String,
@@ -17,12 +19,6 @@ pub struct SubmissionInfo {
     pub tests: Option<Vec<SubmissionTestInfo>>,
     pub compiler: Option<String>,
     pub test_report: Option<String>,
-}
-
-#[derive(Deserialize)]
-pub struct SubmissionResponse {
-    pub submission_id: u64,
-    pub task_id: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -36,6 +32,12 @@ pub struct SubmissionTestInfo {
 pub struct TestProgress {
     pub finished_tests: u64,
     pub total_tests: u64,
+}
+
+#[derive(Debug, Default, Deserialize)]
+pub struct TaskOutline {
+    pub id: u64,
+    pub name: String,
 }
 
 #[derive(Debug, Deserialize)]
