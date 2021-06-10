@@ -1,5 +1,7 @@
 use anyhow::{anyhow, Context, Result};
 
+use crate::entities::Language;
+
 pub static HELP_STR: &str = r#"CSES CLI
 
 USAGE:
@@ -46,8 +48,7 @@ pub enum Command {
 pub struct Submit {
     pub course_id: Option<String>,
     pub task_id: Option<u64>,
-    pub language_name: Option<String>,
-    pub language_option: Option<String>,
+    pub language: Language,
     pub file_name: String,
 }
 impl Submit {
@@ -55,8 +56,10 @@ impl Submit {
         Ok(Submit {
             course_id: pargs.opt_value_from_str(["-c", "--course"])?,
             task_id: pargs.opt_value_from_str(["-t", "--task"])?,
-            language_name: pargs.opt_value_from_str(["-l", "--language"])?,
-            language_option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
+            language: Language {
+                name: pargs.opt_value_from_str(["-l", "--language"])?,
+                option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
+            },
             file_name: {
                 if let Ok(file_name) = pargs.free_from_str() {
                     file_name
@@ -249,7 +252,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_name: Some(lang), .. })
+            Command::Submit(Submit { language: Language { name: Some(lang), ..}, .. })
             if lang == "Rust"
         ));
     }
@@ -261,7 +264,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_name: Some(lang), .. })
+            Command::Submit(Submit { language: Language { name: Some(lang), .. }, .. })
             if lang == "Rust"
         ));
     }
@@ -273,7 +276,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_option: Some(opt), .. })
+            Command::Submit(Submit { language: Language{ option: Some(opt), .. }, .. })
             if opt == "C++17"
         ));
     }
@@ -284,7 +287,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language_option: Some(opt), .. })
+            Command::Submit(Submit { language: Language{ option: Some(opt), .. }, ..})
             if opt == "C++17"
         ));
     }

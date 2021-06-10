@@ -14,15 +14,22 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
 ## Project documentation
 
+### Progress
+
 - [Google Drive folder](https://drive.google.com/drive/folders/1teZTWPnbmWlJkVfETz7T2j04UHqJYpuf?usp=sharing)
 
 - [Backlogs + work time monitoring](https://docs.google.com/spreadsheets/d/10vB2CXV9RVyM_wIMyXrgepMcKMDzQ1qXHvmtuqjiaio/edit#gid=0)
 
-- [Architecture](https://github.com/H4m5t3r/cses-cli/wiki/Architecture)
+- [Definition of Done and project guidelines](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
+
+
+### Program description
 
 - [API](https://h4m5t3r.github.io/cses-cli/)
 
-- [Definition of Done and project guidelines](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
+- [Architecture](https://github.com/H4m5t3r/cses-cli/wiki/Architecture)
+
+### User info
 
 - [User manual](https://github.com/H4m5t3r/cses-cli/wiki/User-manual)
 

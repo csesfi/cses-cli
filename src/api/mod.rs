@@ -1,7 +1,7 @@
 mod escape;
 use escape::Escape;
 
-use crate::entities::{Language, SubmissionInfo};
+use crate::entities::{Language, SubmissionInfo, SubmissionResponse};
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
 #[cfg(test)]
@@ -51,14 +51,13 @@ pub trait CsesApi {
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
+        task_id: Option<u64>,
         submission: &CodeSubmit,
-    ) -> ApiResult<u64>;
+    ) -> ApiResult<SubmissionResponse>;
     fn get_submit(
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
@@ -91,43 +90,44 @@ impl CsesApi for CsesHttpApi {
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
+        task_id: Option<u64>,
         submission: &CodeSubmit,
-    ) -> ApiResult<u64> {
-        let response = minreq::post(format!(
-            "{}/courses/{}/tasks/{}/submissions",
+    ) -> ApiResult<SubmissionResponse> {
+        let mut request = minreq::post(format!(
+            "{}/courses/{}/submissions",
             self.url,
-            Escape(course_id),
-            task_id
+            Escape(course_id)
         ))
         .with_body(json::to_string(submission))
         .with_header("X-Auth-Token", token)
-        .with_header("Content-Type", "application/json")
-        .send()?;
+        .with_header("Content-Type", "application/json");
+
+        if let Some(task_id) = task_id {
+            request = request.with_param("task", task_id.to_string());
+        }
+
+        let response = request.send()?;
         check_error(&response)?;
         let response_body: SubmissionResponse = json::from_str(response.as_str()?)?;
-        let submission_id = response_body.id;
-        Ok(submission_id)
+        Ok(response_body)
     }
 
     fn get_submit(
         &self,
         token: &str,
         course_id: &str,
-        task_id: u64,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "true" } else { "false" };
         let response = minreq::get(format!(
-            "{}/courses/{}/tasks/{}/submissions/{}?poll={}",
+            "{}/courses/{}/submissions/{}",
             self.url,
             Escape(course_id),
-            task_id,
-            submission_id,
-            poll
+            submission_id
         ))
         .with_header("X-Auth-Token", token)
+        .with_param("poll", poll)
         .send()?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
@@ -157,11 +157,6 @@ fn successful_response(response: &Response) -> bool {
 pub struct ErrorResponse {
     pub message: String,
     pub code: ErrorCode,
-}
-
-#[derive(Deserialize)]
-struct SubmissionResponse {
-    id: u64,
 }
 
 #[derive(Debug, Deserialize)]

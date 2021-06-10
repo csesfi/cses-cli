@@ -17,13 +17,15 @@ components:
           schema:
             $ref: "#/components/schemas/InvalidApiKeyError"
 
-    PendingApiKeyError:
+    GetLoginError:
       description: >
-        API key pending authentication. Only given by `GET /login`.
+        API key pending authentication or invalid. Only given by `GET /login`.
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/PendingApiKeyError"
+            oneOf:
+              - $ref: "#/components/schemas/InvalidApiKeyError"
+              - $ref: "#/components/schemas/PendingApiKeyError"
 
     ClientError:
       description: General error response from the server.
@@ -116,6 +118,7 @@ components:
       properties:
         name:
           type: string
+          nullable: true
           description: >
             Name of the language, e.g. "C++", "Haskell", "Python2".
         option:
@@ -177,6 +180,12 @@ components:
           type: string
           description: >
             Verdict of the submission, e.g. "ACCEPTED".
+        test_report:
+          type: string
+          description: >
+            An optional description of the tests for when more specific
+            information of the tests is not shown to the user. Used at least
+            on the TiRa course.
         tests:
           type: array
           items:
@@ -215,12 +224,12 @@ components:
         Alphanumeric identifier of the course. Same as in course URLs.
 
     TaskId:
-      in: path
-      name: task_id
+      in: query
+      name: task
       schema:
         type: integer
-      required: true
-      description: Task ID.
+      required: false
+      description: Task ID. If not provided the server tries to deduce it from the file name.
 
     SubmissionId:
       in: path
@@ -228,7 +237,7 @@ components:
       schema:
         type: integer
       required: true
-      description: Submission ID.
+      description: Submission ID. 
 
   # define possible authentication methods
   securitySchemes:
@@ -275,7 +284,6 @@ paths:
                   authentication_url:
                     description: URL the user should visit to log in.
                     type: string
-                    format: url
 
         "4XX":
           $ref: "#/components/responses/ClientError"
@@ -300,11 +308,8 @@ paths:
           description: >
             API key is valid.
 
-        "404":
-          $ref: "#/components/responses/PendingApiKeyError"
-
         "401":
-          $ref: "#/components/responses/InvalidApiKeyError"
+          $ref: "#/components/responses/GetLoginError"
 
         "4XX":
           $ref: "#/components/responses/ClientError"
@@ -336,7 +341,8 @@ paths:
 
         "5XX":
           $ref: "#/components/responses/ServerError"
-  /courses/{course_id}/tasks/{task_id}/submissions:
+
+  /courses/{course_id}/submissions:
     post:
       operationId: app.submissions_post
 
@@ -383,18 +389,22 @@ paths:
               schema:
                 type: object
                 required:
-                  - id
+                  - submission_id
+                  - task_id
                 additionalProperties: false
                 properties:
-                  id:
+                  submission_id:
                     description: ID of the resulting submission.
+                    type: integer
+                  task_id:
+                    description: ID of the submitted task.
                     type: integer
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
 
-  /courses/{course_id}/tasks/{task_id}/submissions/{submission_id}:
+  /courses/{course_id}/submissions/{submission_id}:
     get:
       operationId: app.get_submission
 
@@ -405,7 +415,6 @@ paths:
 
       parameters:
         - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
         - $ref: "#/components/parameters/SubmissionId"
         - in: query
           name: poll

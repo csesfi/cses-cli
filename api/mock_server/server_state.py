@@ -1,5 +1,5 @@
-import string
 import random
+import string
 
 
 random.seed(1337)
@@ -8,6 +8,7 @@ random.seed(1337)
 class ServerState:
     def __init__(self, valid_logins, scenarios):
         # tokens need to be saved to test the logout
+        self.pending_tokens = []
         self.valid_tokens = []
         self.valid_logins = valid_logins
         self.submission_scenarios = scenarios
@@ -16,22 +17,35 @@ class ServerState:
 
     def login(self):
         token = self._generate_token()
-        self.valid_tokens.append(token)
+        self.pending_tokens.append(token)
         return token
+
+    def authorize_login(self, token, fail):
+        assert token in self.pending_tokens
+        self.pending_tokens.remove(token)
+        if not fail:
+            self.valid_tokens.append(token)
 
     def check_login(self, token):
         if self.is_valid(token):
             return "valid"
         else:
-            return "invalid"
+            if token in self.pending_tokens:
+                return "pending"
+            else:
+                return "invalid"
 
     def logout(self, token):
         """Logs out a valid api key"""
         assert self.is_valid(token)
-        self.valid_tokens.remove(token)
+        if token in self.pending_tokens:
+            self.pending_tokens.remove(token)
+        if token in self.valid_tokens:
+            self.valid_tokens.remove(token)
 
     def is_valid(self, token):
-        return token in self.valid_tokens
+        # FIXME: Fix this when test are aware of token authorization
+        return token in self.valid_tokens or token in self.pending_tokens
 
     def _generate_token(self):
         token = "".join(random.choices(string.hexdigits, k=16))
@@ -58,7 +72,7 @@ class ServerState:
 
         return submission_id
 
-    def get_submission_info(self, course_id, task_id, submission_id):
+    def get_submission_info(self, course_id, submission_id):
         """Returns the next state of the submission `submission_id`"""
         if submission_id not in self.submission_trackers:
             return None
