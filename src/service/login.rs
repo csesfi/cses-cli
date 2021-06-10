@@ -2,6 +2,7 @@ use crate::api::ApiError;
 use crate::{CsesApi, Resources, Storage, RP};
 use anyhow::{Context, Result};
 use miniserde::{Deserialize, Serialize};
+use std::fmt;
 
 use super::require_login;
 
@@ -38,23 +39,37 @@ pub fn login_exists(res: &Resources<impl RP>) -> bool {
     res.storage.get().get_token().is_some()
 }
 
-pub fn login_status(res: &Resources<impl RP>) -> Result<String> {
+pub fn login_status(res: &Resources<impl RP>) -> Result<LoginStatus> {
     if !login_exists(res) {
-        return Ok(String::from("Login token is missing."));
+        return Ok(LoginStatus::Missing);
     }
     match res.api.login_status(res.storage.get().get_token().unwrap()) {
-        Err(ApiError::PendingApiKeyError) => {
-            return Ok(String::from("Login token is being validated"))
-        }
-        Err(ApiError::ApiKeyError) => return Ok(String::from("Login token is invalid")),
+        Err(ApiError::PendingApiKeyError) => return Ok(LoginStatus::Pending),
+        Err(ApiError::ApiKeyError) => return Ok(LoginStatus::Invalid),
         val => val?,
     };
-    let user = "username"; // TODO
-    let s = format!("Logged in as {}", user);
-    Ok(s)
+    let user = String::from("username"); // TODO
+    Ok(LoginStatus::Valid(user))
 }
 
 pub fn login_is_valid(res: &Resources<impl RP>) -> Result<bool> {
     let status = login_status(res)?;
-    Ok(status.contains("Logged in"))
+    Ok(matches!(status, LoginStatus::Valid(_)))
+}
+
+pub enum LoginStatus {
+    Missing,
+    Pending,
+    Invalid,
+    Valid(String),
+}
+impl fmt::Display for LoginStatus {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            LoginStatus::Missing => write!(f, "Not logged in, please login."),
+            LoginStatus::Pending => write!(f, "Login being finished in browser, please wait."),
+            LoginStatus::Invalid => write!(f, "Login is invalid, please login again."),
+            LoginStatus::Valid(username) => write!(f, "Logged in as {}", username),
+        }
+    }
 }
