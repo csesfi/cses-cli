@@ -52,6 +52,15 @@ fn user_can_overwrite_current_login() {
         .stderr(predicate::str::is_empty());
 }
 
+#[distributed_slice(TESTS)]
+fn test_login_returns_correct_link() {
+    command()
+        .args(&["login"])
+        .assert()
+        .success()
+        .stdout(contains("http://127.0.0.1:4011/authorize-login?token="));
+}
+
 fn successful_login_attempt() -> Assert {
     command().args(&["login"]).assert()
 }
