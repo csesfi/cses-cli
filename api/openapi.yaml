@@ -239,6 +239,28 @@ components:
             The compiler report in case of COMPILE ERROR or just some warnings
             from the compiler.
 
+    CourseInfo:
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - description
+      type: object
+
+      properties:
+        id:
+          type: string
+          description: >
+            Course ID.
+        name:
+          type: string
+          description: >
+            The name of the course.
+        description:
+          type: string
+          description: >
+            The course's description.
+
   parameters:
     CourseId:
       in: path
@@ -451,6 +473,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SubmissionInfo"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+  
+  /courses:
+    get:
+      operationId: app.get_courses
+
+      summary: Retrieve information about the available courses.
+
+      security: []
+
+      responses:
+        "200":
+          description: >
+            Info about available courses was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseInfo"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
