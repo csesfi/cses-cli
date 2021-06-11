@@ -10,7 +10,7 @@ const LUCKY_PY_CONTENT: &str = "def check(n):\n    s = 0\n";
 fn fails_with_wrong_filename() {
     // This would of course work in production, but this asserts that the test server checks the
     // file name.
-    log_in("kalle");
+    log_in();
     create_file("mian.rs", MAIN_RS_CONTENT);
 
     command()
@@ -30,7 +30,7 @@ fn fails_with_wrong_filename() {
 
 #[distributed_slice(TESTS)]
 fn succeeds_with_correct_filename_in_folder() {
-    log_in("kalle");
+    log_in();
     let mut path = PathBuf::new();
     path.push("folder");
     std::fs::create_dir(&path).unwrap();
@@ -54,7 +54,7 @@ fn succeeds_with_correct_filename_in_folder() {
 
 #[distributed_slice(TESTS)]
 fn shows_status_pending_then_ready() {
-    log_in("kalle");
+    log_in();
     create_file("main.rs", MAIN_RS_CONTENT);
 
     command()
@@ -66,7 +66,7 @@ fn shows_status_pending_then_ready() {
 
 #[distributed_slice(TESTS)]
 fn shows_verdict() {
-    log_in("kalle");
+    log_in();
     create_file("main.rs", MAIN_RS_CONTENT);
 
     command()
@@ -87,7 +87,7 @@ fn shows_verdict() {
 
 #[distributed_slice(TESTS)]
 fn shows_each_test_result() {
-    log_in("uolevi");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     command()
@@ -102,7 +102,7 @@ fn shows_each_test_result() {
 
 #[distributed_slice(TESTS)]
 fn remembers_course() {
-    log_in("uolevi");
+    log_in();
 
     create_file("13.rs", RS_13_CONTENT);
     command()
@@ -121,7 +121,7 @@ fn remembers_course() {
 }
 #[distributed_slice(TESTS)]
 fn does_not_remember_language_or_option() {
-    log_in("uolevi");
+    log_in();
 
     create_file("13.rs", RS_13_CONTENT);
     command()
@@ -153,7 +153,7 @@ fn does_not_remember_language_or_option() {
 
 #[distributed_slice(TESTS)]
 fn compiler_report_is_dispayed_with_compile_error() {
-    log_in("Olaf");
+    log_in();
     create_file("13.rs", RS_13_CONTENT);
 
     let assert = command()
@@ -170,7 +170,7 @@ fn compiler_report_is_dispayed_with_compile_error() {
 
 #[distributed_slice(TESTS)]
 fn compiler_report_is_not_displayed_without_any_content() {
-    log_in("Olaf");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()
@@ -186,7 +186,7 @@ fn compiler_report_is_not_displayed_without_any_content() {
 
 #[distributed_slice(TESTS)]
 fn compiler_report_is_dispayed_with_compiler_warnings() {
-    log_in("Olaf");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()
@@ -202,7 +202,7 @@ fn compiler_report_is_dispayed_with_compiler_warnings() {
 }
 #[distributed_slice(TESTS)]
 fn null_test_time_finishes_and_is_printed_correctly() {
-    log_in("kalle");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()
@@ -218,7 +218,7 @@ fn null_test_time_finishes_and_is_printed_correctly() {
 }
 #[distributed_slice(TESTS)]
 fn null_test_time_finishes_and_is_print() {
-    log_in("kalle");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()
@@ -234,7 +234,7 @@ fn null_test_time_finishes_and_is_print() {
 }
 #[distributed_slice(TESTS)]
 fn submission_works_without_language_and_option() {
-    log_in("uolevi");
+    log_in();
 
     create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
@@ -246,7 +246,7 @@ fn submission_works_without_language_and_option() {
 }
 #[distributed_slice(TESTS)]
 fn submission_works_without_language_with_option() {
-    log_in("uolevi");
+    log_in();
 
     create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
@@ -260,7 +260,7 @@ fn submission_works_without_language_with_option() {
 }
 #[distributed_slice(TESTS)]
 fn test_server_returns_null_language() {
-    log_in("uolevi");
+    log_in();
 
     create_file("main.asdf", MAIN_CPP_CONTENT);
     command()
@@ -272,7 +272,7 @@ fn test_server_returns_null_language() {
 }
 #[distributed_slice(TESTS)]
 fn submission_works_without_task() {
-    log_in("uolevi");
+    log_in();
 
     create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
@@ -286,7 +286,7 @@ fn submission_works_without_task() {
 }
 #[distributed_slice(TESTS)]
 fn test_report_is_displayed_with_content() {
-    log_in("Olaf");
+    log_in();
     create_file("lucky.py", LUCKY_PY_CONTENT);
 
     let assert = command()
@@ -302,7 +302,7 @@ fn test_report_is_displayed_with_content() {
 }
 #[distributed_slice(TESTS)]
 fn test_report_is_not_displayed_without_any_content() {
-    log_in("kalle");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()

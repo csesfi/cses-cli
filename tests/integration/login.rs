@@ -83,7 +83,9 @@ fn successful_login_attempt() -> Assert {
 }
 
 fn authorize_all() {
-    minreq::post("http://127.0.0.1:4011/authorize-all").send().unwrap();
+    minreq::post("http://127.0.0.1:4011/authorize-all")
+        .send()
+        .unwrap();
 }
 
 fn verify_successful_login_output(assert: Assert) {
