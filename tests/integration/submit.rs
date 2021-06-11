@@ -365,19 +365,8 @@ fn test_client_error_doesnt_crash_server() {
 
     let assert = command()
         .args(&[
-            "submit",
-            "main.cpp",
-            "-c",
-            "progress",
-            "-t",
-            "123123",
-            "-l",
-            "C++",
-            "-o",
-            "C++17"
+            "submit", "main.cpp", "-c", "progress", "-t", "123123", "-l", "C++", "-o", "C++17",
         ])
         .assert();
-    assert
-        .failure()
-        .stdout(contains("miniserde error").not());
+    assert.failure().stdout(contains("miniserde error").not());
 }
