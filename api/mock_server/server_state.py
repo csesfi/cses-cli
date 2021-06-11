@@ -6,12 +6,11 @@ random.seed(1337)
 
 
 class ServerState:
-    def __init__(self, integration, valid_logins, scenarios):
+    def __init__(self, integration, scenarios):
         # tokens need to be saved to test the logout
         self.integration = integration
         self.pending_tokens = []
         self.valid_tokens = []
-        self.valid_logins = valid_logins
         self.submission_scenarios = scenarios
 
         self.submission_trackers = {}
@@ -28,7 +27,7 @@ class ServerState:
             self.valid_tokens.append(token)
 
     def authorize_all(self):
-        """Authorizes all pending tokens. Used only with integration testing."""
+        """Authorizes all pending tokens. Used only with integration testing"""
         for token in self.pending_tokens:
             self.valid_tokens.append(token)
         self.pending_tokens = []

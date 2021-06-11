@@ -65,7 +65,8 @@ SUMMA_TASK = {
 
 scenarios = [
     SubmissionScenario(
-        NewSubmission(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
+        NewSubmission(course_id="kurssi", task_id=2,
+                      submission_json=RUST_CODE),
         [
             {
                 "task": SUMMA_TASK,
@@ -143,7 +144,8 @@ scenarios = [
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=13, submission_json=RS_13_CODE),
+        NewSubmission(course_id="cses", task_id=13,
+                      submission_json=RS_13_CODE),
         [
             {
                 "task": SUMMA_TASK,
@@ -215,7 +217,8 @@ for (int i = 0; i < a.size(); i++) {
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
+        NewSubmission(course_id="cses", task_id=111,
+                      submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
         [
             {
                 "task": SUMMA_TASK,
@@ -231,7 +234,8 @@ for (int i = 0; i < a.size(); i++) {
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
+        NewSubmission(course_id="cses", task_id=444,
+                      submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
         [
             {
                 "task": SUMMA_TASK,
@@ -267,7 +271,8 @@ for (int i = 0; i < a.size(); i++) {
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
+        NewSubmission(course_id="cses", task_id=555,
+                      submission_json=CPP_CODE_NO_LANGUAGE),
         [
             {
                 "task": SUMMA_TASK,
@@ -303,7 +308,8 @@ for (int i = 0; i < a.size(); i++) {
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="progress", task_id=7, submission_json=CPP_CODE),
+        NewSubmission(course_id="progress", task_id=7,
+                      submission_json=CPP_CODE),
         [
             {
                 "task": SUMMA_TASK,
@@ -324,7 +330,8 @@ for (int i = 0; i < a.size(); i++) {
                 },
                 "status": "TESTING",
                 "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
+[-Wuninitialized]
    while(x != 123);
          ~~^~~~~~""",
                 "test_progress": {
@@ -342,7 +349,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 },
                 "status": "TESTING",
                 "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
+[-Wuninitialized]
    while(x != 123);
          ~~^~~~~~""",
                 "test_progress": {
@@ -360,7 +368,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 },
                 "status": "TESTING",
                 "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
+[-Wuninitialized]
    while(x != 123);
          ~~^~~~~~""",
                 "test_progress": {
@@ -378,7 +387,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 },
                 "status": "TESTING",
                 "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
+[-Wuninitialized]
    while(x != 123);
          ~~^~~~~~""",
                 "test_progress": {
@@ -396,7 +406,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
                 },
                 "status": "READY",
                 "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
+[-Wuninitialized]
    while(x != 123);
          ~~^~~~~~""",
                 "pending": False,
@@ -426,7 +437,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="progress", task_id=8, submission_json=CPP_CODE),
+        NewSubmission(course_id="progress", task_id=8,
+                      submission_json=CPP_CODE),
         [
             {
                 "task": SUMMA_TASK,
@@ -577,7 +589,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ]
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
+        NewSubmission(course_id="cses", task_id=DEFAULT_TASK,
+                      submission_json=CPP_CODE),
         [
             {
                 "task": SUMMA_TASK,
@@ -608,7 +621,8 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ],
     ),
     SubmissionScenario(
-        NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_CODE),
+        NewSubmission(course_id="tira21k", task_id=23,
+                      submission_json=PY_CODE),
         [
             {
                 "task": SUMMA_TASK,

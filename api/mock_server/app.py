@@ -4,16 +4,14 @@ import sys
 import time
 
 import connexion
-# import werkzeug
-
 import base64
 
 from connexion import NoContent
 from connexion import RestyResolver
 
-from connexion.exceptions import BadRequestProblem  # , ValidationError
+from connexion.exceptions import BadRequestProblem
 from connexion.exceptions import Unauthorized
-from werkzeug.exceptions import MethodNotAllowed, NotFound
+from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import NewSubmission
@@ -23,17 +21,12 @@ from scenarios import scenarios, DEFAULT_TASK
 integration = False
 try:
     integration = bool(sys.argv[1])
-except(Exception):
+except Exception:
     pass
 
 
 state = ServerState(
     integration,
-    valid_logins=[
-        {"username": "kalle", "password": "kissa2"},
-        {"username": "uolevi", "password": "12345"},
-        {"username": "Olaf", "password": "ILoveSummer"}
-    ],
     scenarios=scenarios
 )
 
@@ -126,7 +119,7 @@ def apikey_auth(apikey, required_scopes=None):
     elif status == "pending":
         raise Unauthorized(description="pending")
     else:
-        # this will be overriden by the render_api_authentication_failed function
+        # This is overriden by the render_api_authentication_failed function
         raise Unauthorized()
 
 
