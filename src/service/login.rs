@@ -43,13 +43,13 @@ pub fn login_status(res: &Resources<impl RP>) -> Result<LoginStatus> {
     if !login_exists(res) {
         return Ok(LoginStatus::Missing);
     }
-    match res.api.login_status(res.storage.get().get_token().unwrap()) {
+    let user = match res.api.login_status(res.storage.get().get_token().unwrap()) {
         Err(ApiError::PendingApiKeyError) => return Ok(LoginStatus::Pending),
         Err(ApiError::ApiKeyError) => return Ok(LoginStatus::Invalid),
         val => val?,
     };
-    let user = String::from("username"); // TODO
-    Ok(LoginStatus::Valid(user))
+    let name = user.name().to_owned();
+    Ok(LoginStatus::Valid(name))
 }
 
 pub fn login_is_valid(res: &Resources<impl RP>) -> Result<bool> {
@@ -69,7 +69,7 @@ impl fmt::Display for LoginStatus {
             LoginStatus::Missing => write!(f, "Not logged in."),
             LoginStatus::Pending => write!(f, "Login waiting to be finished in browser."),
             LoginStatus::Invalid => write!(f, "Login is invalid, please login again."),
-            LoginStatus::Valid(username) => write!(f, "Logged in as {}", username),
+            LoginStatus::Valid(username) => write!(f, "Logged in as {}.", username),
         }
     }
 }

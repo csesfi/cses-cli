@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import NewSubmission
-from scenarios import scenarios, DEFAULT_TASK
+from scenarios import scenarios, DEFAULT_TASK, UOLEVI
 
 
 integration = False
@@ -61,7 +61,7 @@ def authorize_login_post():
 
 def login_get(token_info):
     # Errors returned by security scheme
-    return (NoContent, 204)
+    return (UOLEVI, 200)
 
 def logout_post(token_info):
     state.logout(token_info["apikey"])
