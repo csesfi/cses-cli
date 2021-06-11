@@ -40,15 +40,17 @@ components:
                 message: Too many requests
                 code: client_error
 
-    SubmissionDeductionError:
+    SubmissionClientError:
       description: >
-        The server failed to deduce missing parts of the submission.
+        Either a general client error or then a specialized error
+        if server failed to deduce missing parts of the submission.
       content:
         application/json:
           schema:
             oneOf:
               - $ref: "#/components/schemas/TaskDeductionError"
               - $ref: "#/components/schemas/LanguageDeductionError"
+              - $ref: "#/components/schemas/ClientError"
 
           examples:
             task_error_example:
@@ -469,7 +471,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SubmissionInfo"
         "400":
-          $ref: "#/components/responses/SubmissionDeductionError"
+          $ref: "#/components/responses/SubmissionClientError"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":

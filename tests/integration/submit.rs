@@ -356,3 +356,28 @@ fn test_language_deduction_hint_printed() {
         .failure()
         .stdout(contains("cses-cli submit hello_world.rs -l Rust"));
 }
+// At one point the openapi specification didn't
+// allow server to return `client_error` to submission post.
+#[distributed_slice(TESTS)]
+fn test_client_error_doesnt_crash_server() {
+    log_in("kalle");
+    create_file("main.cpp", MAIN_CPP_CONTENT);
+
+    let assert = command()
+        .args(&[
+            "submit",
+            "main.cpp",
+            "-c",
+            "progress",
+            "-t",
+            "123123",
+            "-l",
+            "C++",
+            "-o",
+            "C++17"
+        ])
+        .assert();
+    assert
+        .failure()
+        .stdout(contains("miniserde error").not());
+}
