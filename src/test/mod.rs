@@ -1,6 +1,6 @@
 mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
-use crate::entities::SubmissionInfo;
+use crate::entities::{SubmissionInfo, UserOutline};
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
@@ -13,7 +13,7 @@ impl CsesApi for FakeCsesApi {
     fn login(&self) -> ApiResult<LoginResponse> {
         todo!()
     }
-    fn login_status(&self, _token: &str) -> ApiResult<()> {
+    fn login_status(&self, _token: &str) -> ApiResult<UserOutline> {
         todo!()
     }
     fn logout(&self, _token: &str) -> ApiResult<()> {
