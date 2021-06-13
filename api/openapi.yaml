@@ -239,27 +239,35 @@ components:
             The compiler report in case of COMPILE ERROR or just some warnings
             from the compiler.
 
-    CourseInfo:
+    CourseList:
       additionalProperties: false
       required:
-        - id
-        - name
-        - description
+        - courses
       type: object
 
       properties:
-        id:
-          type: string
-          description: >
-            Course ID.
-        name:
-          type: string
-          description: >
-            The name of the course.
-        description:
-          type: string
-          description: >
-            The course's description.
+        courses:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - id
+              - name
+              - description
+            properties:
+              id:
+                type: string
+                description: >
+                  Course ID.
+              name:
+                type: string
+                description: >
+                  The name of the course.
+              description:
+                type: string
+                description: >
+                  The course's description.
 
   parameters:
     CourseId:
@@ -493,7 +501,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CourseInfo"
+                $ref: "#/components/schemas/CourseList"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
