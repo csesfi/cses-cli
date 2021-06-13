@@ -57,5 +57,5 @@ pub struct CourseInfo {
 
 #[derive(Debug, Deserialize)]
 pub struct CourseList {
-    pub courses: Vec<CourseInfo>
+    pub courses: Vec<CourseInfo>,
 }

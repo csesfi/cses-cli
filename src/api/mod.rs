@@ -1,7 +1,7 @@
 mod escape;
 use escape::Escape;
 
-use crate::entities::{Language, SubmissionInfo, CourseList};
+use crate::entities::{CourseList, Language, SubmissionInfo};
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
 #[cfg(test)]
@@ -136,10 +136,7 @@ impl CsesApi for CsesHttpApi {
     }
 
     fn get_courses(&self) -> ApiResult<CourseList> {
-        let response = minreq::get(format!(
-            "{}/courses", self.url
-        ))
-        .send()?;
+        let response = minreq::get(format!("{}/courses", self.url)).send()?;
         check_error(&response)?;
         let course_list: CourseList = json::from_str(response.as_str()?)?;
         Ok(course_list)
