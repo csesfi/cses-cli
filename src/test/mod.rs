@@ -39,6 +39,10 @@ impl CsesApi for FakeCsesApi {
     ) -> ApiResult<SubmissionInfo> {
         todo!()
     }
+
+    fn get_courses(&self) -> ApiResult<String> {
+        todo!()
+    }
 }
 
 #[derive(Default, Debug)]

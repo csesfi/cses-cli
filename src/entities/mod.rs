@@ -47,3 +47,15 @@ pub struct SubmitParameters {
     pub task: Option<u64>,
     pub language: Language,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct CourseInfo {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CourseList {
+    pub courses: Vec<CourseInfo>
+}
