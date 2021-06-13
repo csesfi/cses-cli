@@ -1,3 +1,4 @@
+mod courses;
 mod login;
 mod submission;
 mod submit;
@@ -7,7 +8,6 @@ use console::{Style, Term};
 
 use crate::command::HELP_STR;
 use crate::service;
-use crate::CsesApi;
 use crate::{Command, Resources, ResourcesProvider};
 
 pub struct Ui<R: ResourcesProvider> {
@@ -42,9 +42,7 @@ impl<R: ResourcesProvider> Ui<R> {
                 login::status(self)?;
             }
             Command::Courses => {
-                // TODO: Actual UI implementation of the course listing
-                let course_list = self.res.api.get_courses()?;
-                self.term.write_line(&format!("{:?}", course_list))?;
+                courses::list_courses(self)?;
             }
             Command::Submit(submit) => {
                 let submission_info = submit::submit(self, submit)?;

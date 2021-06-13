@@ -101,11 +101,19 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     return (submission_info, 200)
 
 def get_courses():
+    # TODO: more scenarios of course listings
+    # return ({"courses": []}, 200)   # Override courses with and empty list
     return ({"courses": [
         {
             "id": "teku",
             "name": "Test course",
             "description": "This is a test course used by the Python test server."
+        },
+        {
+            "id": "problemset",
+            "name": "CSES Problem Set",
+            "description": "The CSES Problem Set contains a collection of " +
+                "competitive programming practice problems."
         }
     ]}, 200)
 
