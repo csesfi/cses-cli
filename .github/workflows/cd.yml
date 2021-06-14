@@ -52,7 +52,10 @@ jobs:
           ~/.cargo/bin
           ~/.cargo/git
           ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          ~/.cargo/.crates.toml
+          ~/.cargo/.package-cache
+          ~/.cargo/.crates2.json
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cd
     - name: Rust toolchain setup
       uses: actions-rs/toolchain@v1
       env:
