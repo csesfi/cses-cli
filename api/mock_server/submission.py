@@ -11,7 +11,8 @@ class NewSubmission:
             and self.submission_json == other.submission_json
 
 
-class SubmissionInfo:
+class SubmissionProgress:
+    """A class for representing the progress of a submission"""
     def __init__(self, progress: list):
         self.data, status = [], progress[0]
         for update in progress:

@@ -1,4 +1,4 @@
-from submission import SubmissionScenario, SubmissionInfo, NewSubmission, TestResult
+from submission import SubmissionScenario, SubmissionProgress, NewSubmission, TestResult
 
 DEFAULT_TASK = 34
 
@@ -72,7 +72,7 @@ SUMMA_TASK = {
 scenarios = [
     SubmissionScenario(
         NewSubmission(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -94,7 +94,7 @@ scenarios = [
     ),
     SubmissionScenario(
         NewSubmission(course_id="alon", task_id=4, submission_json=CPP_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -122,7 +122,7 @@ scenarios = [
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=13, submission_json=RS_13_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -150,7 +150,7 @@ fn main() {
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=42, submission_json=CPP_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -177,7 +177,7 @@ for (int i = 0; i < a.size(); i++) {
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -194,7 +194,7 @@ for (int i = 0; i < a.size(); i++) {
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -221,7 +221,7 @@ for (int i = 0; i < a.size(); i++) {
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -248,7 +248,7 @@ for (int i = 0; i < a.size(); i++) {
     ),
     SubmissionScenario(
         NewSubmission(course_id="progress", task_id=7, submission_json=CPP_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -303,7 +303,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
     ),
     SubmissionScenario(
         NewSubmission(course_id="progress", task_id=8, submission_json=CPP_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -358,7 +358,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
     ),
     SubmissionScenario(
         NewSubmission(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
@@ -380,7 +380,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
     ),
     SubmissionScenario(
         NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_CODE),
-        SubmissionInfo([
+        SubmissionProgress([
             {
                 "task": SUMMA_TASK,
                 "sender": UOLEVI,
