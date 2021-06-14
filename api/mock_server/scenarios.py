@@ -1,4 +1,5 @@
-from submission import SubmissionScenario, SubmissionProgress, NewSubmission, TestResult
+from submission import SubmissionScenario, SubmissionProgress, \
+                       SubmissionInfo, TestResult
 
 DEFAULT_TASK = 34
 
@@ -71,7 +72,7 @@ SUMMA_TASK = {
 
 scenarios = [
     SubmissionScenario(
-        NewSubmission(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
+        SubmissionInfo(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -93,7 +94,7 @@ scenarios = [
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="alon", task_id=4, submission_json=CPP_CODE),
+        SubmissionInfo(course_id="alon", task_id=4, submission_json=CPP_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -121,7 +122,7 @@ scenarios = [
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=13, submission_json=RS_13_CODE),
+        SubmissionInfo(course_id="cses", task_id=13, submission_json=RS_13_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -149,7 +150,7 @@ fn main() {
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=42, submission_json=CPP_CODE),
+        SubmissionInfo(course_id="cses", task_id=42, submission_json=CPP_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -176,7 +177,7 @@ for (int i = 0; i < a.size(); i++) {
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
+        SubmissionInfo(course_id="cses", task_id=111, submission_json=UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -193,7 +194,7 @@ for (int i = 0; i < a.size(); i++) {
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
+        SubmissionInfo(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -220,7 +221,7 @@ for (int i = 0; i < a.size(); i++) {
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
+        SubmissionInfo(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -247,7 +248,7 @@ for (int i = 0; i < a.size(); i++) {
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="progress", task_id=7, submission_json=CPP_CODE),
+        SubmissionInfo(course_id="progress", task_id=7, submission_json=CPP_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -302,7 +303,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="progress", task_id=8, submission_json=CPP_CODE),
+        SubmissionInfo(course_id="progress", task_id=8, submission_json=CPP_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -357,7 +358,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
+        SubmissionInfo(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,
@@ -379,7 +380,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
         ]).data
     ),
     SubmissionScenario(
-        NewSubmission(course_id="tira21k", task_id=23, submission_json=PY_CODE),
+        SubmissionInfo(course_id="tira21k", task_id=23, submission_json=PY_CODE),
         SubmissionProgress([
             {
                 "task": SUMMA_TASK,

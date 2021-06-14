@@ -60,7 +60,7 @@ class ServerState:
 
         submission = None
         for x in self.submission_scenarios:
-            if x.new_submission == new_submission:
+            if x.submission_info == new_submission:
                 submission = x
 
         if submission is None:
@@ -68,7 +68,7 @@ class ServerState:
 
         submission_id = random.getrandbits(64)
         self.submission_trackers[submission_id] = SubmissionTracker(
-            submission.submission_infos)
+            submission.submission_progress)
 
         return submission_id
 

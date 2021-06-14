@@ -1,4 +1,4 @@
-class NewSubmission:
+class SubmissionInfo:
     """A class for representing data sent to server at new submission."""
     def __init__(self, course_id, task_id, submission_json):
         self.course_id = course_id
@@ -22,9 +22,9 @@ class SubmissionProgress:
 
 class SubmissionScenario:
     """A class for representing a single possible submission scenario"""
-    def __init__(self, new_submission, submission_infos):
-        self.new_submission = new_submission
-        self.submission_infos = submission_infos
+    def __init__(self, submission_info, submission_progress):
+        self.submission_info = submission_info
+        self.submission_progress = submission_progress
 
 
 class TestResult:

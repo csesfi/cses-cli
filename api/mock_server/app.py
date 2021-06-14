@@ -16,7 +16,7 @@ from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
-from submission import NewSubmission
+from submission import SubmissionInfo
 from scenarios import scenarios, DEFAULT_TASK, UOLEVI
 
 
@@ -78,7 +78,7 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
-    new_submission = NewSubmission(course_id, task, connexion.request.json)
+    new_submission = SubmissionInfo(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
     submission_info = state.get_initial_submission_info(submission_id)
     if submission_info is None:
