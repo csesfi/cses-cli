@@ -77,14 +77,15 @@ impl<R: ResourcesProvider> Ui<R> {
 
 pub fn print_error(err: &Error) {
     for (i, error) in err.chain().enumerate() {
+        let indentation = "    ";
         let prefix = if i == 0 {
             "".to_owned()
         } else {
-            "\t".to_owned()
+            indentation.to_owned()
         };
         println!("{}", add_indentation(&error.to_string(), &prefix));
         if let Some(hint) = get_error_hint(error) {
-            let prefix = prefix.to_owned() + "\t";
+            let prefix = prefix.to_owned() + indentation;
             println!("{}\n", add_indentation("Hint:", &prefix));
             println!("{}", add_indentation(&hint, &prefix));
         }
