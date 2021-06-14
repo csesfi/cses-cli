@@ -101,7 +101,6 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     return (submission_info, 200)
 
 def get_courses(token_info):
-    print(f"get submit: {token_info}")
     # TODO: more scenarios of course listings
     # return ({"courses": []}, 200)   # Override courses with and empty list
     if token_info == {}:
