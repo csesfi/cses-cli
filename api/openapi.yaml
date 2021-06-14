@@ -42,7 +42,7 @@ components:
 
     SubmissionClientError:
       description: >
-        Either a general client error or then a specialized error
+        Either a general client error or a specialized error
         if server failed to deduce missing parts of the submission.
       content:
         application/json:

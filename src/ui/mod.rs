@@ -103,7 +103,7 @@ fn add_indentation(text: &str, prefix: &str) -> String {
     let mut result = String::new();
     for line in text.split_inclusive('\n') {
         result.push_str(prefix);
-        result.push_str(&line);
+        result.push_str(line);
     }
     result
 }
