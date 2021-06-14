@@ -85,6 +85,12 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
     submission_id = state.add_submission(new_submission)
     submission_info = state.get_initial_submission_info(submission_id)
     if submission_info is None:
+        if task == DEFAULT_TASK:
+            return ({"message": f"Failed to deduce the task for the submission",
+                     "code": "task_deduction_error"}, 400)
+        if details["language"]["name"] is None:
+            return ({"message": f"Failed to deduce the language for the submission",
+                     "code": "language_deduction_error"}, 400)
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
     return (submission_info, 200)

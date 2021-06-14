@@ -37,6 +37,18 @@ COMMANDS:
             could have options `C++11` and `C++17`.
 "#;
 
+pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
+the `-l` or `--language` flags, e.g.:
+
+cses-cli submit hello_world.rs -l Rust
+"#;
+
+pub static TASK_HINT: &str = r#"You can manually specify the task with
+the `-t` or `--task` flags, e.g.:
+
+cses-cli submit hello_world.rs -t 1337
+"#;
+
 #[derive(Debug)]
 pub enum Command {
     None,
