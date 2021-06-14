@@ -100,10 +100,12 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                 "code": "client_error"}, 404)
     return (submission_info, 200)
 
-def get_courses():
+def get_courses(token_info):
+    print(f"get submit: {token_info}")
     # TODO: more scenarios of course listings
     # return ({"courses": []}, 200)   # Override courses with and empty list
-    return ({"courses": [
+    if token_info == {}:
+        return ({"courses": [
         {
             "id": "teku",
             "name": "Test course",
@@ -117,6 +119,25 @@ def get_courses():
         }
     ]}, 200)
 
+    return ({"courses": [
+        {
+            "id": "teku",
+            "name": "Test course",
+            "description": "This is a test course used by the Python test server."
+        },
+        {
+            "id": "problemset",
+            "name": "CSES Problem Set",
+            "description": "The CSES Problem Set contains a collection of " +
+                "competitive programming practice problems."
+        },
+        {
+            "id": "hidden",
+            "name": "Hidden course",
+            "description": "If you can see this, you're logged in."
+        }
+    ]}, 200)
+
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
@@ -126,7 +147,7 @@ def apikey_auth(apikey, required_scopes=None):
     `token_info` in the function corresponding to the
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
-
+         
     status = state.check_login(apikey)
     if status == "valid":
         return {"apikey": apikey}
