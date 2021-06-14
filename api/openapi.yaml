@@ -265,18 +265,18 @@ components:
     CourseContent:
       additionalProperties: false
       required:
-        - list
+        - sections
       type: object
 
       properties:
-        list:
+        sections:
           type: array
           items:
             type: object
             additionalProperties: false
             required:
               - header
-              - links
+              - list
             properties:
               header:
                 type: string
@@ -286,7 +286,7 @@ components:
                 type: string
                 description: >
                   An optional text below the header.
-              links:
+              list:
                 type: array
                 description: >
                   A list containing texts, links and tasks.
