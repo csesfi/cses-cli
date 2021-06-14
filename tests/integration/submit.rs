@@ -334,7 +334,7 @@ fn test_report_is_not_displayed_without_any_content() {
 }
 #[distributed_slice(TESTS)]
 fn test_task_deduction_hint_printed() {
-    log_in("kalle");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()
@@ -355,7 +355,7 @@ fn test_task_deduction_hint_printed() {
 }
 #[distributed_slice(TESTS)]
 fn test_language_deduction_hint_printed() {
-    log_in("kalle");
+    log_in();
     create_file("main.ccp", MAIN_CPP_CONTENT);
 
     let assert = command()
@@ -376,7 +376,7 @@ fn test_language_deduction_hint_printed() {
 // allow server to return `client_error` to submission post.
 #[distributed_slice(TESTS)]
 fn test_client_error_doesnt_crash_server() {
-    log_in("kalle");
+    log_in();
     create_file("main.cpp", MAIN_CPP_CONTENT);
 
     let assert = command()
