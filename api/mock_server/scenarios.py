@@ -72,8 +72,8 @@ scenarios = [
         ]).data
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=111, submission_json=
-                       constants.UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION),
+        SubmissionInfo(course_id="cses", task_id=111,
+                       submission_json=constants.UNKNOWN_CODE_NO_DETAILS),
         SubmissionProgress([
             {
                 "task": constants.SUMMA_TASK,
@@ -90,8 +90,8 @@ scenarios = [
         ]).data
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=444, submission_json=
-                       constants.CPP_CODE_NO_LANGUAGE_NO_OPTION),
+        SubmissionInfo(course_id="cses", task_id=444,
+                       submission_json=constants.CPP_CODE_NO_DETAILS),
         SubmissionProgress([
             constants.CPP_PROGRESS_BASE,
             {

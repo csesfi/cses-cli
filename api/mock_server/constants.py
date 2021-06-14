@@ -30,7 +30,7 @@ CPP_CODE = {
     "filename": "main.cpp",
     "content": "#include <iostream>\n"
 }
-CPP_CODE_NO_LANGUAGE_NO_OPTION = {
+CPP_CODE_NO_DETAILS = {
     "language": {
         "name": None,
         "option": None
@@ -38,7 +38,7 @@ CPP_CODE_NO_LANGUAGE_NO_OPTION = {
     "filename": "main.cpp",
     "content": "#include <iostream>\n"
 }
-UNKNOWN_CODE_NO_LANGUAGE_NO_OPTION = {
+UNKNOWN_CODE_NO_DETAILS = {
     "language": {
         "name": None,
         "option": None

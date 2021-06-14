@@ -71,7 +71,7 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
     try:
         details["content"] = base64.b64decode(details["content"]) \
                                    .decode("utf-8")
-    except Exception:
+    except TypeError:
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
