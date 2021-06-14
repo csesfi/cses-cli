@@ -340,12 +340,12 @@ fn test_task_deduction_hint_printed() {
 #[distributed_slice(TESTS)]
 fn test_language_deduction_hint_printed() {
     log_in("kalle");
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    create_file("main.ccp", MAIN_CPP_CONTENT);
 
     let assert = command()
         .args(&[
             "submit",
-            "main.cpp",
+            "main.ccp",
             "-c",
             "test_server_deduction",
             "-t",
