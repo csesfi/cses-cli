@@ -1,5 +1,7 @@
 mod login;
+mod courses;
 pub use login::{login, login_is_valid, login_status, logout, Login};
+pub use courses::courses;
 
 pub(crate) mod submit;
 pub use submit::{create_submit_parameters, submission_info, submit};

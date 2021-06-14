@@ -1,11 +1,11 @@
-use crate::{CsesApi, RP};
+use crate::{RP, service};
 use anyhow::Result;
 use std::io::Write;
 
 use super::Ui;
 
 pub fn list_courses(ui: &mut Ui<impl RP>) -> Result<()> {
-    let courses = ui.res.api.get_courses()?.courses;
+    let courses = service::courses(&mut ui.res)?;
 
     if courses.is_empty() {
         return Ok(writeln!(ui.term, "No available courses!")?);
