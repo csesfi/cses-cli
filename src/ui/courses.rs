@@ -1,4 +1,4 @@
-use crate::{RP, service};
+use crate::{service, RP};
 use anyhow::Result;
 use std::io::Write;
 

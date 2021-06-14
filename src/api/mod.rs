@@ -61,7 +61,7 @@ pub trait CsesApi {
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
-    fn get_courses(&self) -> ApiResult<CourseList>;
+    fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -135,11 +135,23 @@ impl CsesApi for CsesHttpApi {
         Ok(response_body)
     }
 
-    fn get_courses(&self) -> ApiResult<CourseList> {
-        let response = minreq::get(format!("{}/courses", self.url)).send()?;
-        check_error(&response)?;
-        let course_list: CourseList = json::from_str(response.as_str()?)?;
-        Ok(course_list)
+    fn get_courses(&self, token: Option<&str>) -> ApiResult<CourseList> {
+        match token {
+            Some(token) => {
+                let response = minreq::get(format!("{}/courses", self.url))
+                    .with_header("X-Auth-Token", token)
+                    .send()?;
+                check_error(&response)?;
+                let course_list: CourseList = json::from_str(response.as_str()?)?;
+                Ok(course_list)
+            }
+            None => {
+                let response = minreq::get(format!("{}/courses", self.url)).send()?;
+                check_error(&response)?;
+                let course_list: CourseList = json::from_str(response.as_str()?)?;
+                Ok(course_list)
+            }
+        }
     }
 }
 

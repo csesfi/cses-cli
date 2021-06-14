@@ -492,7 +492,9 @@ paths:
 
       summary: Retrieve information about the available courses.
 
-      security: []
+      security:
+        - {}
+        - apiKeyAuth: []
 
       responses:
         "200":
