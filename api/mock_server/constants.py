@@ -1,3 +1,11 @@
+import sys
+
+INTEGRATION = False
+try:
+    INTEGRATION = bool(sys.argv[1])
+except IndexError:
+    pass
+
 # Task number
 DEFAULT_TASK = 34
 
