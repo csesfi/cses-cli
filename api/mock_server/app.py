@@ -17,7 +17,8 @@ from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import SubmissionInfo
-from scenarios import scenarios, DEFAULT_TASK, UOLEVI
+from scenarios import scenarios
+from constants import DEFAULT_TASK, UOLEVI
 
 
 integration = False
