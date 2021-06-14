@@ -10,7 +10,7 @@ edition = "2018"
 pico-args = "0.4"
 console = "0.14"
 miniserde = "0.1"
-minreq = { version = "=2.4.0", features = ["https-native"] }
+minreq = { version = "2.4.2", features = ["https-native"] }
 anyhow = "1"
 thiserror = "1"
 base64 = "0.13.0"
