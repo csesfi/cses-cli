@@ -103,6 +103,46 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                 "code": "client_error"}, 404)
     return (submission_info, 200)
 
+def get_course_content():
+    return ({"sections": [
+        {
+            "header": "Info",
+            "text": "This is the course's general info section",
+            "list": [
+                {
+                    "text": {
+                        "name": "Instructions",
+                        "id": "7582",
+                        "link": "https://cses.fi/alon/text/2434",
+                    },
+                    "link": {
+                        "text": "External website",
+                        "link": "https://alon.mooc.fi/materiaali",
+                    }
+                }
+            ],
+        },
+        {
+            "header": "Week 1",
+            "list": [
+                {
+                    "task": {
+                        "name": "Wierd algorithm",
+                        "id": "1068",
+                        "link": "https://cses.fi/alon/task/1068",
+                        "status": "passed"
+                    },
+                    "task": {
+                        "name": "Increasing array",
+                        "id": "1094",
+                        "link": "https://cses.fi/alon/task/1094",
+                        "status": "none"
+                    },
+                }
+            ],
+        },
+    ]}, 200)
+
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.

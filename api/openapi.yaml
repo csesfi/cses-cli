@@ -596,7 +596,7 @@ paths:
     
   /courses/{course_id}/list
     get:
-      operationId: app.get_list
+      operationId: app.get_course_content
 
       summary: Retrieve the listed information related to a course.
 
@@ -610,7 +610,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CourseList"
+                $ref: "#/components/schemas/CourseContent"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
