@@ -82,6 +82,25 @@ CPP_PROGRESS_BASE = {
     "pending": True,
 }
 
+COMPILER_ERROR = """input/code.cpp:1:1: error: 'use' does not name \
+a type
+use std::io;
+^~~
+input/code.cpp:3:1: error: 'fn' does not name a type
+fn main() {
+^~
+"""
+COMPILER_WARNING = """input/code.cpp: In function 'int main()':
+input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
+expressions [-Wsign-compare]
+for (int i = 0; i < a.size(); i++) {
+"""
+COMPILER_WARNING_OTHER = """input/code.cpp: In function 'int main()':
+input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
+[-Wuninitialized]
+   while(x != 123);
+         ~~^~~~~~"""
+
 scenarios = [
     SubmissionScenario(
         SubmissionInfo(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
@@ -130,14 +149,7 @@ scenarios = [
             {
                 "status": "COMPILE ERROR",
                 "pending": False,
-                "compiler": """input/code.cpp:1:1: error: 'use' does not name \
-a type
-use std::io;
-^~~
-input/code.cpp:3:1: error: 'fn' does not name a type
-fn main() {
-^~
-"""
+                "compiler": COMPILER_ERROR
             }
         ]).data
     ),
@@ -149,11 +161,7 @@ fn main() {
                 "status": "READY",
                 "pending": False,
                 "result": "WRONG ANSWER",
-                "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
-expressions [-Wsign-compare]
-for (int i = 0; i < a.size(); i++) {
-""",
+                "compiler": COMPILER_WARNING,
                 "tests": [TestResult().data]
             }
         ]).data
@@ -183,11 +191,7 @@ for (int i = 0; i < a.size(); i++) {
                 "status": "READY",
                 "pending": False,
                 "result": "WRONG ANSWER",
-                "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
-expressions [-Wsign-compare]
-for (int i = 0; i < a.size(); i++) {
-""",
+                "compiler": COMPILER_WARNING,
                 "tests": [TestResult().data]
             }
         ]).data
@@ -200,11 +204,7 @@ for (int i = 0; i < a.size(); i++) {
                 "status": "READY",
                 "pending": False,
                 "result": "WRONG ANSWER",
-                "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:27:29: warning: comparison between signed and unsigned integer \
-expressions [-Wsign-compare]
-for (int i = 0; i < a.size(); i++) {
-""",
+                "compiler": COMPILER_WARNING,
                 "tests": [TestResult().data]
             }
         ]).data
@@ -215,10 +215,7 @@ for (int i = 0; i < a.size(); i++) {
             CPP_PROGRESS_BASE,
             {
                 "status": "TESTING",
-                "compiler": """input/code.cpp: In function 'int main()':
-input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wuninitialized]
-   while(x != 123);
-         ~~^~~~~~""",
+                "compiler": COMPILER_WARNING_OTHER,
                 "test_progress": {
                     "finished_tests": 2,
                     "total_tests": 71,
