@@ -10,7 +10,7 @@ import connexion
 from connexion import NoContent
 from connexion import RestyResolver
 
-from connexion.exceptions import BadRequestProblem  # , ValidationError
+from connexion.exceptions import BadRequestProblem
 from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
@@ -21,11 +21,6 @@ from constants import DEFAULT_TASK, UOLEVI, INTEGRATION
 
 
 state = ServerState(
-    valid_logins=[
-        {"username": "kalle", "password": "kissa2"},
-        {"username": "uolevi", "password": "12345"},
-        {"username": "Olaf", "password": "ILoveSummer"}
-    ],
     scenarios=scenarios
 )
 
@@ -54,6 +49,12 @@ def authorize_login_post():
     return "", 204
 
 
+@app.route('/authorize-all', methods=["POST"])
+def authorize_all_post():
+    state.authorize_all()
+    return "", 204
+
+
 def login_get(token_info):
     # Errors returned by security scheme
     return (UOLEVI, 200)
@@ -78,6 +79,13 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
     submission_id = state.add_submission(new_submission)
     submission_info = state.get_initial_submission_info(submission_id)
     if submission_info is None:
+        if task == DEFAULT_TASK:
+            return ({"message": "Failed to deduce the task for the submission",
+                     "code": "task_deduction_error"}, 400)
+        if details["language"]["name"] is None:
+            return ({"message": "Failed to deduce the language for the " +
+                                "submission",
+                     "code": "language_deduction_error"}, 400)
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
     return (submission_info, 200)
