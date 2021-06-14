@@ -219,12 +219,33 @@ components:
           description: >
             The name of the task.
 
+    UserOutline:
+      additionalProperties: false
+      required:
+        - id
+        - username
+      type: object
+
+      properties:
+        id:
+          type: integer
+          description: >
+            User ID.
+        username:
+          type: string
+          description: >
+            Raw username or nickname.
+        displayname:
+          type: string
+          description: >
+            Optional display name. A more descriptive name for external accounts.
 
     SubmissionInfo:
       additionalProperties: false
       required:
         - id
         - task
+        - sender
         - time
         - language
         - status
@@ -238,6 +259,8 @@ components:
             ID of the submission.
         task:
           $ref: "#/components/schemas/TaskOutline"
+        sender:
+          $ref: "#/components/schemas/UserOutline"
         time:
           type: string
           format: date-time
@@ -386,9 +409,13 @@ paths:
         - apiKeyAuth: []
 
       responses:
-        "204":
+        "200":
           description: >
-            API key is valid.
+            Login is valid. User information given in response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserOutline"
 
         "401":
           $ref: "#/components/responses/GetLoginError"

@@ -6,11 +6,11 @@ random.seed(1337)
 
 
 class ServerState:
-    def __init__(self, valid_logins, scenarios):
+    def __init__(self, integration, scenarios):
         # tokens need to be saved to test the logout
+        self.integration = integration
         self.pending_tokens = []
         self.valid_tokens = []
-        self.valid_logins = valid_logins
         self.submission_scenarios = scenarios
 
         self.submission_trackers = {}
@@ -25,6 +25,12 @@ class ServerState:
         self.pending_tokens.remove(token)
         if not fail:
             self.valid_tokens.append(token)
+
+    def authorize_all(self):
+        """Authorizes all pending tokens. Used only with integration testing"""
+        for token in self.pending_tokens:
+            self.valid_tokens.append(token)
+        self.pending_tokens = []
 
     def check_login(self, token):
         if self.is_valid(token):
@@ -44,8 +50,8 @@ class ServerState:
             self.valid_tokens.remove(token)
 
     def is_valid(self, token):
-        # FIXME: Fix this when test are aware of token authorization
-        return token in self.valid_tokens or token in self.pending_tokens
+        return token in self.valid_tokens or \
+            (not self.integration and token in self.pending_tokens)
 
     def _generate_token(self):
         token = "".join(random.choices(string.hexdigits, k=16))

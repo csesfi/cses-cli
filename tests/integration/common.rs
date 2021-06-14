@@ -23,18 +23,11 @@ pub fn contains(expr: &str) -> ContainsPredicate {
     predicate::str::contains(expr)
 }
 
-pub fn log_in(user: &str) {
-    let password = match user {
-        "kalle" => "kissa2",
-        "uolevi" => "12345",
-        "Olaf" => "ILoveSummer",
-        _ => panic!(),
-    };
-    command()
-        .args(&["login"])
-        .write_stdin(format!("{}\n{}\n", user, password))
-        .assert()
-        .success();
+pub fn log_in() {
+    command().args(&["login"]).assert().success();
+    minreq::post("http://127.0.0.1:4011/authorize-all")
+        .send()
+        .unwrap();
 }
 
 pub fn create_file<P: AsRef<Path>, S: AsRef<[u8]>>(filename: P, content: S) {

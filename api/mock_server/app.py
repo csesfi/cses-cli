@@ -4,35 +4,29 @@ import sys
 import time
 
 import connexion
-import werkzeug
-
 import base64
 
 from connexion import NoContent
 from connexion import RestyResolver
 
-from connexion.exceptions import BadRequestProblem  # , ValidationError
+from connexion.exceptions import BadRequestProblem
 from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import NewSubmission
-from scenarios import scenarios, DEFAULT_TASK
+from scenarios import scenarios, DEFAULT_TASK, UOLEVI
 
 
 integration = False
 try:
     integration = bool(sys.argv[1])
-except(Exception):
+except Exception:
     pass
 
 
 state = ServerState(
-    valid_logins=[
-        {"username": "kalle", "password": "kissa2"},
-        {"username": "uolevi", "password": "12345"},
-        {"username": "Olaf", "password": "ILoveSummer"}
-    ],
+    integration,
     scenarios=scenarios
 )
 
@@ -52,6 +46,7 @@ def login_post():
         200
     )
 
+
 @app.route('/authorize-login')
 def authorize_login_post():
     token = connexion.request.args.get("token")
@@ -59,9 +54,17 @@ def authorize_login_post():
     state.authorize_login(token, fail)
     return "", 204
 
+
+@app.route('/authorize-all', methods=["POST"])
+def authorize_all_post():
+    state.authorize_all()
+    return "", 204
+
+
 def login_get(token_info):
     # Errors returned by security scheme
-    return (NoContent, 204)
+    return (UOLEVI, 200)
+
 
 def logout_post(token_info):
     state.logout(token_info["apikey"])
@@ -122,7 +125,7 @@ def apikey_auth(apikey, required_scopes=None):
     elif status == "pending":
         raise Unauthorized(description="pending")
     else:
-        # this will be overriden by the render_api_authentication_failed function
+        # This is overriden by the render_api_authentication_failed function
         raise Unauthorized()
 
 
@@ -132,7 +135,8 @@ def render_invalid_query(exception):
 
 def render_api_authentication_failed(exception):
     if exception.description == "pending":
-        return ({"message": "API key pending login", "code": "pending_api_key"}, 401)
+        return ({"message": "API key pending login",
+                 "code": "pending_api_key"}, 401)
     else:
         return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
 
