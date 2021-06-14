@@ -70,6 +70,18 @@ SUMMA_TASK = {
     "name": "Summa",
 }
 
+CPP_PROGRESS_BASE = {
+    "task": SUMMA_TASK,
+    "sender": UOLEVI,
+    "time": "2017-07-21T17:32:28Z",
+    "language": {
+        "name": "C++",
+        "option": "C++17"
+    },
+    "status": "PENDING",
+    "pending": True,
+}
+
 scenarios = [
     SubmissionScenario(
         SubmissionInfo(course_id="kurssi", task_id=2, submission_json=RUST_CODE),
@@ -96,17 +108,7 @@ scenarios = [
     SubmissionScenario(
         SubmissionInfo(course_id="alon", task_id=4, submission_json=CPP_CODE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "TESTING",
             },
@@ -124,17 +126,7 @@ scenarios = [
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=13, submission_json=RS_13_CODE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "COMPILE ERROR",
                 "pending": False,
@@ -152,17 +144,7 @@ fn main() {
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=42, submission_json=CPP_CODE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
@@ -196,17 +178,7 @@ for (int i = 0; i < a.size(); i++) {
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=444, submission_json=CPP_CODE_NO_LANGUAGE_NO_OPTION),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
@@ -223,17 +195,7 @@ for (int i = 0; i < a.size(); i++) {
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=555, submission_json=CPP_CODE_NO_LANGUAGE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
@@ -250,17 +212,7 @@ for (int i = 0; i < a.size(); i++) {
     SubmissionScenario(
         SubmissionInfo(course_id="progress", task_id=7, submission_json=CPP_CODE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "TESTING",
                 "compiler": """input/code.cpp: In function 'int main()':
@@ -305,17 +257,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
     SubmissionScenario(
         SubmissionInfo(course_id="progress", task_id=8, submission_json=CPP_CODE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             { },
             { },
             {
@@ -360,17 +302,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function [-Wunin
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=DEFAULT_TASK, submission_json=CPP_CODE),
         SubmissionProgress([
-            {
-                "task": SUMMA_TASK,
-                "sender": UOLEVI,
-                "time": "2017-07-21T17:32:28Z",
-                "language": {
-                    "name": "C++",
-                    "option": "C++17"
-                },
-                "status": "PENDING",
-                "pending": True,
-            },
+            CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,

@@ -14,7 +14,7 @@ class SubmissionInfo:
 class SubmissionProgress:
     """A class for representing the progress of a submission"""
     def __init__(self, progress: list):
-        self.data, status = [], progress[0]
+        self.data, status = [], progress[0].copy()
         for update in progress:
             status.update(update)
             self.data.append(status.copy())
