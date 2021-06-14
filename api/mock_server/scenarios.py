@@ -1,5 +1,5 @@
 from submission import SubmissionScenario, SubmissionProgress, \
-                       SubmissionInfo, TestResult
+                       SubmissionInfo, TestResult, TestProgress
 import constants
 
 scenarios = [
@@ -125,29 +125,11 @@ scenarios = [
             {
                 "status": "TESTING",
                 "compiler": constants.COMPILER_WARNING_OTHER,
-                "test_progress": {
-                    "finished_tests": 2,
-                    "total_tests": 71,
-                },
+                **TestProgress(2, 71).data
             },
-            {
-                "test_progress": {
-                    "finished_tests": 18,
-                    "total_tests": 71,
-                },
-            },
-            {
-                "test_progress": {
-                    "finished_tests": 35,
-                    "total_tests": 71,
-                },
-            },
-            {
-                "test_progress": {
-                    "finished_tests": 53,
-                    "total_tests": 71,
-                },
-            },
+            {**TestProgress(18, 71).data},
+            {**TestProgress(35, 71).data},
+            {**TestProgress(53, 71).data},
             {
                 "status": "READY",
                 "pending": False,
@@ -169,31 +151,13 @@ scenarios = [
             {},
             {
                 "status": "TESTING",
-                "test_progress": {
-                    "finished_tests": 0,
-                    "total_tests": 10,
-                },
+                **TestProgress(0, 10).data
             },
-            {
-                "test_progress": {
-                    "finished_tests": 6,
-                    "total_tests": 10,
-                },
-            },
-            {
-                "test_progress": {
-                    "finished_tests": 9,
-                    "total_tests": 10,
-                },
-            },
+            {**TestProgress(6, 10).data},
+            {**TestProgress(9, 10).data},
             {},
             {},
-            {
-                "test_progress": {
-                    "finished_tests": 10,
-                    "total_tests": 10,
-                },
-            },
+            {**TestProgress(10, 10).data},
             {
                 "status": "READY",
                 "pending": False,

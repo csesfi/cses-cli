@@ -27,6 +27,16 @@ class SubmissionScenario:
         self.submission_progress = submission_progress
 
 
+class TestProgress:
+    def __init__(self, finished_tests: int, total_tests: int):
+        self.data = {
+            "test_progress": {
+                "finished_tests": finished_tests,
+                "total_tests": total_tests
+            }
+        }
+
+
 class TestResult:
     """A class for representing the result of a single test"""
     def __init__(self, number=1, verdict="ACCEPTED", time=120):
