@@ -242,4 +242,30 @@ scenarios = [
             },
         ]).data
     ),
+    SubmissionScenario(
+        SubmissionInfo(course_id="tira21k", task_id=23,
+                       submission_json=constants.PY_TODO_CODE),
+        SubmissionProgress([
+            {
+                "task": constants.SUMMA_TASK,
+                "sender": constants.UOLEVI,
+                "time": "2017-07-21T17:32:28Z",
+                "language": {
+                    "name": "CPython",
+                    "option": None
+                },
+                "status": "PENDING",
+                "pending": True,
+            },
+            {
+                "status": "READY",
+                "pending": False,
+                "result": "TEST FAILED",
+                "test_report": """Test failed when given the following input:
+1
+Error Message:
+SyntaxError: unexpeted EOF while parsing (todo.py, line 3)"""
+            },
+        ]).data
+    )
 ]
