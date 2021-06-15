@@ -131,6 +131,8 @@ def get_courses(token_info):
         }
     ]}, 200)
 
+def get_template(token_info, course_id, task_id, language):
+    return (200, {"content": "#include <iostream>\n"})
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
