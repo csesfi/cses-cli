@@ -114,6 +114,7 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
 
 INFO_HEADER = ""
 
+# Course content fetch
 INSTRUCTIONS_TEXT = {
     "name": "Instructions",
     "id": "7582",
