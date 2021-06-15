@@ -1,4 +1,6 @@
+mod courses;
 mod login;
+pub use courses::courses;
 pub use login::{login, login_is_valid, login_status, logout, Login};
 
 pub(crate) mod submit;

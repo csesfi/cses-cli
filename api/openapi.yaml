@@ -40,6 +40,36 @@ components:
                 message: Too many requests
                 code: client_error
 
+    SubmissionClientError:
+      description: >
+        Either a general client error or a specialized error
+        if server failed to deduce missing parts of the submission.
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: "#/components/schemas/TaskDeductionError"
+              - $ref: "#/components/schemas/LanguageDeductionError"
+              - $ref: "#/components/schemas/ClientError"
+
+          examples:
+            task_error_example:
+              summary: An example task deduction error
+              value:
+                message: >
+                  Couldn't find a task for the submitted file.
+                  For this course, the filename should be e.g.
+                  `hello_world.cpp` for the task Hello World.
+                code: task_deduction_error
+
+            language_error_example:
+              summary: An example language deduction error message
+              value:
+                message: >
+                  The filename extension `.asdf` doesn't specify
+                  any available language.
+                code: language_deduction_error
+
     ServerError:
       description: General server error.
       content:
@@ -67,6 +97,8 @@ components:
             - pending_api_key
             - server_error
             - client_error
+            - task_deduction_error
+            - language_deduction_error
 
     InvalidApiKeyError:
       allOf:
@@ -97,6 +129,30 @@ components:
               type: string
               enum:
                 - client_error
+
+    TaskDeductionError:
+      description: >
+        The server failed to find a matching task for the submission.
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - task_deduction_error
+
+    LanguageDeductionError:
+      description: >
+        The server failed to deduce the language of the submission.
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - language_deduction_error
 
     ServerError:
       allOf:
@@ -262,6 +318,31 @@ components:
             The compiler report in case of COMPILE ERROR or just some warnings
             from the compiler.
 
+    CourseList:
+          additionalProperties: false
+          required:
+            - courses
+          type: object
+
+          properties:
+            courses:
+              - id
+              - name
+              - description
+            properties:
+              id:
+                type: string
+                description: >
+                  Course ID.
+              name:
+                type: string
+                description: >
+                  The name of the course.
+              description:
+                type: string
+                description: >
+                  The course's description.
+    
     CourseContent:
       additionalProperties: false
       required:
@@ -551,6 +632,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SubmissionInfo"
+        "400":
+          $ref: "#/components/responses/SubmissionClientError"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
@@ -592,7 +675,6 @@ paths:
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
-
     
   /courses/{course_id}/list
     get:
@@ -611,6 +693,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CourseContent"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+  
+  /courses:
+    get:
+      operationId: app.get_courses
+
+      summary: Retrieve information about the available courses.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      responses:
+        "200":
+          description: >
+            Info about available courses was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseList"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":

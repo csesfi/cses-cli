@@ -1,7 +1,6 @@
 mod escape;
+use crate::entities::{CourseList, Language, SubmissionInfo, UserOutline};
 use escape::Escape;
-
-use crate::entities::{Language, SubmissionInfo, UserOutline};
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
 #[cfg(test)]
@@ -38,6 +37,10 @@ pub enum ApiError {
     ServerError(String),
     #[error("API request failed: \"{}\"", .0)]
     ClientError(String),
+    #[error("Task deduction error: \"{}\"", .0)]
+    TaskDeductionError(String),
+    #[error("Language deduction error: \"{}\"", .0)]
+    LanguageDeductionError(String),
 }
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -61,6 +64,8 @@ pub trait CsesApi {
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
+    #[allow(clippy::needless_lifetimes)]
+    fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -134,6 +139,25 @@ impl CsesApi for CsesHttpApi {
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
     }
+
+    fn get_courses(&self, token: Option<&str>) -> ApiResult<CourseList> {
+        match token {
+            Some(token) => {
+                let response = minreq::get(format!("{}/courses", self.url))
+                    .with_header("X-Auth-Token", token)
+                    .send()?;
+                check_error(&response)?;
+                let course_list: CourseList = json::from_str(response.as_str()?)?;
+                Ok(course_list)
+            }
+            None => {
+                let response = minreq::get(format!("{}/courses", self.url)).send()?;
+                check_error(&response)?;
+                let course_list: CourseList = json::from_str(response.as_str()?)?;
+                Ok(course_list)
+            }
+        }
+    }
 }
 
 fn check_error(response: &Response) -> ApiResult<()> {
@@ -146,6 +170,8 @@ fn check_error(response: &Response) -> ApiResult<()> {
             ErrorCode::PendingApiKey => ApiError::PendingApiKeyError,
             ErrorCode::ServerError => ApiError::ServerError(error.message),
             ErrorCode::ClientError => ApiError::ClientError(error.message),
+            ErrorCode::TaskDeductionError => ApiError::TaskDeductionError(error.message),
+            ErrorCode::LanguageDeductionError => ApiError::LanguageDeductionError(error.message),
         })
     }
 }
@@ -170,6 +196,10 @@ pub enum ErrorCode {
     ServerError,
     #[serde(rename = "client_error")]
     ClientError,
+    #[serde(rename = "task_deduction_error")]
+    TaskDeductionError,
+    #[serde(rename = "language_deduction_error")]
+    LanguageDeductionError,
 }
 
 #[derive(Debug, Serialize)]

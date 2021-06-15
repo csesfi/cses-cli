@@ -52,14 +52,17 @@ jobs:
           ~/.cargo/bin
           ~/.cargo/git
           ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          ~/.cargo/.crates.toml
+          ~/.cargo/.package-cache
+          ~/.cargo/.crates2.json
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cd
     - name: Rust toolchain setup
       uses: actions-rs/toolchain@v1
       env:
         RUSTUP_UNPACK_RAM: 104857600
       with:
         profile: minimal
-        toolchain: nightly
+        toolchain: nightly-2021-05-09
         components: rust-src
         override: true
     - name: Install Xargo

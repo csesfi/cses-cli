@@ -46,6 +46,15 @@ fn user_can_overwrite_current_login() {
 }
 
 #[distributed_slice(TESTS)]
+fn test_login_returns_correct_link() {
+    command()
+        .args(&["login"])
+        .assert()
+        .success()
+        .stdout(contains("http://127.0.0.1:4011/authorize-login?token="));
+}
+
+#[distributed_slice(TESTS)]
 fn user_will_not_be_asked_to_overwrite_if_the_token_is_not_authorized() {
     let assert = successful_login_attempt();
     verify_successful_login_output(assert);

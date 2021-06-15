@@ -1,14 +1,15 @@
 import random
 import string
 
+from constants import INTEGRATION
+
 
 random.seed(1337)
 
 
 class ServerState:
-    def __init__(self, integration, scenarios):
+    def __init__(self, scenarios):
         # tokens need to be saved to test the logout
-        self.integration = integration
         self.pending_tokens = []
         self.valid_tokens = []
         self.submission_scenarios = scenarios
@@ -35,11 +36,9 @@ class ServerState:
     def check_login(self, token):
         if self.is_valid(token):
             return "valid"
-        else:
-            if token in self.pending_tokens:
-                return "pending"
-            else:
-                return "invalid"
+        if token in self.pending_tokens:
+            return "pending"
+        return "invalid"
 
     def logout(self, token):
         """Logs out a valid api key"""
@@ -51,9 +50,10 @@ class ServerState:
 
     def is_valid(self, token):
         return token in self.valid_tokens or \
-            (not self.integration and token in self.pending_tokens)
+            (not INTEGRATION and token in self.pending_tokens)
 
-    def _generate_token(self):
+    @staticmethod
+    def _generate_token():
         token = "".join(random.choices(string.hexdigits, k=16))
         return token
 
@@ -65,16 +65,16 @@ class ServerState:
         Otherwise returns the submission id"""
 
         submission = None
-        for x in self.submission_scenarios:
-            if x.new_submission == new_submission:
-                submission = x
+        for scenario in self.submission_scenarios:
+            if scenario.submission_info == new_submission:
+                submission = scenario
 
         if submission is None:
             return None
 
         submission_id = random.getrandbits(64)
         self.submission_trackers[submission_id] = SubmissionTracker(
-            submission.submission_infos)
+            submission.submission_progress)
 
         return submission_id
 
