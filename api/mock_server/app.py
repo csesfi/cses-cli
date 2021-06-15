@@ -2,6 +2,7 @@
 # -d missing-docstring,R0903,W0613' and
 # 'flake8 --exclude=venv --count --show-source --statistics'
 
+from api.mock_server.constants import EXTERNAL_WEBSITE_LINK, INSTRUCTIONS_TEXT, TASK_1, TASK_2
 import time
 
 import base64
@@ -109,38 +110,17 @@ def get_course_content():
         {
             "header": "Info",
             "text": "This is the course's general info section",
-            "list": [
-                {
-                    "text": {
-                        "name": "Instructions",
-                        "id": "7582",
-                        "link": "https://cses.fi/alon/text/2434",
-                    },
-                    "link": {
-                        "text": "External website",
-                        "link": "https://alon.mooc.fi/materiaali",
-                    }
-                }
-            ],
+            "list": [{
+                INSTRUCTIONS_TEXT,
+                EXTERNAL_WEBSITE_LINK
+            }]
         },
         {
             "header": "Week 1",
-            "list": [
-                {
-                    "task": {
-                        "name": "Wierd algorithm",
-                        "id": "1068",
-                        "link": "https://cses.fi/alon/task/1068",
-                        "status": "passed"
-                    },
-                    "task": {
-                        "name": "Increasing array",
-                        "id": "1094",
-                        "link": "https://cses.fi/alon/task/1094",
-                        "status": "none"
-                    },
-                }
-            ],
+            "list": [{
+                TASK_1,
+                TASK_2,
+            }],
         },
     ]}, 200)
 

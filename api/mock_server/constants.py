@@ -111,3 +111,30 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
 [-Wuninitialized]
    while(x != 123);
          ~~^~~~~~"""
+
+INFO_HEADER = ""
+
+INSTRUCTIONS_TEXT = {
+    "name": "Instructions",
+    "id": "7582",
+    "link": "https://cses.fi/alon/text/2434",
+}
+
+EXTERNAL_WEBSITE_LINK = {
+    "text": "External website",
+    "link": "https://alon.mooc.fi/materiaali",
+}
+
+TASK_1 = {
+    "name": "Wierd algorithm",
+    "id": "1068",
+    "link": "https://cses.fi/alon/task/1068",
+    "status": "passed"
+}
+
+TASK_2 = {
+    "name": "Increasing array",
+    "id": "1094",
+    "link": "https://cses.fi/alon/task/1094",
+    "status": "none"
+}
