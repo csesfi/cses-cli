@@ -1,5 +1,5 @@
 mod escape;
-use crate::entities::{CourseList, Language, SubmissionInfo, UserOutline};
+use crate::entities::{CourseContent, CourseList, Language, SubmissionInfo, UserOutline};
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
@@ -66,7 +66,7 @@ pub trait CsesApi {
     ) -> ApiResult<SubmissionInfo>;
     #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
-    fn get_course_content<'a>(&self, token: Option<&'a str>, course_id: &str) -> ApiResult<()>;
+    fn get_course_content<'a>(&self, token: Option<&'a str>, course_id: &str) -> ApiResult<CourseContent>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -160,11 +160,11 @@ impl CsesApi for CsesHttpApi {
         }
     }
 
-    fn get_course_content<'a>(&self, _token: Option<&'a str>, _course_id: &str) -> ApiResult<()> {
-        // let response = minreq::get(format!("{}/courses/{}/list", self.url, course_id)).send()?;
-        // check_error(&response)?;
-        // let course_content: CourseList = json::from_str(response.as_str()?)?;
-        Ok(())
+    fn get_course_content<'a>(&self, _token: Option<&'a str>, course_id: &str) -> ApiResult<CourseContent> {
+        let response = minreq::get(format!("{}/courses/{}/list", self.url, course_id)).send()?;
+        check_error(&response)?;
+        let course_content: CourseContent = json::from_str(response.as_str()?)?;
+        Ok(course_content)
     }
 }
 
