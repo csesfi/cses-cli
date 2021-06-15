@@ -1,7 +1,6 @@
 mod escape;
 use escape::Escape;
-
-use crate::entities::{CourseList, Language, SubmissionInfo};
+use crate::entities::{CourseList, Language, SubmissionInfo, UserOutline};
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
 #[cfg(test)]
@@ -38,6 +37,10 @@ pub enum ApiError {
     ServerError(String),
     #[error("API request failed: \"{}\"", .0)]
     ClientError(String),
+    #[error("Task deduction error: \"{}\"", .0)]
+    TaskDeductionError(String),
+    #[error("Language deduction error: \"{}\"", .0)]
+    LanguageDeductionError(String),
 }
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -45,7 +48,7 @@ pub type ApiResult<T> = Result<T, ApiError>;
 #[cfg_attr(test, automock)]
 pub trait CsesApi {
     fn login(&self) -> ApiResult<LoginResponse>;
-    fn login_status(&self, token: &str) -> ApiResult<()>;
+    fn login_status(&self, token: &str) -> ApiResult<UserOutline>;
     fn logout(&self, token: &str) -> ApiResult<()>;
     fn submit_task(
         &self,
@@ -71,12 +74,13 @@ impl CsesApi for CsesHttpApi {
         Ok(json::from_str(response.as_str()?)?)
     }
 
-    fn login_status(&self, token: &str) -> ApiResult<()> {
+    fn login_status(&self, token: &str) -> ApiResult<UserOutline> {
         let response = minreq::get(format!("{}/login", self.url))
             .with_header("X-Auth-Token", token)
             .send()?;
         check_error(&response)?;
-        Ok(())
+        let response: UserOutline = json::from_str(response.as_str()?)?;
+        Ok(response)
     }
 
     fn logout(&self, token: &str) -> ApiResult<()> {
@@ -165,6 +169,8 @@ fn check_error(response: &Response) -> ApiResult<()> {
             ErrorCode::PendingApiKey => ApiError::PendingApiKeyError,
             ErrorCode::ServerError => ApiError::ServerError(error.message),
             ErrorCode::ClientError => ApiError::ClientError(error.message),
+            ErrorCode::TaskDeductionError => ApiError::TaskDeductionError(error.message),
+            ErrorCode::LanguageDeductionError => ApiError::LanguageDeductionError(error.message),
         })
     }
 }
@@ -189,6 +195,10 @@ pub enum ErrorCode {
     ServerError,
     #[serde(rename = "client_error")]
     ClientError,
+    #[serde(rename = "task_deduction_error")]
+    TaskDeductionError,
+    #[serde(rename = "language_deduction_error")]
+    LanguageDeductionError,
 }
 
 #[derive(Debug, Serialize)]

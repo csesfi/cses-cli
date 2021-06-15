@@ -40,6 +40,36 @@ components:
                 message: Too many requests
                 code: client_error
 
+    SubmissionClientError:
+      description: >
+        Either a general client error or a specialized error
+        if server failed to deduce missing parts of the submission.
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: "#/components/schemas/TaskDeductionError"
+              - $ref: "#/components/schemas/LanguageDeductionError"
+              - $ref: "#/components/schemas/ClientError"
+
+          examples:
+            task_error_example:
+              summary: An example task deduction error
+              value:
+                message: >
+                  Couldn't find a task for the submitted file.
+                  For this course, the filename should be e.g.
+                  `hello_world.cpp` for the task Hello World.
+                code: task_deduction_error
+
+            language_error_example:
+              summary: An example language deduction error message
+              value:
+                message: >
+                  The filename extension `.asdf` doesn't specify
+                  any available language.
+                code: language_deduction_error
+
     ServerError:
       description: General server error.
       content:
@@ -67,6 +97,8 @@ components:
             - pending_api_key
             - server_error
             - client_error
+            - task_deduction_error
+            - language_deduction_error
 
     InvalidApiKeyError:
       allOf:
@@ -97,6 +129,30 @@ components:
               type: string
               enum:
                 - client_error
+
+    TaskDeductionError:
+      description: >
+        The server failed to find a matching task for the submission.
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - task_deduction_error
+
+    LanguageDeductionError:
+      description: >
+        The server failed to deduce the language of the submission.
+      allOf:
+        - $ref: "#/components/schemas/BaseError"
+        - type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - language_deduction_error
 
     ServerError:
       allOf:
@@ -163,12 +219,33 @@ components:
           description: >
             The name of the task.
 
+    UserOutline:
+      additionalProperties: false
+      required:
+        - id
+        - username
+      type: object
+
+      properties:
+        id:
+          type: integer
+          description: >
+            User ID.
+        username:
+          type: string
+          description: >
+            Raw username or nickname.
+        displayname:
+          type: string
+          description: >
+            Optional display name. A more descriptive name for external accounts.
 
     SubmissionInfo:
       additionalProperties: false
       required:
         - id
         - task
+        - sender
         - time
         - language
         - status
@@ -182,6 +259,8 @@ components:
             ID of the submission.
         task:
           $ref: "#/components/schemas/TaskOutline"
+        sender:
+          $ref: "#/components/schemas/UserOutline"
         time:
           type: string
           format: date-time
@@ -360,9 +439,13 @@ paths:
         - apiKeyAuth: []
 
       responses:
-        "204":
+        "200":
           description: >
-            API key is valid.
+            Login is valid. User information given in response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserOutline"
 
         "401":
           $ref: "#/components/responses/GetLoginError"
@@ -444,6 +527,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SubmissionInfo"
+        "400":
+          $ref: "#/components/responses/SubmissionClientError"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":

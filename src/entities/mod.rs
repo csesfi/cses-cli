@@ -7,9 +7,23 @@ pub struct Language {
 }
 
 #[derive(Debug, Default, Deserialize)]
+pub struct UserOutline {
+    pub id: u64,
+    pub username: String,
+    pub displayname: Option<String>,
+}
+
+impl UserOutline {
+    pub fn name(&self) -> &str {
+        self.displayname.as_deref().unwrap_or(&self.username)
+    }
+}
+
+#[derive(Debug, Default, Deserialize)]
 pub struct SubmissionInfo {
     pub id: u64,
     pub task: TaskOutline,
+    pub sender: UserOutline,
     pub time: String,
     pub language: Language,
     pub status: String,
