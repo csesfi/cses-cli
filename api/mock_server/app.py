@@ -1,10 +1,11 @@
-# Linted with 'flake8 . --exclude=venv --count --show-source --statistics'
+# Linted with 'pylint * --ignore=venv,pyproject.toml,requests.sh,poetry.lock \
+# -d missing-docstring,R0903,W0613' and
+# 'flake8 --exclude=venv --count --show-source --statistics'
 
-import sys
 import time
 
-import connexion
 import base64
+import connexion
 
 from connexion import NoContent
 from connexion import RestyResolver
@@ -14,19 +15,12 @@ from connexion.exceptions import Unauthorized
 from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
-from submission import NewSubmission
-from scenarios import scenarios, DEFAULT_TASK, UOLEVI
-
-
-integration = False
-try:
-    integration = bool(sys.argv[1])
-except Exception:
-    pass
+from submission import SubmissionInfo
+from scenarios import scenarios
+from constants import DEFAULT_TASK, UOLEVI, INTEGRATION
 
 
 state = ServerState(
-    integration,
     scenarios=scenarios
 )
 
@@ -77,19 +71,20 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
     try:
         details["content"] = base64.b64decode(details["content"]) \
                                    .decode("utf-8")
-    except Exception:
+    except TypeError:
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
-    new_submission = NewSubmission(course_id, task, connexion.request.json)
+    new_submission = SubmissionInfo(course_id, task, connexion.request.json)
     submission_id = state.add_submission(new_submission)
     submission_info = state.get_initial_submission_info(submission_id)
     if submission_info is None:
         if task == DEFAULT_TASK:
-            return ({"message": f"Failed to deduce the task for the submission",
+            return ({"message": "Failed to deduce the task for the submission",
                      "code": "task_deduction_error"}, 400)
         if details["language"]["name"] is None:
-            return ({"message": f"Failed to deduce the language for the submission",
+            return ({"message": "Failed to deduce the language for the " +
+                                "submission",
                      "code": "language_deduction_error"}, 400)
         return ({"message": f"Invalid submission: {details}",
                  "code": "client_error"}, 400)
@@ -101,7 +96,7 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"course_id: {course_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
-    if not integration and poll:
+    if not INTEGRATION and poll:
         time.sleep(1.5)
     submission_info = state.get_submission_info(submission_id)
     if submission_info is None:
@@ -131,11 +126,10 @@ def apikey_auth(apikey, required_scopes=None):
     status = state.check_login(apikey)
     if status == "valid":
         return {"apikey": apikey}
-    elif status == "pending":
+    if status == "pending":
         raise Unauthorized(description="pending")
-    else:
-        # This is overriden by the render_api_authentication_failed function
-        raise Unauthorized()
+    # this will be overriden by the render_api_authentication_failed function
+    raise Unauthorized()
 
 
 def render_invalid_query(exception):
@@ -146,8 +140,7 @@ def render_api_authentication_failed(exception):
     if exception.description == "pending":
         return ({"message": "API key pending login",
                  "code": "pending_api_key"}, 401)
-    else:
-        return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
+    return ({"message": "Invalid api key", "code": "invalid_api_key"}, 401)
 
 
 def render_method_not_allowed(exception):
@@ -159,4 +152,4 @@ app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
 app.add_api("openapi.yaml", validate_responses=True,
             resolver=RestyResolver('api'))
-app.run(host="127.0.0.1", port=4011 if integration else 4010)
+app.run(host="127.0.0.1", port=4011 if INTEGRATION else 4010)
