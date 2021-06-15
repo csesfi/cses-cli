@@ -50,6 +50,9 @@ impl<R: ResourcesProvider> Ui<R> {
                 let submission_info = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
             }
+            Command::Template(_) => {
+                self.term.write_line("Command not yet implemented")?;
+            }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
             }
