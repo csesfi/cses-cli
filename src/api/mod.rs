@@ -1,6 +1,6 @@
 mod escape;
-use escape::Escape;
 use crate::entities::{CourseList, Language, SubmissionInfo, UserOutline};
+use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
 #[cfg(test)]
@@ -64,6 +64,7 @@ pub trait CsesApi {
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
+    #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
 }
 
