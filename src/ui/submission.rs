@@ -106,14 +106,14 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
         ]);
         table.add_separator();
         for test in tests {
-            let mut row = TableRow::new();
-            row.push(TableCell::from(test.number).align(TableAlign::Right));
-            row.push(TableCell::styled(with_color(&test.verdict)));
-            row.push(match test.time {
-                Some(time) => format!("{:.2} s", time as f64 / 1000.0).into(),
-                None => "--".into(),
-            });
-            table.add_row(row);
+            table.add_row(vec![
+                TableCell::from(test.number).align(TableAlign::Right),
+                TableCell::styled(with_color(&test.verdict)),
+                match test.time {
+                    Some(time) => format!("{:.2} s", time as f64 / 1000.0).into(),
+                    None => "--".into(),
+                },
+            ]);
         }
         write!(ui.term, "{}", table)?;
     }
