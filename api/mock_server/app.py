@@ -109,6 +109,15 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                 "code": "client_error"}, 404)
     return (submission_info, 200)
 
+def get_courses():
+    return ({"courses": [
+        {
+            "id": "teku",
+            "name": "Test course",
+            "description": "This is a test course used by the Python test server."
+        }
+    ]}, 200)
+
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
