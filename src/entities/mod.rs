@@ -1,3 +1,6 @@
+mod course;
+pub use course::*;
+
 use miniserde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]

@@ -43,6 +43,10 @@ impl CsesApi for FakeCsesApi {
     fn get_courses(&self, _token: Option<&str>) -> ApiResult<CourseList> {
         todo!()
     }
+
+    fn get_course_content<'a>(&self, token: Option<&'a str>, course_id: &str) -> ApiResult<()> {
+        todo!()
+    }
 }
 
 #[derive(Default, Debug)]
