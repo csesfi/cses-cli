@@ -104,6 +104,34 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                 "code": "client_error"}, 404)
     return (submission_info, 200)
 
+def get_submission_list(token_info, course_id, task_id):
+    print(f"token_info: {token_info}")
+    print(f"course_id: {course_id}")
+    print(f"task_id: {task_id}")
+    return ({"submissions:": [
+        {
+            "id": "1234567",
+            "time": "2017-07-21T17:32:28Z",
+            "language": {
+                "name": "CPython",
+                "option": None
+            },
+            "code_time": "500",
+            "size": "1000",
+            "result": "PASS"
+        },
+        {
+            "id": "7654321",
+            "time": "2020-07-21T17:32:28Z",
+            "language": {
+                "name": "C++",
+                 "option": "C++17"
+            },
+            "code_time": None,
+            "size": "200",
+            "result": "FAIL"
+        }
+    ]}, 200)
 
 def get_courses(token_info):
     visible_courses = [
@@ -130,7 +158,6 @@ def get_courses(token_info):
             "description": "If you can see this, you're logged in."
         }
     ]}, 200)
-
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.

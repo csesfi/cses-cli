@@ -579,6 +579,31 @@ paths:
         "5XX":
           $ref: "#/components/responses/ServerError"
 
+    get:
+      operationId: app.get_submission_list
+
+      summary: Retrieve information about submissions to a given task.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/TaskId"
+
+      responses:
+        "200":
+          description: >
+            Info about a submissions were retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionList"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+
   /courses/{course_id}/submissions/{submission_id}:
     get:
       operationId: app.get_submission
