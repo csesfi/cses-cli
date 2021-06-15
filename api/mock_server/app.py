@@ -2,7 +2,6 @@
 # -d missing-docstring,R0903,W0613' and
 # 'flake8 --exclude=venv --count --show-source --statistics'
 
-from api.mock_server.constants import EXTERNAL_WEBSITE_LINK, INSTRUCTIONS_TEXT, TASK_1, TASK_2
 import time
 
 import base64
@@ -18,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 from server_state import ServerState
 from submission import SubmissionInfo
 from scenarios import scenarios
-from constants import DEFAULT_TASK, UOLEVI, INTEGRATION
+from constants import DEFAULT_TASK, UOLEVI, INTEGRATION, EXTERNAL_WEBSITE_LINK, INSTRUCTIONS_TEXT, TASK_1, TASK_2
 
 
 state = ServerState(
@@ -105,26 +104,6 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                 "code": "client_error"}, 404)
     return (submission_info, 200)
 
-def get_course_content():
-    return ({"sections": [
-        {
-            "header": "Info",
-            "text": "This is the course's general info section",
-            "list": [{
-                INSTRUCTIONS_TEXT,
-                EXTERNAL_WEBSITE_LINK
-            }]
-        },
-        {
-            "header": "Week 1",
-            "list": [{
-                TASK_1,
-                TASK_2,
-            }],
-        },
-    ]}, 200)
-
-
 def get_courses(token_info):
     visible_courses = [
         {
@@ -149,6 +128,25 @@ def get_courses(token_info):
             "name": "Hidden course",
             "description": "If you can see this, you're logged in."
         }
+    ]}, 200)
+
+def get_course_content(course_id):
+    return ({"sections": [
+        {
+            "header": "Info",
+            "text": "This is the course's general info section",
+            "list": [{
+                INSTRUCTIONS_TEXT,
+                EXTERNAL_WEBSITE_LINK
+            }]
+        },
+        {
+            "header": "Week 1",
+            "list": [{
+                TASK_1,
+                TASK_2,
+            }],
+        },
     ]}, 200)
 
 

@@ -319,13 +319,18 @@ components:
             from the compiler.
 
     CourseList:
-          additionalProperties: false
-          required:
-            - courses
-          type: object
+      additionalProperties: false
+      required:
+        - courses
+      type: object
 
-          properties:
-            courses:
+      properties:
+        courses:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
               - id
               - name
               - description
@@ -379,20 +384,23 @@ components:
                   discriminator:
                     propertyName: objectType
                     mapping:
-                    - text: '#/components/schemas/Text'
-                    - link: '#/components/schemas/Link'
-                    - task: '#/components/schemas/Task'
+                      text: '#/components/schemas/Text'
+                      link: '#/components/schemas/Link'
+                      task: '#/components/schemas/Task'
 
     Text:
       additionalProperties: false
       required:
+        - objectType
         - name
         - id
         - link
       type: object
 
       properties:
-        text:
+        objectType:
+          type: string
+        name:
           type: string
           description: >
             The name of the text.
@@ -408,11 +416,14 @@ components:
     Link:
       additionalProperties: false
       required:
+        - objectType
         - name
         - link
       type: object
 
       properties:
+        objectType:
+          type: string
         name:
           type: string
           description: >
@@ -425,6 +436,7 @@ components:
     Task:
       additionalProperties: false
       required:
+        - objectType
         - name
         - id
         - link
@@ -432,6 +444,8 @@ components:
       type: object
 
       properties:
+        objectType:
+          type: string
         name:
           type: string
           description: >
@@ -675,29 +689,7 @@ paths:
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
-    
-  /courses/{course_id}/list
-    get:
-      operationId: app.get_course_content
 
-      summary: Retrieve the listed information related to a course.
-
-      security:
-        - apiKeyAuth: []
-
-      responses:
-        "200":
-          description: >
-            The listed information was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CourseContent"
-        "4XX":
-          $ref: "#/components/responses/ClientError"
-        "5XX":
-          $ref: "#/components/responses/ServerError"
-  
   /courses:
     get:
       operationId: app.get_courses
@@ -716,6 +708,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CourseList"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+    
+  /courses/{course_id}/list:
+    get:
+      operationId: app.get_course_content
+
+      summary: Retrieve the listed information related to a course.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+
+      responses:
+        "200":
+          description: >
+            The listed information was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseContent"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
