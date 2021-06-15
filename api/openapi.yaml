@@ -408,8 +408,8 @@ components:
       name: task
       schema:
         type: integer
-      required: false
-      description: Task ID. If not provided the server tries to deduce it from the file name.
+      required: true
+      description: Task ID.
 
     SubmissionId:
       in: path
@@ -539,7 +539,14 @@ paths:
 
       parameters:
         - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
+        - in: query
+          name: task
+          schema:
+            type: integer
+          required: false
+          description: > 
+            Task ID. If not provided the server 
+            tries to deduce it from the file name.
 
       requestBody:
         required: true
@@ -582,11 +589,7 @@ paths:
     get:
       operationId: app.get_submission_list
 
-      summary: Retrieve information about submissions on a course.
-      description: >
-        If task id is given in query, 
-        retrieve information about submissions for the spesific task
-        on the course.
+      summary: Retrieve information about submissions on a courses task.
 
       security:
         - apiKeyAuth: []
