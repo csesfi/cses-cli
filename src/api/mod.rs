@@ -160,10 +160,10 @@ impl CsesApi for CsesHttpApi {
         }
     }
 
-    fn get_course_content<'a>(&self, token: Option<&'a str>, course_id: &str) -> ApiResult<()> {
-        let response = minreq::get(format!("{}/courses/{}/list", self.url, course_id)).send()?;
-        check_error(&response)?;
-        let course_content: CourseList = json::from_str(response.as_str()?)?;
+    fn get_course_content<'a>(&self, _token: Option<&'a str>, _course_id: &str) -> ApiResult<()> {
+        // let response = minreq::get(format!("{}/courses/{}/list", self.url, course_id)).send()?;
+        // check_error(&response)?;
+        // let course_content: CourseList = json::from_str(response.as_str()?)?;
         Ok(())
     }
 }

@@ -3,7 +3,7 @@ use miniserde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct CourseContent {
-    pub sections: Vec<CourseSection>
+    pub sections: Vec<CourseSection>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -68,7 +68,10 @@ impl CourseItemRaw {
                 name: &self.name,
                 id: self.id.ok_or_else(|| anyhow!("Could not get ID"))?,
                 link: &self.link,
-                status: self.status.as_ref().ok_or_else(|| anyhow!("Could not get status"))?,
+                status: self
+                    .status
+                    .as_ref()
+                    .ok_or_else(|| anyhow!("Could not get status"))?,
             },
         })
     }
