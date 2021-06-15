@@ -348,6 +348,51 @@ components:
                 description: >
                   The course's description.
 
+    SubmissionList:
+      additionalProperties: false
+      required:
+        - submissions
+      type: object
+      properties:
+        submissions:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - id
+              - time
+              - language
+              - code_time
+              - size
+              - result
+            properties:
+              id:
+                type: integer
+                description: >
+                  ID of the submission.
+              time:
+                type: string
+                format: date-time
+                description: >
+                  Submission time in ISO 8601 format. 
+                  (Timezone format has not been decided upon)
+              language:
+                $ref: "#/components/schemas/Language"
+              code_time:
+                type: integer
+                nullable: true
+                description: >
+                  Run time of the code in milliseconds.
+              size:
+                type: integer
+                description: >
+                  Code size in chars.
+              result:
+                type: string
+                description: >
+                  Verdict of the submission, e.g. "ACCEPTED".
+
   parameters:
     CourseId:
       in: path
