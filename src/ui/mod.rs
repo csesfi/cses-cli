@@ -2,6 +2,7 @@ mod courses;
 mod login;
 mod submission;
 mod submit;
+mod table;
 
 use anyhow::{Error, Result};
 use console::{Style, Term};
