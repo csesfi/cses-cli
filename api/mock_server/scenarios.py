@@ -127,9 +127,9 @@ scenarios = [
                 "compiler": constants.COMPILER_WARNING_OTHER,
                 **test_progress(2, 71)
             },
-            {**test_progress(18, 71)},
-            {**test_progress(35, 71)},
-            {**test_progress(53, 71)},
+            test_progress(18, 71),
+            test_progress(35, 71),
+            test_progress(53, 71),
             {
                 "status": "READY",
                 "pending": False,
@@ -153,11 +153,11 @@ scenarios = [
                 "status": "TESTING",
                 **test_progress(0, 10)
             },
-            {**test_progress(6, 10)},
-            {**test_progress(9, 10)},
+            test_progress(6, 10),
+            test_progress(9, 10),
             {},
             {},
-            {**test_progress(10, 10)},
+            test_progress(10, 10),
             {
                 "status": "READY",
                 "pending": False,
