@@ -11,37 +11,34 @@ class SubmissionInfo:
             and self.submission_json == other.submission_json
 
 
-class SubmissionProgress:
-    """A class for representing the progress of a submission"""
-    def __init__(self, progress: list):
-        self.data, status = [], progress[0].copy()
-        for update in progress:
-            status.update(update)
-            self.data.append(status.copy())
-
-
 class SubmissionScenario:
     """A class for representing a single possible submission scenario"""
-    def __init__(self, submission_info, submission_progress):
+    def __init__(self, submission_info, submission_updates):
         self.submission_info = submission_info
-        self.submission_progress = submission_progress
+        self.submission_progress = submission_updates
 
 
-class TestProgress:
-    def __init__(self, finished_tests: int, total_tests: int):
-        self.data = {
-            "test_progress": {
-                "finished_tests": finished_tests,
-                "total_tests": total_tests
-            }
+def test_progress(finished_tests: int, total_tests: int) -> dict:
+    return {
+        "test_progress": {
+            "finished_tests": finished_tests,
+            "total_tests": total_tests
         }
+    }
 
 
-class TestResult:
-    """A class for representing the result of a single test"""
-    def __init__(self, number=1, verdict="ACCEPTED", time=120):
-        self.data = {
-            "number": number,
-            "verdict": verdict,
-            "time": time
-        }
+def test_result(number: int = 1, verdict: str = "ACCEPTED", time: int = 120) \
+        -> dict:
+    return {
+        "number": number,
+        "verdict": verdict,
+        "time": time
+    }
+
+
+def submission_progress(progress: list) -> dict:
+    data, status = [], progress[0].copy()
+    for update in progress:
+        status.update(update)
+        data.append(status.copy())
+    return data

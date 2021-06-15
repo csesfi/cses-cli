@@ -1,12 +1,12 @@
-from submission import SubmissionScenario, SubmissionProgress, \
-                       SubmissionInfo, TestResult, TestProgress
+from submission import SubmissionScenario, submission_progress, \
+                       SubmissionInfo, test_result, test_progress
 import constants
 
 scenarios = [
     SubmissionScenario(
         SubmissionInfo(course_id="kurssi", task_id=2,
                        submission_json=constants.RUST_CODE),
-        SubmissionProgress([
+        submission_progress([
             {
                 "task": constants.SUMMA_TASK,
                 "sender": constants.UOLEVI,
@@ -22,14 +22,14 @@ scenarios = [
                 "status": "READY",
                 "pending": False,
                 "result": "ACCEPTED",
-                "tests": [TestResult().data]
+                "tests": [test_result()]
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="alon", task_id=4,
                        submission_json=constants.CPP_CODE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "TESTING",
@@ -39,42 +39,42 @@ scenarios = [
                 "pending": False,
                 "result": "WRONG ANSWER",
                 "tests": [
-                    TestResult().data,
-                    TestResult(2, "WRONG ANSWER", 800).data
+                    test_result(),
+                    test_result(2, "WRONG ANSWER", 800)
                 ]
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=13,
                        submission_json=constants.RS_13_CODE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "COMPILE ERROR",
                 "pending": False,
                 "compiler": constants.COMPILER_ERROR
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=42,
                        submission_json=constants.CPP_CODE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
                 "result": "WRONG ANSWER",
                 "compiler": constants.COMPILER_WARNING,
-                "tests": [TestResult().data]
+                "tests": [test_result()]
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=111,
                        submission_json=constants.UNKNOWN_CODE_NO_DETAILS),
-        SubmissionProgress([
+        submission_progress([
             {
                 "task": constants.SUMMA_TASK,
                 "sender": constants.UOLEVI,
@@ -87,106 +87,106 @@ scenarios = [
                 "result": "INVALID LANGUAGE",
                 "pending": False,
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=444,
                        submission_json=constants.CPP_CODE_NO_DETAILS),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
                 "result": "WRONG ANSWER",
                 "compiler": constants.COMPILER_WARNING,
-                "tests": [TestResult().data]
+                "tests": [test_result()]
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=555,
                        submission_json=constants.CPP_CODE_NO_LANGUAGE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
                 "result": "WRONG ANSWER",
                 "compiler": constants.COMPILER_WARNING,
-                "tests": [TestResult().data]
+                "tests": [test_result()]
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="progress", task_id=7,
                        submission_json=constants.CPP_CODE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "TESTING",
                 "compiler": constants.COMPILER_WARNING_OTHER,
-                **TestProgress(2, 71).data
+                **test_progress(2, 71)
             },
-            {**TestProgress(18, 71).data},
-            {**TestProgress(35, 71).data},
-            {**TestProgress(53, 71).data},
+            {**test_progress(18, 71)},
+            {**test_progress(35, 71)},
+            {**test_progress(53, 71)},
             {
                 "status": "READY",
                 "pending": False,
                 "result": "OUTPUT LIMIT EXCEEDED",
                 "tests": [
-                    TestResult().data,
-                    TestResult(2, "OUTPUT LIMIT EXCEEDED", 800).data,
-                    TestResult(3, "WRONG ANSWER", 314).data,
-                    TestResult(4, "TIME LIMIT EXCEEDED", None).data
+                    test_result(),
+                    test_result(2, "OUTPUT LIMIT EXCEEDED", 800),
+                    test_result(3, "WRONG ANSWER", 314),
+                    test_result(4, "TIME LIMIT EXCEEDED", None)
                 ]}
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="progress", task_id=8,
                        submission_json=constants.CPP_CODE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {},
             {},
             {
                 "status": "TESTING",
-                **TestProgress(0, 10).data
+                **test_progress(0, 10)
             },
-            {**TestProgress(6, 10).data},
-            {**TestProgress(9, 10).data},
+            {**test_progress(6, 10)},
+            {**test_progress(9, 10)},
             {},
             {},
-            {**TestProgress(10, 10).data},
+            {**test_progress(10, 10)},
             {
                 "status": "READY",
                 "pending": False,
                 "result": "OUTPUT LIMIT EXCEEDED",
                 "tests": [
-                    TestResult().data,
-                    TestResult(2, "OUTPUT LIMIT EXCEEDED", 800).data,
-                    TestResult(3, "WRONG ANSWER", 314).data,
-                    TestResult(4, "TIME LIMIT EXCEEDED", None).data
+                    test_result(),
+                    test_result(2, "OUTPUT LIMIT EXCEEDED", 800),
+                    test_result(3, "WRONG ANSWER", 314),
+                    test_result(4, "TIME LIMIT EXCEEDED", None)
                 ]}
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="cses", task_id=constants.DEFAULT_TASK,
                        submission_json=constants.CPP_CODE),
-        SubmissionProgress([
+        submission_progress([
             constants.CPP_PROGRESS_BASE,
             {
                 "status": "READY",
                 "pending": False,
                 "result": "ACCEPTED",
-                "tests": [TestResult().data]
+                "tests": [test_result()]
             }
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="tira21k", task_id=23,
                        submission_json=constants.PY_CODE),
-        SubmissionProgress([
+        submission_progress([
             {
                 "task": constants.SUMMA_TASK,
                 "sender": constants.UOLEVI,
@@ -204,12 +204,12 @@ scenarios = [
                 "result": "ACCEPTED",
                 "test_report": "All tests accepted"
             },
-        ]).data
+        ])
     ),
     SubmissionScenario(
         SubmissionInfo(course_id="tira21k", task_id=23,
                        submission_json=constants.PY_TODO_CODE),
-        SubmissionProgress([
+        submission_progress([
             {
                 "task": constants.SUMMA_TASK,
                 "sender": constants.UOLEVI,
@@ -230,6 +230,6 @@ scenarios = [
 Error Message:
 SyntaxError: unexpeted EOF while parsing (todo.py, line 3)"""
             },
-        ]).data
+        ])
     )
 ]
