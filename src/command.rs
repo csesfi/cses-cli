@@ -15,6 +15,7 @@ COMMANDS:
     login               Log in to cses.fi
     logout              Invalidate the current login session.
     status              Prints the login status.
+    courses             Displays a list of courses
     submit <file>       Submit a file to cses.fi.
 
         Submit options:
@@ -56,6 +57,7 @@ pub enum Command {
     Login,
     Logout,
     Status,
+    Courses,
     Submit(Submit),
 }
 #[derive(Debug)]
@@ -103,6 +105,7 @@ impl Command {
             "login" => Ok(Command::Login),
             "logout" => Ok(Command::Logout),
             "status" => Ok(Command::Status),
+            "courses" => Ok(Command::Courses),
             "submit" => Ok(Command::Submit(
                 Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
             )),
@@ -321,5 +324,13 @@ mod tests {
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(command, Command::None));
+    }
+
+    #[test]
+    fn command_courses_works_without_flags() {
+        let pargs = to_pargs(&["courses"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(command, Command::Courses));
     }
 }

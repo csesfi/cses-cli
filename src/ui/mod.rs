@@ -1,3 +1,4 @@
+mod courses;
 mod login;
 mod submission;
 mod submit;
@@ -40,6 +41,9 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::Status => {
                 login::status(self)?;
+            }
+            Command::Courses => {
+                courses::list_courses(self)?;
             }
             Command::Submit(submit) => {
                 let submission_info = submit::submit(self, submit)?;
