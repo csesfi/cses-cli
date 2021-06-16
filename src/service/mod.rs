@@ -1,6 +1,6 @@
 mod courses;
 mod login;
-pub use courses::{courses, course_content};
+pub use courses::{course_content, courses};
 pub use login::{login, login_is_valid, login_status, logout, Login};
 
 pub(crate) mod submit;

@@ -44,7 +44,11 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_course_content<'a>(&self, _token: Option<&'a str>, _course_id: &str) -> ApiResult<CourseContent> {
+    fn get_course_content<'a>(
+        &self,
+        _token: Option<&'a str>,
+        _course_id: &str,
+    ) -> ApiResult<CourseContent> {
         todo!()
     }
 }

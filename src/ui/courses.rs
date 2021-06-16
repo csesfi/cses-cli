@@ -1,6 +1,11 @@
-use crate::{RP, entities::{CourseItem, CourseItemRaw, CourseTaskStatus}, service, ui::table::{Table, TableAlign, TableCell}};
+use crate::{
+    entities::{CourseItem, CourseItemRaw, CourseTaskStatus},
+    service,
+    ui::table::{Table, TableAlign, TableCell},
+    RP,
+};
 use anyhow::Result;
-use console::{StyledObject, style};
+use console::{style, StyledObject};
 use std::io::Write;
 
 use super::Ui;
@@ -26,7 +31,7 @@ pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> 
     if course.sections.is_empty() {
         return Ok(writeln!(ui.term, "No course content!")?);
     }
-    
+
     for section in course.sections {
         writeln!(ui.term, "\n{}", style(&section.header).bold())?;
         if let Some(text) = &section.text {
@@ -46,7 +51,7 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
     for course_item_raw in list {
         let course_item_as_enum = course_item_raw.as_enum()?;
         match course_item_as_enum {
-            CourseItem::Text {id, name, link} => {
+            CourseItem::Text { id, name, link } => {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
@@ -61,15 +66,20 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                     TableCell::empty(),
                     TableCell::from(link),
                 ]);
-            },
-            CourseItem::Task { name, id, link, status }  => {
+            }
+            CourseItem::Task {
+                name,
+                id,
+                link,
+                status,
+            } => {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
                     TableCell::styled(styled_task_status(status)),
                     TableCell::from(link),
                 ]);
-            },
+            }
         }
     }
     Ok(table)

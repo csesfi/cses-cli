@@ -101,7 +101,7 @@ impl Course {
                 } else {
                     anyhow::bail!("Course ID not specified")
                 }
-            }
+            },
         })
     }
 }

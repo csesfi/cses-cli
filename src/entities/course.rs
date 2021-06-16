@@ -78,9 +78,7 @@ impl CourseItemRaw {
                 name: &self.name,
                 id: self.id.ok_or_else(|| anyhow!("Could not get ID"))?,
                 link: &self.link,
-                status: self
-                    .status
-                    .ok_or_else(|| anyhow!("Could not get status"))?,
+                status: self.status.ok_or_else(|| anyhow!("Could not get status"))?,
             },
         })
     }
