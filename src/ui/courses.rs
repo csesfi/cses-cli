@@ -1,4 +1,4 @@
-use crate::{RP, entities::{CourseItem, CourseTaskStatus}, service, ui::table::{Table, TableAlign, TableCell}};
+use crate::{RP, entities::{CourseItem, CourseItemRaw, CourseTaskStatus}, service, ui::table::{Table, TableAlign, TableCell}};
 use anyhow::Result;
 use console::{StyledObject, style};
 use std::io::Write;
@@ -33,41 +33,46 @@ pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> 
             writeln!(ui.term, "\n{}", text)?;
         }
 
-        let mut table = Table::new(vec![4, 30, 0, 0]);
-
-        for course_item_raw in section.list {
-            let course_item_as_enum = course_item_raw.as_enum()?;
-            match course_item_as_enum {
-                CourseItem::Text {id, name, link} => {
-                    table.add_row(vec![
-                        TableCell::from(id).align(TableAlign::Right),
-                        TableCell::from(name),
-                        TableCell::empty(),
-                        TableCell::from(link),
-                    ]);
-                }
-                CourseItem::Link { name, link } => {
-                    table.add_row(vec![
-                        TableCell::from(""),
-                        TableCell::from(name),
-                        TableCell::empty(),
-                        TableCell::from(link),
-                    ]);
-                },
-                CourseItem::Task { name, id, link, status }  => {
-                    table.add_row(vec![
-                        TableCell::from(id).align(TableAlign::Right),
-                        TableCell::from(name),
-                        TableCell::styled(styled_task_status(status)),
-                        TableCell::from(link),
-                    ]);
-                },
-            }
-        }
+        let table = create_course_item_table(&section.list)?;
         write!(ui.term, "\n{}", table)?;
     }
     writeln!(ui.term)?;
     Ok(())
+}
+
+pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
+    let mut table = Table::new(vec![4, 30, 0, 0]);
+
+    for course_item_raw in list {
+        let course_item_as_enum = course_item_raw.as_enum()?;
+        match course_item_as_enum {
+            CourseItem::Text {id, name, link} => {
+                table.add_row(vec![
+                    TableCell::from(id).align(TableAlign::Right),
+                    TableCell::from(name),
+                    TableCell::empty(),
+                    TableCell::from(link),
+                ]);
+            }
+            CourseItem::Link { name, link } => {
+                table.add_row(vec![
+                    TableCell::from(""),
+                    TableCell::from(name),
+                    TableCell::empty(),
+                    TableCell::from(link),
+                ]);
+            },
+            CourseItem::Task { name, id, link, status }  => {
+                table.add_row(vec![
+                    TableCell::from(id).align(TableAlign::Right),
+                    TableCell::from(name),
+                    TableCell::styled(styled_task_status(status)),
+                    TableCell::from(link),
+                ]);
+            },
+        }
+    }
+    Ok(table)
 }
 
 pub fn styled_task_status(status: CourseTaskStatus) -> StyledObject<&'static str> {
