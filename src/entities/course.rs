@@ -28,7 +28,7 @@ pub enum CourseItem<'a> {
         name: &'a str,
         id: u64,
         link: &'a str,
-        status: &'a str,
+        status: CourseTaskStatus,
     },
 }
 
@@ -39,7 +39,17 @@ pub struct CourseItemRaw {
     name: String,
     id: Option<u64>,
     link: String,
-    status: Option<String>,
+    status: Option<CourseTaskStatus>,
+}
+
+#[derive(Debug, Deserialize, Copy, Clone)]
+pub enum CourseTaskStatus {
+    #[serde(rename = "pass")]
+    Pass,
+    #[serde(rename = "fail")]
+    Fail,
+    #[serde(rename = "none")]
+    None,
 }
 
 #[derive(Debug, Deserialize)]
@@ -70,7 +80,6 @@ impl CourseItemRaw {
                 link: &self.link,
                 status: self
                     .status
-                    .as_ref()
                     .ok_or_else(|| anyhow!("Could not get status"))?,
             },
         })
