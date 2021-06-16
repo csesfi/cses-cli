@@ -22,6 +22,8 @@ impl Default for ConcreteFilesystem {
 
 pub trait Filesystem {
     fn get_file(&self, path: &str) -> Result<Vec<u8>>;
+    fn file_exists(&self, path: &str) -> bool;
+    fn write_file(&self, filecontent: &[u8], path: &str) -> Result<()>;
     fn get_file_name(&self, path: &str) -> Result<String>;
     fn encode_base64(&self, filecontent: &[u8]) -> String;
     fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>>;
@@ -41,6 +43,15 @@ impl Filesystem for ConcreteFilesystem {
             Ok(buffer)
         })()
         .context(format!("Failed reading file {}", filename))
+    }
+
+    fn file_exists(&self, path: &str) -> bool {
+        Path::new(path).exists()
+    }
+
+    fn write_file(&self, filecontent: &[u8], path: &str) -> Result<()> {
+        (|| -> Result<_> { Ok(fs::write(path, filecontent)?) })()
+            .context(format!("Failed saving file to {}", path))
     }
 
     fn get_file_name(&self, path: &str) -> Result<String> {
@@ -98,6 +109,19 @@ mod tests {
         let result = filesystem.get_file(path.to_str().unwrap());
         assert!(result.is_err());
 
+        remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn can_write_file() {
+        let mut path = temp_dir();
+        path.push("RgnDfAjXcbpeIvdSCkxm");
+        let path = path.to_str().unwrap();
+        let filesystem = ConcreteFilesystem::default();
+        let content = vec![b'a', b'b', b'c'];
+
+        filesystem.write_file(&content, path).unwrap();
+        assert_eq!(filesystem.get_file(path).unwrap(), content);
         remove_file(&path).unwrap();
     }
 
