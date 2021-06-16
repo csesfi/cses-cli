@@ -111,3 +111,26 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
 [-Wuninitialized]
    while(x != 123);
          ~~^~~~~~"""
+
+# Courses
+VISIBLE_COURSES = [
+    {
+        "id": "teku",
+        "name": "Test course",
+        "description": "This is a test course used by the Python test server."
+    },
+    {
+        "id": "problemset",
+        "name": "CSES Problem Set",
+        "description": "The CSES Problem Set contains a collection of " +
+                       "competitive programming practice problems."
+    }
+]
+
+ALL_COURSES = VISIBLE_COURSES + [
+    {
+        "id": "hidden",
+        "name": "Hidden course",
+        "description": "If you can see this, you're logged in."
+    }
+]

@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 from server_state import ServerState
 from submission import SubmissionInfo
 from scenarios import scenarios
-from constants import DEFAULT_TASK, UOLEVI, INTEGRATION
+import constants
 
 
 state = ServerState(
@@ -57,7 +57,7 @@ def authorize_all_post():
 
 def login_get(token_info):
     # Errors returned by security scheme
-    return (UOLEVI, 200)
+    return (constants.UOLEVI, 200)
 
 
 def logout_post(token_info):
@@ -65,7 +65,7 @@ def logout_post(token_info):
     return (NoContent, 204)
 
 
-def submissions_post(token_info, course_id, task=DEFAULT_TASK):
+def submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
 
     details = connexion.request.json
     try:
@@ -79,7 +79,7 @@ def submissions_post(token_info, course_id, task=DEFAULT_TASK):
     submission_id = state.add_submission(new_submission)
     submission_info = state.get_initial_submission_info(submission_id)
     if submission_info is None:
-        if task == DEFAULT_TASK:
+        if task == constants.DEFAULT_TASK:
             return ({"message": "Failed to deduce the task for the submission",
                      "code": "task_deduction_error"}, 400)
         if details["language"]["name"] is None:
@@ -96,7 +96,7 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"course_id: {course_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
-    if not INTEGRATION and poll:
+    if not constants.INTEGRATION and poll:
         time.sleep(1.5)
     submission_info = state.get_submission_info(submission_id)
     if submission_info is None:
@@ -106,30 +106,9 @@ def get_submission(token_info, course_id, submission_id, poll=False):
 
 
 def get_courses(token_info):
-    visible_courses = [
-        {
-            "id": "teku",
-            "name": "Test course",
-            "description": "This is a test course used by the Python test server."
-        },
-        {
-            "id": "problemset",
-            "name": "CSES Problem Set",
-            "description": "The CSES Problem Set contains a collection of " +
-                "competitive programming practice problems."
-        }
-    ]
-
     if token_info == {}:
-        return ({"courses": visible_courses}, 200)
-
-    return ({"courses": visible_courses + [
-        {
-            "id": "hidden",
-            "name": "Hidden course",
-            "description": "If you can see this, you're logged in."
-        }
-    ]}, 200)
+        return ({"courses": constants.VISIBLE_COURSES}, 200)
+    return ({"courses": constants.ALL_COURSES}, 200)
 
 
 def apikey_auth(apikey, required_scopes=None):
@@ -140,7 +119,7 @@ def apikey_auth(apikey, required_scopes=None):
     `token_info` in the function corresponding to the
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
-         
+
     status = state.check_login(apikey)
     if status == "valid":
         return {"apikey": apikey}
@@ -170,4 +149,4 @@ app.add_error_handler(Unauthorized, render_api_authentication_failed)
 app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
 app.add_api("openapi.yaml", validate_responses=True,
             resolver=RestyResolver('api'))
-app.run(host="127.0.0.1", port=4011 if INTEGRATION else 4010)
+app.run(host="127.0.0.1", port=4011 if constants.INTEGRATION else 4010)
