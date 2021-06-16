@@ -1,6 +1,6 @@
 use crate::{RP, entities::{CourseItem, CourseTaskStatus}, service, ui::table::{Table, TableAlign, TableCell}};
 use anyhow::Result;
-use console::style;
+use console::{StyledObject, style};
 use std::io::Write;
 
 use super::Ui;
@@ -39,7 +39,6 @@ pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> 
             let course_item_as_enum = course_item_raw.as_enum()?;
             match course_item_as_enum {
                 CourseItem::Text {id, name, link} => {
-                    // writeln!(ui.term, "\n{}\n{}", name, link)?;
                     table.add_row(vec![
                         TableCell::from(id).align(TableAlign::Right),
                         TableCell::from(name),
@@ -49,7 +48,7 @@ pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> 
                 }
                 CourseItem::Link { name, link } => {
                     table.add_row(vec![
-                        TableCell::empty(),
+                        TableCell::from(""),
                         TableCell::from(name),
                         TableCell::empty(),
                         TableCell::from(link),
@@ -59,11 +58,7 @@ pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> 
                     table.add_row(vec![
                         TableCell::from(id).align(TableAlign::Right),
                         TableCell::from(name),
-                        TableCell::styled(match status {
-                            CourseTaskStatus::Pass => style("+").green(),
-                            CourseTaskStatus::Fail => style("X").red(),
-                            CourseTaskStatus::None => style("-").dim(),
-                        }),
+                        TableCell::styled(styled_task_status(status)),
                         TableCell::from(link),
                     ]);
                 },
@@ -73,4 +68,12 @@ pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> 
     }
     writeln!(ui.term)?;
     Ok(())
+}
+
+pub fn styled_task_status(status: CourseTaskStatus) -> StyledObject<&'static str> {
+    match status {
+        CourseTaskStatus::Pass => style("+").green(),
+        CourseTaskStatus::Fail => style("X").red(),
+        CourseTaskStatus::None => style("-").dim(),
+    }
 }
