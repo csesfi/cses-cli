@@ -45,3 +45,58 @@ fn can_see_the_hidden_course_when_logged_in() {
         .stdout(regex_match(r"(?i)hidden course"))
         .stderr(predicate::str::is_empty());
 }
+
+#[distributed_slice(TESTS)]
+fn all_course_section_headers_are_displayed() {
+    command()
+        .args(&["course", "teku"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)info"))
+        .stdout(regex_match(r"(?i)week 1"))
+        .stderr(predicate::str::is_empty());
+}
+
+#[distributed_slice(TESTS)]
+fn course_section_optional_text_is_displayed() {
+    command()
+        .args(&["course", "teku"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)general info"))
+        .stderr(predicate::str::is_empty());
+}
+
+#[distributed_slice(TESTS)]
+fn course_item_parameters_are_displayed() {
+    command()
+        .args(&["course", "teku"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)1068"))
+        .stdout(regex_match(r"(?i)algorithm"))
+        .stdout(regex_match(r"(?i)https"))
+        .stderr(predicate::str::is_empty());
+}
+
+#[distributed_slice(TESTS)]
+fn task_status_is_none_when_not_logged_in() {
+    command()
+        .args(&["course", "teku"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)-"))
+        .stdout(regex_match(r"(?i)\+").not())
+        .stderr(predicate::str::is_empty());
+}
+
+#[distributed_slice(TESTS)]
+fn task_status_is_shown_when_logged_in() {
+    log_in();
+    command()
+        .args(&["course", "teku"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)\+"))
+        .stderr(predicate::str::is_empty());
+}
