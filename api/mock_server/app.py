@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 from server_state import ServerState
 from submission import SubmissionInfo
 from scenarios import scenarios
-from constants import DEFAULT_TASK, UOLEVI, INTEGRATION, EXTERNAL_WEBSITE_LINK, INSTRUCTIONS_TEXT, TASK_1, TASK_2
+from constants import DEFAULT_TASK, UOLEVI, INTEGRATION, EXTERNAL_WEBSITE_LINK, INSTRUCTIONS_TEXT, TASK_1, TASK_2, TASK_1_WITH_STATUS, TASK_2_WITH_STATUS
 
 
 state = ServerState(
@@ -130,7 +130,12 @@ def get_courses(token_info):
         }
     ]}, 200)
 
-def get_course_content(course_id):
+def get_course_content(token_info, course_id):
+    task_list = []
+    if token_info == {}:
+        task_list = [TASK_1, TASK_2]
+    else: task_list = [TASK_1_WITH_STATUS, TASK_2_WITH_STATUS]
+
     return ({"sections": [
         {
             "header": "Info",
@@ -142,10 +147,7 @@ def get_course_content(course_id):
         },
         {
             "header": "Week 1",
-            "list": [
-                TASK_1,
-                TASK_2,
-            ],
+            "list": task_list
         },
     ]}, 200)
 

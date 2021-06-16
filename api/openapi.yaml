@@ -721,6 +721,7 @@ paths:
 
       security:
         - apiKeyAuth: []
+        - {}
 
       parameters:
         - $ref: "#/components/parameters/CourseId"

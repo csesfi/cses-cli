@@ -133,7 +133,7 @@ TASK_1 = {
     "name": "Wierd algorithm",
     "id": 1068,
     "link": "https://cses.fi/alon/task/1068",
-    "status": "pass"
+    "status": "none"
 }
 
 TASK_2 = {
@@ -142,4 +142,20 @@ TASK_2 = {
     "id": 1094,
     "link": "https://cses.fi/alon/task/1094",
     "status": "none"
+}
+
+TASK_1_WITH_STATUS = {
+    "objectType": "task",
+    "name": "Wierd algorithm",
+    "id": 1068,
+    "link": "https://cses.fi/alon/task/1068",
+    "status": "pass"
+}
+
+TASK_2_WITH_STATUS = {
+    "objectType": "task",
+    "name": "Increasing array",
+    "id": 1094,
+    "link": "https://cses.fi/alon/task/1094",
+    "status": "fail"
 }
