@@ -1,6 +1,6 @@
 mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
-use crate::entities::{CourseList, SubmissionInfo, UserOutline};
+use crate::entities::{CourseContent, CourseList, SubmissionInfo, UserOutline};
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
@@ -44,7 +44,7 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_course_content<'a>(&self, token: Option<&'a str>, course_id: &str) -> ApiResult<()> {
+    fn get_course_content<'a>(&self, _token: Option<&'a str>, _course_id: &str) -> ApiResult<CourseContent> {
         todo!()
     }
 }
