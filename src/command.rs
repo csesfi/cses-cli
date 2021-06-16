@@ -16,7 +16,7 @@ COMMANDS:
     logout              Invalidate the current login session.
     status              Prints the login status.
     courses             Displays a list of courses.
-    course <course id>  Displays the contents of a course.
+    course <course ID>  Displays the contents of a course.
     submit <file>       Submit a file to cses.fi.
 
         Submit options:
