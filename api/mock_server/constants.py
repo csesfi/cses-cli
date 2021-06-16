@@ -116,26 +116,30 @@ INFO_HEADER = ""
 
 # Course content fetch
 INSTRUCTIONS_TEXT = {
+    "objectType": "text",
     "name": "Instructions",
-    "id": "7582",
+    "id": 7582,
     "link": "https://cses.fi/alon/text/2434",
 }
 
 EXTERNAL_WEBSITE_LINK = {
-    "text": "External website",
+    "objectType": "link",
+    "name": "External website",
     "link": "https://alon.mooc.fi/materiaali",
 }
 
 TASK_1 = {
+    "objectType": "task",
     "name": "Wierd algorithm",
-    "id": "1068",
+    "id": 1068,
     "link": "https://cses.fi/alon/task/1068",
-    "status": "passed"
+    "status": "pass"
 }
 
 TASK_2 = {
+    "objectType": "task",
     "name": "Increasing array",
-    "id": "1094",
+    "id": 1094,
     "link": "https://cses.fi/alon/task/1094",
     "status": "none"
 }

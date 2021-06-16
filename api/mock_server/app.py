@@ -135,17 +135,17 @@ def get_course_content(course_id):
         {
             "header": "Info",
             "text": "This is the course's general info section",
-            "list": [{
+            "list": [
                 INSTRUCTIONS_TEXT,
                 EXTERNAL_WEBSITE_LINK
-            }]
+            ]
         },
         {
             "header": "Week 1",
-            "list": [{
+            "list": [
                 TASK_1,
                 TASK_2,
-            }],
+            ],
         },
     ]}, 200)
 

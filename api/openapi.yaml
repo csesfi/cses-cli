@@ -405,7 +405,7 @@ components:
           description: >
             The name of the text.
         id:
-          type: string
+          type: integer
           description: >
             The text's ID.
         link:
@@ -451,7 +451,7 @@ components:
           description: >
             The name of the task.
         id:
-          type: string
+          type: integer
           description: >
             The task's ID.
         link:

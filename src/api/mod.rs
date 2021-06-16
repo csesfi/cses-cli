@@ -66,7 +66,11 @@ pub trait CsesApi {
     ) -> ApiResult<SubmissionInfo>;
     #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
-    fn get_course_content<'a>(&self, token: Option<&'a str>, course_id: &str) -> ApiResult<CourseContent>;
+    fn get_course_content<'a>(
+        &self,
+        token: Option<&'a str>,
+        course_id: &str,
+    ) -> ApiResult<CourseContent>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -160,8 +164,16 @@ impl CsesApi for CsesHttpApi {
         }
     }
 
-    fn get_course_content<'a>(&self, _token: Option<&'a str>, course_id: &str) -> ApiResult<CourseContent> {
-        let response = minreq::get(format!("{}/courses/{}/list", self.url, course_id)).send()?;
+    fn get_course_content<'a>(
+        &self,
+        token: Option<&'a str>,
+        course_id: &str,
+    ) -> ApiResult<CourseContent> {
+        let mut request = minreq::get(format!("{}/courses/{}/list", self.url, course_id));
+        if let Some(token) = token {
+            request = request.with_header("X-Auth-Token", token);
+        }
+        let response = request.send()?;
         check_error(&response)?;
         let course_content: CourseContent = json::from_str(response.as_str()?)?;
         Ok(course_content)

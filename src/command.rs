@@ -15,7 +15,8 @@ COMMANDS:
     login               Log in to cses.fi
     logout              Invalidate the current login session.
     status              Prints the login status.
-    courses             Displays a list of courses
+    courses             Displays a list of courses.
+    course <course id>  Displays the contents of a course.
     submit <file>       Submit a file to cses.fi.
 
         Submit options:
@@ -58,6 +59,7 @@ pub enum Command {
     Logout,
     Status,
     Courses,
+    Course(Course),
     Submit(Submit),
 }
 #[derive(Debug)]
@@ -86,6 +88,23 @@ impl Submit {
         })
     }
 }
+#[derive(Debug)]
+pub struct Course {
+    pub course_id: String,
+}
+impl Course {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Course> {
+        Ok(Course {
+            course_id: {
+                if let Ok(course_id) = pargs.free_from_str() {
+                    course_id
+                } else {
+                    anyhow::bail!("Course ID not specified")
+                }
+            }
+        })
+    }
+}
 impl Command {
     pub fn from_command_line() -> Result<Command> {
         let pargs = pico_args::Arguments::from_env();
@@ -106,6 +125,9 @@ impl Command {
             "logout" => Ok(Command::Logout),
             "status" => Ok(Command::Status),
             "courses" => Ok(Command::Courses),
+            "course" => Ok(Command::Course(
+                Course::parse(&mut pargs).context("Failed parsing command `Course`")?,
+            )),
             "submit" => Ok(Command::Submit(
                 Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
             )),
