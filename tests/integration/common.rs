@@ -30,7 +30,22 @@ pub fn log_in() {
         .unwrap();
 }
 
-pub fn create_file<P: AsRef<Path>, S: AsRef<[u8]>>(filename: P, content: S) {
+fn read_file<P: AsRef<Path>>(filename: P, contents: &mut String) {
+    let mut file = std::fs::File::open(filename.as_ref()).unwrap();
+    std::io::Read::read_to_string(&mut file, contents).unwrap();
+}
+
+fn create_file<P: AsRef<Path>, S: AsRef<[u8]>>(filename: P, content: S) {
     let mut file = std::fs::File::create(filename.as_ref()).unwrap();
     std::io::Write::write_all(&mut file, content.as_ref()).unwrap();
+}
+
+pub fn load_file(filename: &str) {
+    load_file_as(filename, filename);
+}
+
+pub fn load_file_as<P: AsRef<Path>>(filename: &str, new_filename: P) {
+    let mut contents = String::new();
+    read_file(format!("../tests/files/{}", filename), &mut contents);
+    create_file(new_filename, contents);
 }
