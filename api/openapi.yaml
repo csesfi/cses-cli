@@ -712,7 +712,7 @@ paths:
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
-    
+  
   /courses/{course_id}/list:
     get:
       operationId: app.get_course_content
@@ -734,6 +734,71 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CourseContent"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+          
+  /courses/{course_id}/templates:
+    get:
+      operationId: app.get_template
+
+      summary: Retrieve a code template.
+
+      description: >
+        The parameters `task`, `template` and `language` are all optional.
+        The code template can be retrieved either by providing the
+        parameter `template`. Other way is to provide parameters `task` and
+        `language`.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+        - in: query
+          name: task
+          schema:
+            type: integer
+          required: false
+          description: Task ID.
+        - in: query
+          name: template
+          schema:
+            type: string
+          required: false
+          description: Template file name.
+        - in: query
+          name: language
+          schema:
+            type: string
+          required: false
+          description: >
+            Name of the programming language.
+
+      responses:
+        "200":
+          description: >
+            The code template was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                additionalProperties: false
+                required:
+                  - template_source
+                  - file_name
+                type: object
+
+                properties:
+                  template_source:
+                    type: string
+                    description: >
+                      Source code of the template.
+                  file_name:
+                    type: string
+                    description: >
+                      File name of the template.
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
