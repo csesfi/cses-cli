@@ -598,10 +598,17 @@ paths:
     get:
       operationId: app.get_template
 
-      summary: Retrieve a code template for specified task and language.
+      summary: Retrieve a code template.
+
+      description: >
+        The parameters `task`, `template` and `language` are all optional.
+        The code template can be retrieved either by providing the
+        parameter `template`. Other way is to provide parameters `task` and
+        `language`.
 
       security:
         - apiKeyAuth: []
+        - {}
 
       parameters:
         - $ref: "#/components/parameters/CourseId"
@@ -609,13 +616,19 @@ paths:
           name: task
           schema:
             type: integer
-          required: true
+          required: false
           description: Task ID.
+        - in: query
+          name: template
+          schema:
+            type: string
+          required: false
+          description: Template file name.
         - in: query
           name: language
           schema:
             type: string
-          required: true
+          required: false
           description: >
             Name of the programming language.
 
@@ -629,6 +642,7 @@ paths:
                 additionalProperties: false
                 required:
                   - template_source
+                  - file_name
                 type: object
 
                 properties:
@@ -636,6 +650,10 @@ paths:
                     type: string
                     description: >
                       Source code of the template.
+                  file_name:
+                    type: string
+                    description: >
+                      File name of the template.
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
