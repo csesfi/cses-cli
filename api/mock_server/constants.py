@@ -114,6 +114,53 @@ input/code.cpp:3:11: warning: 'x' is used uninitialized in this function \
    while(x != 123);
          ~~^~~~~~"""
 
+INFO_HEADER = ""
+
+# Course content fetch
+INSTRUCTIONS_TEXT = {
+    "objectType": "text",
+    "name": "Instructions",
+    "id": 7582,
+    "link": "https://cses.fi/alon/text/2434",
+}
+
+EXTERNAL_WEBSITE_LINK = {
+    "objectType": "link",
+    "name": "External website",
+    "link": "https://alon.mooc.fi/materiaali",
+}
+
+TASK_1 = {
+    "objectType": "task",
+    "name": "Wierd algorithm",
+    "id": 1068,
+    "link": "https://cses.fi/alon/task/1068",
+    "status": "none"
+}
+
+TASK_2 = {
+    "objectType": "task",
+    "name": "Increasing array",
+    "id": 1094,
+    "link": "https://cses.fi/alon/task/1094",
+    "status": "none"
+}
+
+TASK_1_WITH_STATUS = {
+    "objectType": "task",
+    "name": "Wierd algorithm",
+    "id": 1068,
+    "link": "https://cses.fi/alon/task/1068",
+    "status": "pass"
+}
+
+TASK_2_WITH_STATUS = {
+    "objectType": "task",
+    "name": "Increasing array",
+    "id": 1094,
+    "link": "https://cses.fi/alon/task/1094",
+    "status": "fail"
+}
 # Courses
 VISIBLE_COURSES = [
     {
