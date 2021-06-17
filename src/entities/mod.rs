@@ -88,7 +88,7 @@ pub struct CourseList {
 #[derive(Debug, Deserialize)]
 pub struct TemplateResponse {
     pub template_source: String,
-    pub file_name: String,
+    pub filename: String,
 }
 #[derive(Debug, Deserialize)]
 pub struct SubmissionListingInfo {

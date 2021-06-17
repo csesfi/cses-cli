@@ -238,7 +238,7 @@ impl CsesApi for CsesHttpApi {
             request = request.with_param("language", language);
         }
         if let Some(file_name) = file_name {
-            request = request.with_param("template", file_name);
+            request = request.with_param("filename", file_name);
         }
         let response = request.send()?;
         check_error(&response)?;

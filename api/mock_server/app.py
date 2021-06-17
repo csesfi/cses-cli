@@ -173,10 +173,9 @@ def get_course_content(token_info, course_id):
 
 
 
-def get_template(token_info, course_id, task=None, language=None, template=None):
+def get_template(token_info, course_id, task=None, language=None, filename=None):
     has_token = (token_info != {})
-    t = Template(has_token, course_id, task, language, template)
-    print(task, language, template)
+    t = Template(has_token, course_id, task, language, filename)
     if t in TEMPLATES:
         return (TEMPLATES[t], 200)
 

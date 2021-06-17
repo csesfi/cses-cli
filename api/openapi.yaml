@@ -821,10 +821,9 @@ paths:
       summary: Retrieve a code template.
 
       description: >
-        The parameters `task`, `template` and `language` are all optional.
-        The code template can be retrieved either by providing the
-        parameter `template`. Other way is to provide parameters `task` and
-        `language`.
+        Requests a code template matching the given parameters.
+        The server decides whether some code template matches the
+        given parameters or not.
 
       security:
         - apiKeyAuth: []
@@ -839,11 +838,11 @@ paths:
           required: false
           description: Task ID.
         - in: query
-          name: template
+          name: filename
           schema:
             type: string
           required: false
-          description: Template file name.
+          description: Template filename.
         - in: query
           name: language
           schema:
@@ -862,7 +861,7 @@ paths:
                 additionalProperties: false
                 required:
                   - template_source
-                  - file_name
+                  - filename
                 type: object
 
                 properties:
@@ -870,10 +869,10 @@ paths:
                     type: string
                     description: >
                       Source code of the template.
-                  file_name:
+                  filename:
                     type: string
                     description: >
-                      File name of the template.
+                      Filename of the template.
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":

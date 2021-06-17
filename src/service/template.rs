@@ -48,6 +48,6 @@ pub fn file_exists(res: &Resources<impl RP>, file_name: &str) -> bool {
 pub fn save_response(res: &mut Resources<impl RP>, response: &TemplateResponse) -> Result<()> {
     res.filesystem.write_file(
         &res.filesystem.decode_base64(&response.template_source)?,
-        &response.file_name,
+        &response.filename,
     )
 }
