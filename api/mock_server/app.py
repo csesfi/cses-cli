@@ -77,8 +77,8 @@ def submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
 
     details["content"] = details["content"].replace("\r\n", "\n")
     new_submission = SubmissionInfo(course_id, task, details)
-    submission_id = state.add_submission(new_submission)
-    submission_info = state.get_initial_submission_info(submission_id)
+    submission_id = STATE.add_submission(new_submission)
+    submission_info = STATE.get_initial_submission_info(submission_id)
     if submission_info is None:
         if task == constants.DEFAULT_TASK:
             return ({"message": "Failed to deduce the task for the submission",

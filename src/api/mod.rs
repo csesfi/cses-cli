@@ -1,6 +1,7 @@
 mod escape;
-use crate::entities::{CourseContent, CourseList, Language, SubmissionInfo, UserOutline};
-use crate::entities::{CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, UserOutline};
+use crate::entities::{
+    CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, UserOutline,
+};
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
