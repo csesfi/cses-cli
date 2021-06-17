@@ -73,3 +73,9 @@ pub struct CourseInfo {
 pub struct CourseList {
     pub courses: Vec<CourseInfo>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct TemplateResponse {
+    pub template_source: String,
+    pub file_name: String,
+}
