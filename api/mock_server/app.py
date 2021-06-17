@@ -17,7 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 from server_state import ServerState
 from submission import SubmissionInfo
 from scenarios import scenarios
-from constants import DEFAULT_TASK, UOLEVI, INTEGRATION
+from constants import DEFAULT_TASK, UOLEVI, INTEGRATION, OLD_SUBMISSION
 
 
 state = ServerState(
@@ -96,6 +96,8 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"course_id: {course_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
+    if submission_id == 1 and not poll:
+         return (OLD_SUBMISSION, 200)
     if not INTEGRATION and poll:
         time.sleep(1.5)
     submission_info = state.get_submission_info(submission_id)
