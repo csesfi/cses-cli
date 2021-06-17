@@ -341,4 +341,10 @@ mod tests {
 
         assert!(matches!(command, Command::Courses));
     }
+
+    #[test]
+    fn unused_command_line_parameters_cause_an_error() {
+        let pargs = to_pargs(&["help", "-c", "alon"]);
+        assert!(Command::parse_command(pargs).is_err());
+    }
 }
