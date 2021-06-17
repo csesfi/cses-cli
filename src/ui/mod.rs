@@ -8,7 +8,7 @@ use anyhow::{Error, Result};
 use console::{Style, Term};
 
 use crate::api::ApiError;
-use crate::command::{HELP_STR, LANGUAGE_HINT, TASK_HINT};
+use crate::command::{HELP_STR, LANGUAGE_HINT, NO_COMMAND_PROVIDED_HINT, TASK_HINT};
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider};
 
@@ -28,9 +28,13 @@ impl<R: ResourcesProvider> Ui<R> {
         }
     }
 
+    #[allow(unreachable_patterns)]
     pub fn run(&mut self, command: Command) -> Result<()> {
         service::ping(&mut self.res);
         match command {
+            Command::None => {
+                self.term.write_line(NO_COMMAND_PROVIDED_HINT)?;
+            }
             Command::Help => {
                 self.term.write_str(HELP_STR)?;
             }

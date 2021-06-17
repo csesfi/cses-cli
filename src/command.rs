@@ -38,6 +38,9 @@ COMMANDS:
             could have options `C++11` and `C++17`.
 "#;
 
+pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run `help` 
+to get a list of available commands."#;
+
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
 the `-l` or `--language` flags, e.g.:
 
