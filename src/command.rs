@@ -37,6 +37,28 @@ COMMANDS:
         --lang-opt language_option
             Specifies the possible language options. For example, language `C++`
             could have options `C++11` and `C++17`.
+
+    template           Download and save a code template from cses.fi
+
+        The template will be saved to the current directory with a
+        filename specified by the server.
+
+        Template options:
+            -c course_id
+            --course course_id
+                Only considers templates available for course `course_id`.
+
+            -t task_id
+            --task task_id
+                Only considers templates available for task `task_id`.
+
+            -l language
+            --language language
+                Only considers templates available for language `language`.
+
+            -f file
+            --file file
+                Selects the template with filename `file`.
 "#;
 
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
