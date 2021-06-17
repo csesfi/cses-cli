@@ -99,6 +99,14 @@ impl Filesystem for FakeFilesystem {
     fn decode_base64(&self, _filecontent: &str) -> anyhow::Result<Vec<u8>> {
         todo!()
     }
+
+    fn file_exists(&self, _path: &str) -> bool {
+        todo!();
+    }
+
+    fn write_file(&self, _filecontent: &[u8], _path: &str) -> Result<()> {
+        todo!();
+    }
 }
 
 fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {

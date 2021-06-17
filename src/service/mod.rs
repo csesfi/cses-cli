@@ -1,7 +1,9 @@
 mod courses;
 mod login;
+mod template;
 pub use courses::courses;
 pub use login::{login, login_is_valid, login_status, logout, Login};
+pub use template::{create_template_parameters, file_exists, get_template, save_response};
 
 pub(crate) mod submit;
 pub use submit::{create_submit_parameters, submission_info, submit};
