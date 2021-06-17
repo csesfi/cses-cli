@@ -75,7 +75,8 @@ def submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
         return ({"message": "Could not decode the content with base64",
                  "code": "client_error"}, 400)
 
-    new_submission = SubmissionInfo(course_id, task, connexion.request.json)
+    details["content"] = details["content"].replace("\r\n", "\n")
+    new_submission = SubmissionInfo(course_id, task, details)
     submission_id = state.add_submission(new_submission)
     submission_info = state.get_initial_submission_info(submission_id)
     if submission_info is None:
