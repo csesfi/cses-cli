@@ -459,13 +459,16 @@ components:
           description: >
             A link to the task's info page.
         status:
-          type: string
-          enum:
-            - none
-            - pass
-            - fail
-          description: >
-            The task's status. Its value can be "none", "pass" or "fail".
+          $ref: "#/components/schemas/CourseTaskStatus"
+
+    CourseTaskStatus:
+      type: string
+      enum:
+        - none
+        - pass
+        - fail
+      description: >
+        Status of a task or submission. Value is one of "none", "pass" or "fail".
 
     SubmissionList:
       additionalProperties: false
@@ -506,9 +509,7 @@ components:
                 description: >
                   Code size in chars.
               result:
-                type: string
-                description: >
-                  Verdict of the submission, e.g. "ACCEPTED".
+                $ref: "#/components/schemas/CourseTaskStatus"
 
   parameters:
     CourseId:

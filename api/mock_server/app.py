@@ -121,7 +121,7 @@ def get_submission_list(token_info, course_id, task):
             },
             "code_time": 500,
             "size": 1000,
-            "result": "PASS"
+            "result": "pass"
         },
         {
             "id": 7654321,
@@ -132,7 +132,7 @@ def get_submission_list(token_info, course_id, task):
             },
             "code_time": None,
             "size": 200,
-            "result": "FAIL"
+            "result": "fail"
         }
     ]}, 200)
 

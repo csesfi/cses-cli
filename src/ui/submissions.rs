@@ -7,6 +7,7 @@ use std::io::Write;
 use super::table::*;
 use super::Ui;
 use crate::entities::SubmissionInfo;
+use super::courses::styled_task_status;
 
 pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
     let submissions = service::submission_list(&mut ui.res, task_id)?.submissions;
@@ -17,7 +18,8 @@ pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
         TableCell::from("lang").align(TableAlign::Center),
         TableCell::from("code time").align(TableAlign::Center).allow_hiding(),
         TableCell::from("code size").align(TableAlign::Center).allow_hiding(),
-        "result".into()
+        "result".into(),
+        //TableCell::empty(),
     ]);
     table.add_separator();
     for submission in submissions {
@@ -27,9 +29,9 @@ pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
             TableCell::optional(submission.language.name),
             TableCell::optional(submission.code_time),
             TableCell::optional(submission.size),
-            submission.result.into(),
+            TableCell::styled(styled_task_status(submission.result)).align(TableAlign::Center),
         ]);
     }
-    write!(ui.term, "{}", table);
+    write!(ui.term, "{}", table)?;
     Ok(())
 }
