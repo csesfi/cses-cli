@@ -17,6 +17,7 @@ from werkzeug.exceptions import MethodNotAllowed
 from server_state import ServerState
 from submission import SubmissionInfo
 from scenarios import scenarios
+
 import constants
 
 
@@ -97,6 +98,8 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"course_id: {course_id}")
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
+    if submission_id == 1 and not poll:
+         return (constants.OLD_SUBMISSION, 200)
     if not constants.INTEGRATION and poll:
         time.sleep(1.5)
     submission_info = state.get_submission_info(submission_id)
@@ -105,6 +108,34 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                 "code": "client_error"}, 404)
     return (submission_info, 200)
 
+def get_submission_list(token_info, course_id, task_id):
+    print(f"token_info: {token_info}")
+    print(f"course_id: {course_id}")
+    print(f"task_id: {task_id}")
+    return ({"submissions:": [
+        {
+            "id": "1234567",
+            "time": "2017-07-21T17:32:28Z",
+            "language": {
+                "name": "CPython",
+                "option": None
+            },
+            "code_time": "500",
+            "size": "1000",
+            "result": "PASS"
+        },
+        {
+            "id": "7654321",
+            "time": "2020-07-21T17:32:28Z",
+            "language": {
+                "name": "C++",
+                 "option": "C++17"
+            },
+            "code_time": None,
+            "size": "200",
+            "result": "FAIL"
+        }
+    ]}, 200)
 
 def get_courses(token_info):
     if token_info == {}:

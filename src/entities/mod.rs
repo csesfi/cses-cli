@@ -73,3 +73,18 @@ pub struct CourseInfo {
 pub struct CourseList {
     pub courses: Vec<CourseInfo>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct SubmissionListingInfo {
+    pub id: u64,
+    pub time: String,
+    pub language: Language,
+    pub code_time: Option<u64>,
+    pub size: Option<u64>,
+    pub result: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubmissionList {
+    pub submissions: Vec<SubmissionListingInfo>,
+}

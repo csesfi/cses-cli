@@ -65,6 +65,22 @@ SUMMA_TASK = {
     "name": "Summa",
 }
 
+# Non pending submission
+OLD_SUBMISSION = {
+    "id": 1,
+    "task": SUMMA_TASK,
+    "sender": UOLEVI,
+    "time": "2010-07-21T17:32:28Z",
+    "language": {
+        "name": "C++",
+        "option": None
+    },
+    "status": "READY",
+    "pending": False,
+    "result": "ACCEPTED",
+    "test_report": "All tests accepted"
+}
+
 # Base progress information
 CPP_PROGRESS_BASE = {
     "task": SUMMA_TASK,

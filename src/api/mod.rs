@@ -1,5 +1,5 @@
 mod escape;
-use crate::entities::{CourseList, Language, SubmissionInfo, UserOutline};
+use crate::entities::{CourseList, Language, SubmissionInfo, SubmissionList, UserOutline};
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
@@ -64,6 +64,12 @@ pub trait CsesApi {
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
+    fn get_submit_list(
+        &self,
+        token: &str,
+        course_id: &str,
+        task_id: u64,
+    ) -> ApiResult<SubmissionList>;
     #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
 }
@@ -137,6 +143,25 @@ impl CsesApi for CsesHttpApi {
         .send()?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
+        Ok(response_body)
+    }
+
+    fn get_submit_list(
+        &self,
+        token: &str,
+        course_id: &str,
+        task_id: u64,
+    ) -> ApiResult<SubmissionList> {
+        let response = minreq::get(format!(
+            "{}/courses/{}/submissions",
+            self.url,
+            Escape(course_id)
+        ))
+        .with_header("X-Auth-Token", token)
+        .with_param("task", task_id.to_string())
+        .send()?;
+        check_error(&response)?;
+        let response_body: SubmissionList = json::from_str(response.as_str()?)?;
         Ok(response_body)
     }
 
