@@ -58,9 +58,11 @@ impl<R: ResourcesProvider> Ui<R> {
                 service::select_course(&mut self.res, course_id)?;
                 submissions::list(self, task_id)?;
             }
-            Command::Submission(course_id, _submission_id) => {
+            Command::Submission(course_id, submission_id) => {
                 let _course_id = service::select_course(&mut self.res, course_id)?;
-                todo!();
+                let submission_info =
+                    service::submission_info(&mut self.res, submission_id, false)?;
+                submission::print_submission_info(self, submission_info, false)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
