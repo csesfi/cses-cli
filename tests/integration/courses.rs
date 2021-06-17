@@ -100,3 +100,13 @@ fn task_status_is_shown_when_logged_in() {
         .stdout(regex_match(r"(?i)\+"))
         .stderr(predicate::str::is_empty());
 }
+
+#[distributed_slice(TESTS)]
+fn invalid_course_id_returns_error() {
+    command()
+        .args(&["course", "kute"])
+        .assert()
+        .failure()
+        .stdout(contains("not found"))
+        .stderr(predicate::str::is_empty());
+}

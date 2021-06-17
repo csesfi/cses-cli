@@ -110,6 +110,10 @@ def get_courses(token_info):
     return ({"courses": constants.ALL_COURSES}, 200)
 
 def get_course_content(token_info, course_id):
+    if course_id != "teku":
+        return ({"message": "Course not found",
+                "code": "client_error"}, 404)
+
     task_list = []
     if token_info == {}:
         task_list = [constants.TASK_1, constants.TASK_2]
