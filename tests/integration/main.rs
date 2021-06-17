@@ -27,6 +27,7 @@
 //! ```
 
 mod common;
+mod courses;
 mod help;
 mod login;
 mod submit;

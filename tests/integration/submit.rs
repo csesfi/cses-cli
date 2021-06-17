@@ -1,17 +1,12 @@
 use crate::common::*;
 use std::path::PathBuf;
 
-const MAIN_RS_CONTENT: &str = "use std::io;\n";
-const RS_13_CONTENT: &str = "use std::io;\n\nfn main() {\n";
-const MAIN_CPP_CONTENT: &str = "#include <iostream>\n";
-const LUCKY_PY_CONTENT: &str = "def check(n):\n    s = 0\n";
-
 #[distributed_slice(TESTS)]
 fn fails_with_wrong_filename() {
     // This would of course work in production, but this asserts that the test server checks the
     // file name.
     log_in();
-    create_file("mian.rs", MAIN_RS_CONTENT);
+    load_file_as("main.cpp", "mian.cpp");
 
     command()
         .args(&[
@@ -35,7 +30,8 @@ fn succeeds_with_correct_filename_in_folder() {
     path.push("folder");
     std::fs::create_dir(&path).unwrap();
     path.push("main.rs");
-    create_file(&path, MAIN_RS_CONTENT);
+
+    load_file_as("main.rs", &path);
 
     command()
         .args(&[
@@ -55,7 +51,7 @@ fn succeeds_with_correct_filename_in_folder() {
 #[distributed_slice(TESTS)]
 fn shows_status_pending_then_ready() {
     log_in();
-    create_file("main.rs", MAIN_RS_CONTENT);
+    load_file("main.rs");
 
     command()
         .args(&["submit", "-c", "kurssi", "main.rs", "-t", "2", "-l", "Rust"])
@@ -67,7 +63,7 @@ fn shows_status_pending_then_ready() {
 #[distributed_slice(TESTS)]
 fn shows_verdict() {
     log_in();
-    create_file("main.rs", MAIN_RS_CONTENT);
+    load_file("main.rs");
 
     command()
         .args(&[
@@ -88,7 +84,7 @@ fn shows_verdict() {
 #[distributed_slice(TESTS)]
 fn shows_each_test_result() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     command()
         .args(&[
@@ -103,8 +99,8 @@ fn shows_each_test_result() {
 #[distributed_slice(TESTS)]
 fn remembers_course() {
     log_in();
+    load_file("13.rs");
 
-    create_file("13.rs", RS_13_CONTENT);
     command()
         .args(&[
             "submit", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17", "13.rs",
@@ -112,7 +108,7 @@ fn remembers_course() {
         .assert()
         .success();
 
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
     command()
         .args(&["submit", "-t", "42", "-l", "C++", "-o", "C++17", "main.cpp"])
         .assert()
@@ -122,8 +118,8 @@ fn remembers_course() {
 #[distributed_slice(TESTS)]
 fn does_not_remember_language_or_option() {
     log_in();
+    load_file("13.rs");
 
-    create_file("13.rs", RS_13_CONTENT);
     command()
         .args(&[
             "submit", "-c", "cses", "-t", "13", "-l", "C++", "-o", "C++17", "13.rs",
@@ -154,7 +150,7 @@ fn does_not_remember_language_or_option() {
 #[distributed_slice(TESTS)]
 fn compiler_report_is_dispayed_with_compile_error() {
     log_in();
-    create_file("13.rs", RS_13_CONTENT);
+    load_file("13.rs");
 
     let assert = command()
         .args(&[
@@ -171,7 +167,7 @@ fn compiler_report_is_dispayed_with_compile_error() {
 #[distributed_slice(TESTS)]
 fn compiler_report_is_not_displayed_without_any_content() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -187,7 +183,7 @@ fn compiler_report_is_not_displayed_without_any_content() {
 #[distributed_slice(TESTS)]
 fn compiler_report_is_dispayed_with_compiler_warnings() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -204,7 +200,7 @@ fn compiler_report_is_dispayed_with_compiler_warnings() {
 #[distributed_slice(TESTS)]
 fn sender_name_is_displayed() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     command()
         .args(&[
@@ -219,7 +215,7 @@ fn sender_name_is_displayed() {
 #[distributed_slice(TESTS)]
 fn null_test_time_finishes_and_is_printed_correctly() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -235,7 +231,7 @@ fn null_test_time_finishes_and_is_printed_correctly() {
 #[distributed_slice(TESTS)]
 fn null_test_time_finishes_and_is_print() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -251,8 +247,8 @@ fn null_test_time_finishes_and_is_print() {
 #[distributed_slice(TESTS)]
 fn submission_works_without_language_and_option() {
     log_in();
+    load_file("main.cpp");
 
-    create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
         .args(&["submit", "-c", "cses", "-t", "444", "main.cpp"])
         .assert()
@@ -263,8 +259,8 @@ fn submission_works_without_language_and_option() {
 #[distributed_slice(TESTS)]
 fn submission_works_without_language_with_option() {
     log_in();
+    load_file("main.cpp");
 
-    create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
         .args(&[
             "submit", "-c", "cses", "-t", "555", "-o", "C++17", "main.cpp",
@@ -277,8 +273,8 @@ fn submission_works_without_language_with_option() {
 #[distributed_slice(TESTS)]
 fn test_server_returns_null_language() {
     log_in();
+    load_file_as("main.cpp", "main.asdf");
 
-    create_file("main.asdf", MAIN_CPP_CONTENT);
     command()
         .args(&["submit", "-c", "cses", "-t", "111", "main.asdf"])
         .assert()
@@ -289,8 +285,8 @@ fn test_server_returns_null_language() {
 #[distributed_slice(TESTS)]
 fn submission_works_without_task() {
     log_in();
+    load_file("main.cpp");
 
-    create_file("main.cpp", MAIN_CPP_CONTENT);
     command()
         .args(&[
             "submit", "-c", "cses", "-l", "C++", "-o", "C++17", "main.cpp",
@@ -303,7 +299,7 @@ fn submission_works_without_task() {
 #[distributed_slice(TESTS)]
 fn test_report_is_displayed_with_content() {
     log_in();
-    create_file("lucky.py", LUCKY_PY_CONTENT);
+    load_file("lucky.py");
 
     let assert = command()
         .args(&[
@@ -319,7 +315,7 @@ fn test_report_is_displayed_with_content() {
 #[distributed_slice(TESTS)]
 fn test_report_is_not_displayed_without_any_content() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -335,7 +331,7 @@ fn test_report_is_not_displayed_without_any_content() {
 #[distributed_slice(TESTS)]
 fn test_task_deduction_hint_printed() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -356,7 +352,7 @@ fn test_task_deduction_hint_printed() {
 #[distributed_slice(TESTS)]
 fn test_language_deduction_hint_printed() {
     log_in();
-    create_file("main.ccp", MAIN_CPP_CONTENT);
+    load_file_as("main.cpp", "main.ccp");
 
     let assert = command()
         .args(&[
@@ -377,7 +373,7 @@ fn test_language_deduction_hint_printed() {
 #[distributed_slice(TESTS)]
 fn test_client_error_doesnt_crash_server() {
     log_in();
-    create_file("main.cpp", MAIN_CPP_CONTENT);
+    load_file("main.cpp");
 
     let assert = command()
         .args(&[
@@ -385,4 +381,18 @@ fn test_client_error_doesnt_crash_server() {
         ])
         .assert();
     assert.failure().stdout(contains("miniserde error").not());
+}
+
+#[distributed_slice(TESTS)]
+fn cannot_read_a_file_that_is_too_large() {
+    log_in();
+    load_file("big.file");
+
+    command()
+        .args(&["submit", "big.file", "-c", "alon"])
+        .assert()
+        .failure()
+        .stdout(regex_match(r"(?i)too large"))
+        .stdout(regex_match(r"(?i)limit"))
+        .stderr(predicate::str::is_empty());
 }
