@@ -347,6 +347,168 @@ components:
                 type: string
                 description: >
                   The course's description.
+    
+    CourseContent:
+      additionalProperties: false
+      required:
+        - sections
+      type: object
+
+      properties:
+        sections:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - header
+              - list
+            properties:
+              header:
+                type: string
+                description: >
+                  A header describing a section.
+              text:
+                type: string
+                description: >
+                  An optional text below the header.
+              list:
+                type: array
+                description: >
+                  A list containing texts, links and tasks.
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/Text'
+                    - $ref: '#/components/schemas/Link'
+                    - $ref: '#/components/schemas/Task'
+                  discriminator:
+                    propertyName: objectType
+                    mapping:
+                      text: '#/components/schemas/Text'
+                      link: '#/components/schemas/Link'
+                      task: '#/components/schemas/Task'
+
+    Text:
+      additionalProperties: false
+      required:
+        - objectType
+        - name
+        - id
+        - link
+      type: object
+
+      properties:
+        objectType:
+          type: string
+        name:
+          type: string
+          description: >
+            The name of the text.
+        id:
+          type: integer
+          description: >
+            The text's ID.
+        link:
+          type: string
+          description: >
+            A link to the text.
+
+    Link:
+      additionalProperties: false
+      required:
+        - objectType
+        - name
+        - link
+      type: object
+
+      properties:
+        objectType:
+          type: string
+        name:
+          type: string
+          description: >
+            The name of the link.
+        link:
+          type: string
+          description: >
+            A link to another web page.
+
+    Task:
+      additionalProperties: false
+      required:
+        - objectType
+        - name
+        - id
+        - link
+        - status
+      type: object
+
+      properties:
+        objectType:
+          type: string
+        name:
+          type: string
+          description: >
+            The name of the task.
+        id:
+          type: integer
+          description: >
+            The task's ID.
+        link:
+          type: string
+          description: >
+            A link to the task's info page.
+        status:
+          type: string
+          enum:
+            - none
+            - pass
+            - fail
+          description: >
+            The task's status. Its value can be "none", "pass" or "fail".
+
+    SubmissionList:
+      additionalProperties: false
+      required:
+        - submissions
+      type: object
+      properties:
+        submissions:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - id
+              - time
+              - language
+              - result
+            properties:
+              id:
+                type: integer
+                description: >
+                  ID of the submission.
+              time:
+                type: string
+                format: date-time
+                description: >
+                  Submission time in ISO 8601 format. 
+                  (Timezone format has not been decided upon)
+              language:
+                $ref: "#/components/schemas/Language"
+              code_time:
+                type: integer
+                nullable: true
+                description: >
+                  Run time of the code in milliseconds.
+              size:
+                type: integer
+                description: >
+                  Code size in chars.
+              result:
+                type: string
+                description: >
+                  Verdict of the submission, e.g. "ACCEPTED".
 
   parameters:
     CourseId:
@@ -363,8 +525,8 @@ components:
       name: task
       schema:
         type: integer
-      required: false
-      description: Task ID. If not provided the server tries to deduce it from the file name.
+      required: true
+      description: Task ID.
 
     SubmissionId:
       in: path
@@ -494,7 +656,14 @@ paths:
 
       parameters:
         - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
+        - in: query
+          name: task
+          schema:
+            type: integer
+          required: false
+          description: > 
+            Task ID. If not provided the server 
+            tries to deduce it from the file name.
 
       requestBody:
         required: true
@@ -529,6 +698,31 @@ paths:
                 $ref: "#/components/schemas/SubmissionInfo"
         "400":
           $ref: "#/components/responses/SubmissionClientError"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+
+    get:
+      operationId: app.get_submission_list
+
+      summary: Retrieve information about submissions on a courses task.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/TaskId"
+
+      responses:
+        "200":
+          description: >
+            Info about a submissions were retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionList"
         "4XX":
           $ref: "#/components/responses/ClientError"
         "5XX":
@@ -570,7 +764,7 @@ paths:
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
-  
+
   /courses:
     get:
       operationId: app.get_courses
@@ -593,7 +787,33 @@ paths:
           $ref: "#/components/responses/ClientError"
         "5XX":
           $ref: "#/components/responses/ServerError"
+  
+  /courses/{course_id}/list:
+    get:
+      operationId: app.get_course_content
 
+      summary: Retrieve the listed information related to a course.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+
+      responses:
+        "200":
+          description: >
+            The listed information was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseContent"
+        "4XX":
+          $ref: "#/components/responses/ClientError"
+        "5XX":
+          $ref: "#/components/responses/ServerError"
+          
   /courses/{course_id}/templates:
     get:
       operationId: app.get_template

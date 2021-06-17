@@ -97,7 +97,7 @@ class ServerState:
 
 class SubmissionTracker:
     def __init__(self, submission_infos):
-        assert len(submission_infos) > 0
+        assert submission_infos
         self.infos = submission_infos
         self._position = 0
 

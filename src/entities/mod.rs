@@ -1,3 +1,6 @@
+mod course;
+pub use course::*;
+
 use miniserde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
@@ -86,4 +89,18 @@ pub struct CourseList {
 pub struct TemplateResponse {
     pub template_source: String,
     pub file_name: String,
+}
+#[derive(Debug, Deserialize)]
+pub struct SubmissionListingInfo {
+    pub id: u64,
+    pub time: String,
+    pub language: Language,
+    pub code_time: Option<u64>,
+    pub size: Option<u64>,
+    pub result: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubmissionList {
+    pub submissions: Vec<SubmissionListingInfo>,
 }

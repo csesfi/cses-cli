@@ -1,5 +1,8 @@
 mod escape;
-use crate::entities::{CourseList, Language, SubmissionInfo, TemplateResponse, UserOutline};
+use crate::entities::{
+    CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, TemplateResponse,
+    UserOutline,
+};
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
@@ -64,8 +67,19 @@ pub trait CsesApi {
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
+    fn get_submit_list(
+        &self,
+        token: &str,
+        course_id: &str,
+        task_id: u64,
+    ) -> ApiResult<SubmissionList>;
     #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
+    fn get_course_content<'a>(
+        &self,
+        token: Option<&'a str>,
+        course_id: &str,
+    ) -> ApiResult<CourseContent>;
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
@@ -148,6 +162,25 @@ impl CsesApi for CsesHttpApi {
         Ok(response_body)
     }
 
+    fn get_submit_list(
+        &self,
+        token: &str,
+        course_id: &str,
+        task_id: u64,
+    ) -> ApiResult<SubmissionList> {
+        let response = minreq::get(format!(
+            "{}/courses/{}/submissions",
+            self.url,
+            Escape(course_id)
+        ))
+        .with_header("X-Auth-Token", token)
+        .with_param("task", task_id.to_string())
+        .send()?;
+        check_error(&response)?;
+        let response_body: SubmissionList = json::from_str(response.as_str()?)?;
+        Ok(response_body)
+    }
+
     fn get_courses(&self, token: Option<&str>) -> ApiResult<CourseList> {
         match token {
             Some(token) => {
@@ -166,6 +199,22 @@ impl CsesApi for CsesHttpApi {
             }
         }
     }
+
+    fn get_course_content<'a>(
+        &self,
+        token: Option<&'a str>,
+        course_id: &str,
+    ) -> ApiResult<CourseContent> {
+        let mut request = minreq::get(format!("{}/courses/{}/list", self.url, course_id));
+        if let Some(token) = token {
+            request = request.with_header("X-Auth-Token", token);
+        }
+        let response = request.send()?;
+        check_error(&response)?;
+        let course_content: CourseContent = json::from_str(response.as_str()?)?;
+        Ok(course_content)
+    }
+
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
