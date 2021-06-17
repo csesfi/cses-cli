@@ -16,20 +16,20 @@ from werkzeug.exceptions import MethodNotAllowed
 
 from server_state import ServerState
 from submission import SubmissionInfo
-from scenarios import scenarios
+from scenarios import SCENARIOS
 import constants
 
 
-state = ServerState(
-    scenarios=scenarios
+STATE = ServerState(
+    scenarios=SCENARIOS
 )
 
-app = connexion.App(__name__, specification_dir="../",
+APP = connexion.App(__name__, specification_dir="../",
                     options={"swagger_ui": False})
 
 
 def login_post():
-    token = state.login()
+    token = STATE.login()
     print(f"got token: {token}")
     host = connexion.request.root_url
     return (
@@ -41,17 +41,17 @@ def login_post():
     )
 
 
-@app.route('/authorize-login')
+@APP.route('/authorize-login')
 def authorize_login_post():
     token = connexion.request.args.get("token")
     fail = connexion.request.args.get("fail") is not None
-    state.authorize_login(token, fail)
+    STATE.authorize_login(token, fail)
     return "", 204
 
 
-@app.route('/authorize-all', methods=["POST"])
+@APP.route('/authorize-all', methods=["POST"])
 def authorize_all_post():
-    state.authorize_all()
+    STATE.authorize_all()
     return "", 204
 
 
@@ -61,7 +61,7 @@ def login_get(token_info):
 
 
 def logout_post(token_info):
-    state.logout(token_info["apikey"])
+    STATE.logout(token_info["apikey"])
     return (NoContent, 204)
 
 
@@ -76,8 +76,8 @@ def submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
                  "code": "client_error"}, 400)
 
     new_submission = SubmissionInfo(course_id, task, connexion.request.json)
-    submission_id = state.add_submission(new_submission)
-    submission_info = state.get_initial_submission_info(submission_id)
+    submission_id = STATE.add_submission(new_submission)
+    submission_info = STATE.get_initial_submission_info(submission_id)
     if submission_info is None:
         if task == constants.DEFAULT_TASK:
             return ({"message": "Failed to deduce the task for the submission",
@@ -98,26 +98,30 @@ def get_submission(token_info, course_id, submission_id, poll=False):
     print(f"poll: {poll}")
     if not constants.INTEGRATION and poll:
         time.sleep(1.5)
-    submission_info = state.get_submission_info(submission_id)
+    submission_info = STATE.get_submission_info(submission_id)
     if submission_info is None:
         return ({"message": "Submission not found",
-                "code": "client_error"}, 404)
+                 "code": "client_error"}, 404)
     return (submission_info, 200)
+
 
 def get_courses(token_info):
     if token_info == {}:
         return ({"courses": constants.VISIBLE_COURSES}, 200)
     return ({"courses": constants.ALL_COURSES}, 200)
 
+
 def get_course_content(token_info, course_id):
     if course_id != "teku":
         return ({"message": "Course not found",
-                "code": "client_error"}, 404)
+                 "code": "client_error"}, 404)
 
     task_list = []
     if token_info == {}:
         task_list = [constants.TASK_1, constants.TASK_2]
-    else: task_list = [constants.TASK_1_WITH_STATUS, constants.TASK_2_WITH_STATUS]
+    else:
+        task_list = [constants.TASK_1_WITH_STATUS,
+                     constants.TASK_2_WITH_STATUS]
 
     return ({"sections": [
         {
@@ -134,8 +138,10 @@ def get_course_content(token_info, course_id):
         },
     ]}, 200)
 
+
 def get_template(token_info, course_id, task_id, language):
     return (200, {"content": "#include <iostream>\n"})
+
 
 def apikey_auth(apikey, required_scopes=None):
     """Corresponds to the the apiKeyAuth in OpenAPI.
@@ -146,7 +152,7 @@ def apikey_auth(apikey, required_scopes=None):
     `operationId` in the OpenAPI path. (e.g. `def submit(token_info): ...`)
     """
 
-    status = state.check_login(apikey)
+    status = STATE.check_login(apikey)
     if status == "valid":
         return {"apikey": apikey}
     if status == "pending":
@@ -170,9 +176,9 @@ def render_method_not_allowed(exception):
     return ({"message": "Invalid HTTP method", "code": "client_error"}, 405)
 
 
-app.add_error_handler(BadRequestProblem, render_invalid_query)
-app.add_error_handler(Unauthorized, render_api_authentication_failed)
-app.add_error_handler(MethodNotAllowed, render_method_not_allowed)
-app.add_api("openapi.yaml", validate_responses=True,
+APP.add_error_handler(BadRequestProblem, render_invalid_query)
+APP.add_error_handler(Unauthorized, render_api_authentication_failed)
+APP.add_error_handler(MethodNotAllowed, render_method_not_allowed)
+APP.add_api("openapi.yaml", validate_responses=True,
             resolver=RestyResolver('api'))
-app.run(host="127.0.0.1", port=4011 if constants.INTEGRATION else 4010)
+APP.run(host="127.0.0.1", port=4011 if constants.INTEGRATION else 4010)
