@@ -99,7 +99,7 @@ impl Command {
         }
 
         let command = pargs.subcommand()?.unwrap_or_default();
-        match command.as_str() {
+        let result = match command.as_str() {
             "" => Ok(Command::None),
             "help" => Ok(Command::Help),
             "login" => Ok(Command::Login),
@@ -109,8 +109,16 @@ impl Command {
             "submit" => Ok(Command::Submit(
                 Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
             )),
-            _ => Err(anyhow!("Invalid command: {}", command)),
+            _ => return Err(anyhow!("Invalid command: {}", command)),
+        };
+
+        let unused_args = pargs.finish();
+        if unused_args.len() > 0 {
+            return Err(anyhow!("Unused arguments: {:?}", unused_args))
+                .context(format!("Could not parse command `{}`", command));
         }
+
+        result
     }
 }
 
