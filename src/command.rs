@@ -15,7 +15,8 @@ COMMANDS:
     login                   Log in to cses.fi.
     logout                  Invalidate the current login session.
     status                  Prints the login status.
-    courses                 Displays a list of courses
+    courses                 Displays a list of courses.
+    course <course-id>      Displays the contents of a course.
     submit [-ctlo] <file>   Submit a file to cses.fi.
         Task ID, language, and the language option may be automatically deduced
         by the server, in which case they do not need to be supplied as options.
@@ -58,6 +59,7 @@ pub enum Command {
     Logout,
     Status,
     Courses,
+    Course(Course),
     Submit(Submit),
     Submissions(CourseId, u64),
     Submission(CourseId, u64),
@@ -93,6 +95,23 @@ impl Submit {
         })
     }
 }
+#[derive(Debug)]
+pub struct Course {
+    pub course_id: String,
+}
+impl Course {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Course> {
+        Ok(Course {
+            course_id: {
+                if let Ok(course_id) = pargs.free_from_str() {
+                    course_id
+                } else {
+                    anyhow::bail!("Course ID not specified")
+                }
+            },
+        })
+    }
+}
 impl Command {
     pub fn from_command_line() -> Result<Command> {
         let pargs = pico_args::Arguments::from_env();
@@ -113,8 +132,11 @@ impl Command {
             "logout" => Command::Logout,
             "status" => Command::Status,
             "courses" => Command::Courses,
+            "course" => Command::Course(
+                Course::parse(&mut pargs).context("Failed parsing command `course`")?,
+            ),
             "submit" => Command::Submit(
-                Submit::parse(&mut pargs).context("Failed parsing command \"submit\"")?,
+                Submit::parse(&mut pargs).context("Failed parsing command `submit`")?,
             ),
             "submissions" => Command::Submissions(
                 parse_course(&mut pargs)?,

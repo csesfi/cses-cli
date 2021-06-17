@@ -2,7 +2,7 @@ from submission import SubmissionScenario, submission_progress, \
                        SubmissionInfo, test_result, test_progress
 import constants
 
-scenarios = [
+SCENARIOS = [
     SubmissionScenario(
         SubmissionInfo(course_id="kurssi", task_id=2,
                        submission_json=constants.RUST_CODE),

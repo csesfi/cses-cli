@@ -47,6 +47,9 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Courses => {
                 courses::list_courses(self)?;
             }
+            Command::Course(course) => {
+                courses::list_course_content(self, &course.course_id)?;
+            }
             Command::Submit(submit) => {
                 let submission_info = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
