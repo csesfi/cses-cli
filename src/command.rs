@@ -113,7 +113,7 @@ impl Command {
         };
 
         let unused_args = pargs.finish();
-        if unused_args.len() > 0 {
+        if !unused_args.is_empty() {
             return Err(anyhow!("Unused arguments: {:?}", unused_args))
                 .context(format!("Could not parse command `{}`", command));
         }
