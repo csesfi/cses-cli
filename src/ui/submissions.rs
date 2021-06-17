@@ -5,6 +5,7 @@ use std::io::Write;
 
 use super::courses::styled_task_status;
 use super::table::*;
+use super::util::format_code_time;
 use super::Ui;
 
 pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
@@ -21,7 +22,6 @@ pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
             .align(TableAlign::Center)
             .allow_hiding(),
         "result".into(),
-        //TableCell::empty(),
     ]);
     table.add_separator();
     for submission in submissions {
@@ -29,11 +29,13 @@ pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
             submission.id.into(),
             submission.time.into(),
             TableCell::optional(submission.language.name),
-            TableCell::optional(submission.code_time),
+            // TODO: hide this column in some cases? semantic difference between data not being in
+            // JSON and it being null can't be distinguished with miniserde
+            format_code_time(submission.code_time).into(),
             TableCell::optional(submission.size),
             TableCell::styled(styled_task_status(submission.result)).align(TableAlign::Center),
         ]);
     }
-    write!(ui.term, "{}", table)?;
+    write!(ui.term, "\n{}\n", table)?;
     Ok(())
 }

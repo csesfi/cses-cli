@@ -4,6 +4,7 @@ mod submission;
 mod submissions;
 mod submit;
 mod table;
+mod util;
 
 use anyhow::{Error, Result};
 use console::{Style, Term};

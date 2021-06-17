@@ -1,10 +1,11 @@
 use crate::service;
 use crate::RP;
 use anyhow::Result;
-use console::{Style, StyledObject};
+use console::Style;
 use std::io::Write;
 
 use super::table::*;
+use super::util::{format_code_time, result_with_color};
 use super::Ui;
 use crate::entities::SubmissionInfo;
 
@@ -109,11 +110,8 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
         for test in tests {
             table.add_row(vec![
                 TableCell::from(test.number).align(TableAlign::Right),
-                TableCell::styled(with_color(&test.verdict)),
-                match test.time {
-                    Some(time) => format!("{:.2} s", time as f64 / 1000.0).into(),
-                    None => "--".into(),
-                },
+                TableCell::styled(result_with_color(&test.verdict)),
+                format_code_time(test.time).into(),
             ]);
         }
         write!(ui.term, "{}", table)?;
@@ -131,18 +129,9 @@ fn print_test_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
 
 fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref result) = submission_info.result {
-        writeln!(ui.term, "\nResult: {}", with_color(&result))?;
+        writeln!(ui.term, "\nResult: {}", result_with_color(&result))?;
     };
     Ok(())
-}
-
-fn with_color(line: &str) -> StyledObject<&str> {
-    let color = match line {
-        "ACCEPTED" => Style::new().green(),
-        "UNKNOWN" => Style::new().white(),
-        _ => Style::new().red(),
-    };
-    color.apply_to(line)
 }
 
 pub struct Spinner {
