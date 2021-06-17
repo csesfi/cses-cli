@@ -31,6 +31,7 @@ mod courses;
 mod help;
 mod login;
 mod submit;
+mod template;
 
 use common::TESTS;
 
