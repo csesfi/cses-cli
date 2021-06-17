@@ -99,14 +99,26 @@ pub struct Template {
     pub language: Option<String>,
     pub file_name: Option<String>,
 }
+fn parse_course(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    Ok(pargs.opt_value_from_str(["-c", "--course"])?)
+}
+fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<u64>> {
+    Ok(pargs.opt_value_from_str(["-t", "--task"])?)
+}
+fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    Ok(pargs.opt_value_from_str(["-l", "--language"])?)
+}
+fn parse_language_option(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    Ok(pargs.opt_value_from_str(["-o", "--lang-opt"])?)
+}
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            course_id: pargs.opt_value_from_str(["-c", "--course"])?,
-            task_id: pargs.opt_value_from_str(["-t", "--task"])?,
+            course_id: parse_course(pargs)?,
+            task_id: parse_task_id(pargs)?,
             language: Language {
-                name: pargs.opt_value_from_str(["-l", "--language"])?,
-                option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
+                name: parse_language_name(pargs)?,
+                option: parse_language_option(pargs)?,
             },
             file_name: {
                 if let Ok(file_name) = pargs.free_from_str() {
@@ -121,9 +133,9 @@ impl Submit {
 impl Template {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
         Ok(Template {
-            course_id: pargs.opt_value_from_str(["-c", "--course"])?,
-            task_id: pargs.opt_value_from_str(["-t", "--task"])?,
-            language: pargs.opt_value_from_str(["-l", "--language"])?,
+            course_id: parse_course(pargs)?,
+            task_id: parse_task_id(pargs)?,
+            language: parse_language_name(pargs)?,
             file_name: pargs.opt_value_from_str(["-f", "--file"])?,
         })
     }
