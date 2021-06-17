@@ -80,7 +80,7 @@ pub struct SubmissionListingInfo {
     pub time: String,
     pub language: Language,
     pub code_time: Option<u64>,
-    pub size: u64,
+    pub size: Option<u64>,
     pub result: String,
 }
 
