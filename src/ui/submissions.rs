@@ -10,6 +10,10 @@ use super::Ui;
 
 pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
     let submissions = service::submission_list(&mut ui.res, task_id)?.submissions;
+    if submissions.is_empty() {
+        writeln!(ui.term, "No submissions yet!")?;
+        return Ok(());
+    }
     let mut table = Table::new(vec![0; 6]);
     table.add_row(vec![
         TableCell::from("ID").align(TableAlign::Center),
