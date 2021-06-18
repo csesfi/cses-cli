@@ -18,6 +18,7 @@ from server_state import ServerState
 from submission import SubmissionInfo
 from scenarios import SCENARIOS
 import constants
+from template import Template, TEMPLATES
 
 
 STATE = ServerState(
@@ -138,6 +139,7 @@ def get_submission_list(token_info, course_id, task):
         }
     ]}, 200)
 
+
 def get_courses(token_info):
     if token_info == {}:
         return ({"courses": constants.VISIBLE_COURSES}, 200)
@@ -172,8 +174,14 @@ def get_course_content(token_info, course_id):
     ]}, 200)
 
 
-def get_template(token_info, course_id, task_id, language):
-    return (200, {"content": "#include <iostream>\n"})
+
+def get_template(token_info, course_id, task=None, language=None, filename=None):
+    has_token = (token_info != {})
+    t = Template(has_token, course_id, task, language, filename)
+    if t in TEMPLATES:
+        return (TEMPLATES[t], 200)
+
+    return ({"message": "Template not found", "code": "client_error"}, 400)
 
 
 def apikey_auth(apikey, required_scopes=None):

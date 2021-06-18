@@ -4,15 +4,16 @@ mod submission;
 mod submissions;
 mod submit;
 mod table;
+mod template;
 mod util;
 
-use anyhow::{Error, Result};
+use anyhow::{Context, Error, Result};
 use console::{Style, Term};
 
 use crate::api::ApiError;
 use crate::command::{HELP_STR, LANGUAGE_HINT, NO_COMMAND_PROVIDED_HINT, TASK_HINT};
 use crate::service;
-use crate::{Command, Resources, ResourcesProvider};
+use crate::{Command, Resources, ResourcesProvider, RP};
 
 pub struct Ui<R: ResourcesProvider> {
     res: Resources<R>,
@@ -58,6 +59,9 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Submit(submit) => {
                 let submission_info = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
+            }
+            Command::Template(template) => {
+                template::get_template(self, template)?;
             }
             Command::Submissions(course_id, task_id) => {
                 service::select_course(&mut self.res, course_id)?;
@@ -139,6 +143,12 @@ pub fn print_with_color(line: String) {
         color = Style::new().green();
     }
     print!("{}", color.apply_to(line));
+}
+
+fn prompt_yes_no(ui: &mut Ui<impl RP>, message: &str) -> Result<bool> {
+    ui.term.write_str(message)?;
+    let answer = ui.prompt_line().context("Failed reading confirmation")?;
+    Ok(answer == "yes")
 }
 
 #[cfg(test)]

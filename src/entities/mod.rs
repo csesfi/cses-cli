@@ -65,6 +65,14 @@ pub struct SubmitParameters {
     pub language: Language,
 }
 
+#[derive(Debug)]
+pub struct TemplateParameters {
+    pub course: String,
+    pub task: Option<u64>,
+    pub language: Option<String>,
+    pub file: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct CourseInfo {
     pub id: String,
@@ -77,6 +85,11 @@ pub struct CourseList {
     pub courses: Vec<CourseInfo>,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct TemplateResponse {
+    pub template_source: String,
+    pub filename: String,
+}
 #[derive(Debug, Deserialize)]
 pub struct SubmissionListingInfo {
     pub id: u64,

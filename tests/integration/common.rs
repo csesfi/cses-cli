@@ -35,7 +35,7 @@ fn read_file<P: AsRef<Path>>(filename: P, contents: &mut String) {
     std::io::Read::read_to_string(&mut file, contents).unwrap();
 }
 
-fn create_file<P: AsRef<Path>, S: AsRef<[u8]>>(filename: P, content: S) {
+pub fn create_file<P: AsRef<Path>, S: AsRef<[u8]>>(filename: P, content: S) {
     let mut file = std::fs::File::create(filename.as_ref()).unwrap();
     std::io::Write::write_all(&mut file, content.as_ref()).unwrap();
 }

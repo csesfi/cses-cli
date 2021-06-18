@@ -22,6 +22,10 @@ COMMANDS:
         by the server, in which case they do not need to be supplied as options.
     submissions [-c] (-t)   List previous submissions to a task.
     submission [-c] <id>    Show details about the submission with given ID.
+    template [-cftl]        Download and save a code template from cses.fi
+        The template will be saved to the current directory with a filename
+        specified by the server. File, task ID and language are optional
+        and will be used by the server to select a suitable code template.
 
 OPTIONS:
     -c <course-id>, --course <course-id>
@@ -30,11 +34,13 @@ OPTIONS:
     -t <task-id>, --task <task-id>
         Numeric task ID.
     -l <language>, --language <language>
-        Specifies the programming language of the submitted file.
+        Specifies the programming language of the submitted file or the
+        downloaded template.
     -o <language-option>, --option <language-option>
         Optionally specifies a language option. For example, the language "C++"
         has possible options "C++11" and "C++17".
-                                    
+    -f <file>, --file <file>
+        Selects the template with filename `file`.
 "#;
 
 pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run `help` 
@@ -64,13 +70,9 @@ pub enum Command {
     Courses,
     Course(Course),
     Submit(Submit),
+    Template(Template),
     Submissions(CourseId, u64),
     Submission(CourseId, u64),
-}
-fn parse_course(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
-    pargs
-        .opt_value_from_str(["-c", "--course"])
-        .context("Failed parsing course ID")
 }
 #[derive(Debug)]
 pub struct Submit {
@@ -79,14 +81,35 @@ pub struct Submit {
     pub language: Language,
     pub file_name: String,
 }
+#[derive(Debug)]
+pub struct Template {
+    pub course_id: Option<String>,
+    pub task_id: Option<u64>,
+    pub language: Option<String>,
+    pub file_name: Option<String>,
+}
+fn parse_course(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    pargs
+        .opt_value_from_str(["-c", "--course"])
+        .context("Failed parsing course ID")
+}
+fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<u64>> {
+    Ok(pargs.opt_value_from_str(["-t", "--task"])?)
+}
+fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    Ok(pargs.opt_value_from_str(["-l", "--language"])?)
+}
+fn parse_language_option(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    Ok(pargs.opt_value_from_str(["-o", "--lang-opt"])?)
+}
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
             course_id: parse_course(pargs)?,
-            task_id: pargs.opt_value_from_str(["-t", "--task"])?,
+            task_id: parse_task_id(pargs)?,
             language: Language {
-                name: pargs.opt_value_from_str(["-l", "--language"])?,
-                option: pargs.opt_value_from_str(["-o", "--lang-opt"])?,
+                name: parse_language_name(pargs)?,
+                option: parse_language_option(pargs)?,
             },
             file_name: {
                 if let Ok(file_name) = pargs.free_from_str() {
@@ -95,6 +118,16 @@ impl Submit {
                     anyhow::bail!("File name not specified")
                 }
             },
+        })
+    }
+}
+impl Template {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
+        Ok(Template {
+            course_id: parse_course(pargs)?,
+            task_id: parse_task_id(pargs)?,
+            language: parse_language_name(pargs)?,
+            file_name: pargs.opt_value_from_str(["-f", "--file"])?,
         })
     }
 }
@@ -140,6 +173,9 @@ impl Command {
             ),
             "submit" => Command::Submit(
                 Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
+            ),
+            "template" => Command::Template(
+                Template::parse(&mut pargs).context("Failed parsing command `template`")?,
             ),
             "submissions" => Command::Submissions(
                 parse_course(&mut pargs)?,
@@ -386,6 +422,79 @@ mod tests {
         assert!(matches!(command, Command::Courses));
     }
 
+    #[test]
+    fn command_template_works_with_language_and_task() {
+        let pargs = to_pargs(&["template", "-c", "course", "-t", "123", "-l", "language"]);
+        let command = Command::parse_command(pargs).unwrap();
+        assert!(matches!(command, Command::Template(
+        Template {
+            course_id: Some(course_id),
+            task_id: Some(task_id),
+            language: Some(language),
+            file_name: None,
+        }) if course_id == "course" && task_id == 123 && language == "language"
+        ));
+    }
+    #[test]
+    fn command_template_works_without_course_id() {
+        let pargs = to_pargs(&["template", "-t", "123", "-l", "language"]);
+        let command = Command::parse_command(pargs).unwrap();
+        assert!(matches!(command, Command::Template(
+        Template {
+            course_id: None,
+            task_id: Some(task_id),
+            language: Some(language),
+            file_name: None,
+        }) if task_id == 123 && language == "language"
+        ));
+    }
+    #[test]
+    fn command_template_works_with_file_name() {
+        let pargs = to_pargs(&["template", "-c", "course", "-f", "file"]);
+        let command = Command::parse_command(pargs).unwrap();
+        assert!(matches!(command, Command::Template(
+        Template {
+            course_id: Some(course_id),
+            task_id: None,
+            language: None,
+            file_name: Some(file_name),
+        }) if course_id == "course" && file_name == "file"
+        ));
+    }
+    #[test]
+    fn command_template_works_with_long_parameters_task_language() {
+        let pargs = to_pargs(&[
+            "template",
+            "--course",
+            "course",
+            "--task",
+            "123",
+            "--language",
+            "language",
+        ]);
+        let command = Command::parse_command(pargs).unwrap();
+        assert!(matches!(command, Command::Template(
+        Template {
+            course_id: Some(course_id),
+            task_id: Some(task_id),
+            language: Some(language),
+            file_name: None,
+        }) if course_id == "course" && task_id == 123 && language == "language"
+        ));
+    }
+    #[test]
+    fn command_template_works_with_long_parameters_file_name() {
+        let pargs = to_pargs(&["template", "--file", "file"]);
+        let command = Command::parse_command(pargs).unwrap();
+        assert!(matches!(command, Command::Template(
+        Template {
+            course_id: None,
+            task_id: None,
+            language: None,
+            file_name: Some(file_name),
+        }) if file_name == "file"
+        ));
+    }
     #[test]
     fn submissions_without_course_parsed() {
         let pargs = to_pargs(&["submissions", "-t", "140"]);

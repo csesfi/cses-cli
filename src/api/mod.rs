@@ -1,6 +1,7 @@
 mod escape;
 use crate::entities::{
-    CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, UserOutline,
+    CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, TemplateResponse,
+    UserOutline,
 };
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
@@ -79,6 +80,14 @@ pub trait CsesApi {
         token: Option<&'a str>,
         course_id: &str,
     ) -> ApiResult<CourseContent>;
+    fn get_template<'a>(
+        &self,
+        token: Option<&'a str>,
+        course_id: &str,
+        task_id: Option<u64>,
+        language: Option<&'a str>,
+        file: Option<&'a str>,
+    ) -> ApiResult<TemplateResponse>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -204,6 +213,36 @@ impl CsesApi for CsesHttpApi {
         check_error(&response)?;
         let course_content: CourseContent = json::from_str(response.as_str()?)?;
         Ok(course_content)
+    }
+
+    fn get_template<'a>(
+        &self,
+        token: Option<&'a str>,
+        course_id: &str,
+        task_id: Option<u64>,
+        language: Option<&'a str>,
+        file_name: Option<&'a str>,
+    ) -> ApiResult<TemplateResponse> {
+        let mut request = minreq::get(format!(
+            "{}/courses/{}/templates",
+            self.url,
+            Escape(course_id)
+        ));
+        if let Some(token) = token {
+            request = request.with_header("X-Auth-Token", token);
+        }
+        if let Some(task_id) = task_id {
+            request = request.with_param("task", task_id.to_string());
+        }
+        if let Some(language) = language {
+            request = request.with_param("language", language);
+        }
+        if let Some(file_name) = file_name {
+            request = request.with_param("filename", file_name);
+        }
+        let response = request.send()?;
+        check_error(&response)?;
+        Ok(json::from_str(response.as_str()?)?)
     }
 }
 

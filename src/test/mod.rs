@@ -1,6 +1,8 @@
 mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
-use crate::entities::{CourseContent, CourseList, SubmissionInfo, SubmissionList, UserOutline};
+use crate::entities::{
+    CourseContent, CourseList, SubmissionInfo, SubmissionList, TemplateResponse, UserOutline,
+};
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
@@ -50,6 +52,17 @@ impl CsesApi for FakeCsesApi {
     }
 
     fn get_courses(&self, _token: Option<&str>) -> ApiResult<CourseList> {
+        todo!()
+    }
+
+    fn get_template<'a>(
+        &self,
+        _token: Option<&'a str>,
+        _course_id: &str,
+        _task_id: Option<u64>,
+        _language: Option<&'a str>,
+        _file: Option<&'a str>,
+    ) -> ApiResult<TemplateResponse> {
         todo!()
     }
 
@@ -104,6 +117,14 @@ impl Filesystem for FakeFilesystem {
 
     fn decode_base64(&self, _filecontent: &str) -> anyhow::Result<Vec<u8>> {
         todo!()
+    }
+
+    fn file_exists(&self, _path: &str) -> bool {
+        todo!();
+    }
+
+    fn write_file(&self, _filecontent: &[u8], _path: &str) -> Result<()> {
+        todo!();
     }
 }
 
