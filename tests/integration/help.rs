@@ -50,6 +50,6 @@ fn hint_is_displayed_if_no_command_is_provided() {
     let assert = command().assert();
     assert
         .success()
-        .stdout(regex_match(r"(?i)run `help`"))
+        .stdout(regex_match(r"(?i)run.*help"))
         .stderr(predicate::str::is_empty());
 }
