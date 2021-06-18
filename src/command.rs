@@ -61,6 +61,9 @@ COMMANDS:
                 Selects the template with filename `file`.
 "#;
 
+pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run `help` 
+to get a list of available commands."#;
+
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
 the `-l` or `--language` flags, e.g.:
 
@@ -170,7 +173,7 @@ impl Command {
         }
 
         let command = pargs.subcommand()?.unwrap_or_default();
-        match command.as_str() {
+        let result = match command.as_str() {
             "" => Ok(Command::None),
             "help" => Ok(Command::Help),
             "login" => Ok(Command::Login),
@@ -186,8 +189,16 @@ impl Command {
             "template" => Ok(Command::Template(
                 Template::parse(&mut pargs).context("Failed parsing command `template`")?,
             )),
-            _ => Err(anyhow!("Invalid command: {}", command)),
+            _ => return Err(anyhow!("Invalid command: {}", command)),
+        };
+
+        let unused_args = pargs.finish();
+        if !unused_args.is_empty() {
+            return Err(anyhow!("Unused arguments: {:?}", unused_args))
+                .context(format!("Could not parse command `{}`", command));
         }
+
+        result
     }
 }
 
@@ -483,5 +494,10 @@ mod tests {
             file_name: Some(file_name),
         }) if file_name == "file"
         ));
+    }
+    #[test]
+    fn unused_command_line_parameters_cause_an_error() {
+        let pargs = to_pargs(&["help", "-c", "alon"]);
+        assert!(Command::parse_command(pargs).is_err());
     }
 }
