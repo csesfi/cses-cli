@@ -1,7 +1,7 @@
 use super::require_login;
 use crate::api::CodeSubmit;
 use crate::command;
-use crate::entities::{SubmissionInfo, SubmissionList, SubmitParameters};
+use crate::entities::{SubmissionInfo, SubmissionListingInfo, SubmitParameters};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
@@ -56,13 +56,17 @@ pub fn submission_info(
     .context("Failed querying submission status from the server")
 }
 
-pub fn submission_list(res: &mut Resources<impl RP>, task_id: u64) -> Result<SubmissionList> {
+pub fn submission_list(
+    res: &mut Resources<impl RP>,
+    task_id: u64,
+) -> Result<Vec<SubmissionListingInfo>> {
     (|| -> Result<_> {
         let storage = res.storage.get();
         let course_id = storage.get_course().unwrap();
-        Ok(res
+        let response = res
             .api
-            .get_submit_list(require_login(res)?, course_id, task_id)?)
+            .get_submit_list(require_login(res)?, course_id, task_id)?;
+        Ok(response.submissions)
     })()
     .context("Failed querying submissions from the server")
 }

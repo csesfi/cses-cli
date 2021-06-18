@@ -9,7 +9,7 @@ use super::util::format_code_time;
 use super::Ui;
 
 pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
-    let submissions = service::submission_list(&mut ui.res, task_id)?.submissions;
+    let submissions = service::submission_list(&mut ui.res, task_id)?;
     if submissions.is_empty() {
         writeln!(ui.term, "No submissions yet!")?;
         return Ok(());
