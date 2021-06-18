@@ -97,7 +97,7 @@ pub struct SubmissionListingInfo {
     pub language: Language,
     pub code_time: Option<u64>,
     pub size: Option<u64>,
-    pub result: String,
+    pub result: CourseTaskStatus,
 }
 
 #[derive(Debug, Deserialize)]

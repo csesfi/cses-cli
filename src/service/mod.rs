@@ -8,6 +8,9 @@ pub use template::{create_template_parameters, file_exists, get_template, save_r
 pub(crate) mod submit;
 pub use submit::{create_submit_parameters, submission_info, submission_list, submit};
 
+mod context;
+pub use context::select_course;
+
 use crate::{Resources, Storage, RP};
 use anyhow::{anyhow, Result};
 

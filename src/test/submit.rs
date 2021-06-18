@@ -20,7 +20,7 @@ fn submit_parameters_are_updated() -> Result<()> {
         },
         file_name: "submission.py".to_string(),
     };
-    service::create_submit_parameters(&mut fake_resources, &submit)?;
+    service::create_submit_parameters(&mut fake_resources, submit)?;
 
     assert_eq!(fake_resources.storage.get().get_course(), Some("4"));
     Ok(())

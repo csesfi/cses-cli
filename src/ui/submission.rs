@@ -1,10 +1,11 @@
 use crate::service;
 use crate::RP;
 use anyhow::Result;
-use console::{Style, StyledObject};
+use console::Style;
 use std::io::Write;
 
 use super::table::*;
+use super::util::{format_code_time, result_with_color};
 use super::Ui;
 use crate::entities::SubmissionInfo;
 
@@ -26,7 +27,6 @@ pub fn print_submission_info(
         }
         print_status(ui, &submission_info)?;
     }
-    writeln!(ui.term)?;
     print_test_report(ui, &submission_info)?;
     print_test_results(ui, &submission_info)?;
     print_final_result(ui, &submission_info)?;
@@ -65,22 +65,24 @@ fn print_compiler_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo)
 
 fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     let status_text = "Status:";
-    if let Some(ref test_progress) = submission_info.test_progress {
-        let progress_fraction =
-            test_progress.finished_tests as f64 / test_progress.total_tests as f64;
-        if (0.0..=1.0).contains(&progress_fraction) {
-            let (_r, term_width) = ui.term.size();
-            let mut text_width = status_text.chars().count() as u64;
-            text_width += submission_info.status.chars().count() as u64;
-            text_width += 4;
-            let bar_width = (term_width as u64).saturating_sub(text_width);
-            let progress_bar = progress_bar(bar_width, progress_fraction)?;
-            writeln!(
-                ui.term,
-                "{} {} {}",
-                status_text, submission_info.status, progress_bar
-            )?;
-            return Ok(());
+    if submission_info.pending {
+        if let Some(ref test_progress) = submission_info.test_progress {
+            let progress_fraction =
+                test_progress.finished_tests as f64 / test_progress.total_tests as f64;
+            if (0.0..=1.0).contains(&progress_fraction) {
+                let (_r, term_width) = ui.term.size();
+                let mut text_width = status_text.chars().count() as u64;
+                text_width += submission_info.status.chars().count() as u64;
+                text_width += 4;
+                let bar_width = (term_width as u64).saturating_sub(text_width);
+                let progress_bar = progress_bar(bar_width, progress_fraction)?;
+                writeln!(
+                    ui.term,
+                    "{} {} {}",
+                    status_text, submission_info.status, progress_bar
+                )?;
+                return Ok(());
+            }
         }
     }
     writeln!(ui.term, "{} {}", status_text, submission_info.status)?;
@@ -108,11 +110,8 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
         for test in tests {
             table.add_row(vec![
                 TableCell::from(test.number).align(TableAlign::Right),
-                TableCell::styled(with_color(&test.verdict)),
-                match test.time {
-                    Some(time) => format!("{:.2} s", time as f64 / 1000.0).into(),
-                    None => "--".into(),
-                },
+                TableCell::styled(result_with_color(&test.verdict)),
+                format_code_time(test.time).into(),
             ]);
         }
         write!(ui.term, "{}", table)?;
@@ -130,18 +129,9 @@ fn print_test_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
 
 fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref result) = submission_info.result {
-        writeln!(ui.term, "\nResult: {}", with_color(&result))?;
+        writeln!(ui.term, "\nResult: {}", result_with_color(&result))?;
     };
     Ok(())
-}
-
-fn with_color(line: &str) -> StyledObject<&str> {
-    let color = match line {
-        "ACCEPTED" => Style::new().green(),
-        "UNKNOWN" => Style::new().white(),
-        _ => Style::new().red(),
-    };
-    color.apply_to(line)
 }
 
 pub struct Spinner {
