@@ -111,6 +111,8 @@ def get_submission_list(token_info, course_id, task):
     print(f"token_info: {token_info}")
     print(f"course_id: {course_id}")
     print(f"task_id: {task}")
+    if task == 404:
+        return ({"submissions": []}, 200)
     return ({"submissions": [
         {
             "id": 1234567,
