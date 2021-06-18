@@ -60,7 +60,7 @@ impl<R: ResourcesProvider> Ui<R> {
                 submissions::list(self, task_id)?;
             }
             Command::Submission(course_id, submission_id) => {
-                let _course_id = service::select_course(&mut self.res, course_id)?;
+                service::select_course(&mut self.res, course_id)?;
                 let submission_info =
                     service::submission_info(&mut self.res, submission_id, false)?;
                 submission::print_submission_info(self, submission_info, false)?;
