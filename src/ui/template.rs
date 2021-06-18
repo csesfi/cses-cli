@@ -4,7 +4,7 @@ use anyhow::Result;
 use std::io::Write;
 
 pub fn get_template(ui: &mut Ui<impl RP>, params: command::Template) -> Result<()> {
-    let template_parameters = service::create_template_parameters(&mut ui.res, &params)?;
+    let template_parameters = service::create_template_parameters(&mut ui.res, params)?;
     let template_response = service::get_template(&mut ui.res, &template_parameters)?;
     if service::file_exists(&ui.res, &template_response.filename) {
         let overwrite_message = format!(

@@ -1,26 +1,18 @@
 use crate::command;
 use crate::entities::{TemplateParameters, TemplateResponse};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 
 pub fn create_template_parameters(
     res: &mut Resources<impl RP>,
-    parameters: &command::Template,
+    parameters: command::Template,
 ) -> Result<TemplateParameters> {
-    let storage = res.storage.get_mut();
-    if let Some(ref course_id) = parameters.course_id {
-        storage.set_course(course_id.clone());
-    }
-    res.storage.save()?;
-    let storage = res.storage.get();
+    let course_id = super::select_course(res, parameters.course_id)?;
     Ok(TemplateParameters {
-        course: storage
-            .get_course()
-            .ok_or_else(|| anyhow!("Course not provided"))?
-            .to_owned(),
-        file: parameters.file_name.clone(),
+        course: course_id,
+        file: parameters.file_name,
         task: parameters.task_id,
-        language: parameters.language.clone(),
+        language: parameters.language,
     })
 }
 
