@@ -7,11 +7,12 @@ mod table;
 mod template;
 mod util;
 
-use anyhow::{Context, Error, Result};
+use anyhow::{anyhow, Context, Error, Result};
 use console::{Style, Term};
 
 use crate::api::ApiError;
 use crate::command::{HELP_STR, LANGUAGE_HINT, NO_COMMAND_PROVIDED_HINT, TASK_HINT};
+use crate::entities::Scope;
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider, RP};
 
@@ -53,28 +54,36 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Courses => {
                 courses::list_courses(self)?;
             }
-            Command::Course(course) => {
-                courses::list_course_content(self, &course.course_id)?;
+            Command::List(scope) => {
+                let scope = service::select_scope(&mut self.res, scope)?;
+                match scope {
+                    Scope::Course(course) => {
+                        courses::list_course_content(self, &course)?;
+                    }
+                    Scope::Contest(_) => {
+                        return Err(anyhow!("Contest listing not yet implemented"));
+                    }
+                }
             }
-            Command::Submit(submit) => {
+            Command::Submit(scope, submit) => {
                 let submission_info = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
             }
-            Command::Template(template) => {
+            Command::Template(scope, template) => {
                 template::get_template(self, template)?;
             }
-            Command::Submissions(course_id, task_id) => {
-                service::select_course(&mut self.res, course_id)?;
+            Command::Submissions(scope, task_id) => {
+                service::select_scope(&mut self.res, scope)?;
                 submissions::list(self, task_id)?;
             }
-            Command::Submission(course_id, submission_id) => {
-                service::select_course(&mut self.res, course_id)?;
+            Command::Submission(scope, submission_id) => {
+                service::select_scope(&mut self.res, scope)?;
                 let submission_info =
                     service::submission_info(&mut self.res, submission_id, false)?;
                 submission::print_submission_info(self, submission_info, false)?;
             }
             _ => {
-                self.term.write_line("Command not yet implemented")?;
+                return Err(anyhow!("Command not yet implemented"));
             }
         }
         Ok(())

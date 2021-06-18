@@ -1,6 +1,6 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow, bail};
 
-use crate::entities::Language;
+use crate::entities::{Language, Scope};
 
 pub static HELP_STR: &str = r#"CSES CLI
 
@@ -13,7 +13,7 @@ COMMANDS:
     logout                  Invalidate the current login session.
     status                  Print the login status.
     courses                 Display a list of courses.
-    course <course-id>      Display the contents of a course.
+    list [-c]               Display the contents of a course or contest.
     submit [-ctlo] <file>   Submit a file to cses.fi.
         Task ID, language, and the language option may be automatically deduced
         by the server, in which case they do not need to be supplied as options.
@@ -25,11 +25,12 @@ COMMANDS:
         and will be used by the server to select a suitable code template.
 
 OPTIONS:
-    -c <course-id>, --course <course-id>
-        Textual course ID, e.g. "problemset". Any previously supplied value is
-        remembered.
+    -c (<course-id>|<contest-id>), --course <course-id>, --contest <contest-id>
+        Textual course ID, e.g. "problemset" or numeric contest ID.
+        Any previously supplied value is remembered.
     -t <task-id>, --task <task-id>
-        Numeric task ID.
+        For courses, the numeric task ID.
+        For contests, the letter of the task (A-Z).
     -l <language>, --language <language>
         Specifies the programming language of the submitted file or the
         downloaded template.
@@ -55,8 +56,6 @@ the "-t" or "--task" flags, e.g.:
 cses-cli submit hello_world.rs -t 1337
 "#;
 
-type CourseId = Option<String>;
-
 #[derive(Debug)]
 pub enum Command {
     None,
@@ -65,30 +64,40 @@ pub enum Command {
     Logout,
     Status,
     Courses,
-    Course(Course),
-    Submit(Submit),
-    Template(Template),
-    Submissions(CourseId, u64),
-    Submission(CourseId, u64),
+    List(Option<Scope>),
+    Submit(Option<Scope>, Submit),
+    Template(Option<Scope>, Template),
+    Submissions(Option<Scope>, u64),
+    Submission(Option<Scope>, u64),
 }
 #[derive(Debug)]
 pub struct Submit {
-    pub course_id: CourseId,
     pub task_id: Option<u64>,
     pub language: Language,
     pub file_name: String,
 }
 #[derive(Debug)]
 pub struct Template {
-    pub course_id: Option<String>,
     pub task_id: Option<u64>,
     pub language: Option<String>,
     pub file_name: Option<String>,
 }
-fn parse_course(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
-    pargs
-        .opt_value_from_str(["-c", "--course"])
-        .context("Failed parsing course ID")
+fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
+    Ok(if let Some(scope) = pargs.opt_value_from_str("-c")? {
+        Some(scope)
+    } else if let Some(scope) = pargs.opt_value_from_str("--course")? {
+        if !matches!(scope, Scope::Course(_)) {
+            bail!("Course ID should not be a number");
+        }
+        Some(scope)
+    } else if let Some(scope) = pargs.opt_value_from_str("--contest")? {
+        if !matches!(scope, Scope::Contest(_)) {
+            bail!("Contest ID should be a number");
+        }
+        Some(scope)
+    } else {
+        None
+    })
 }
 fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<u64>> {
     Ok(pargs.opt_value_from_str(["-t", "--task"])?)
@@ -102,7 +111,6 @@ fn parse_language_option(pargs: &mut pico_args::Arguments) -> Result<Option<Stri
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            course_id: parse_course(pargs)?,
             task_id: parse_task_id(pargs)?,
             language: Language {
                 name: parse_language_name(pargs)?,
@@ -121,7 +129,6 @@ impl Submit {
 impl Template {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
         Ok(Template {
-            course_id: parse_course(pargs)?,
             task_id: parse_task_id(pargs)?,
             language: parse_language_name(pargs)?,
             file_name: pargs.opt_value_from_str(["-f", "--file"])?,
@@ -173,17 +180,23 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         "logout" => Command::Logout,
         "status" => Command::Status,
         "courses" => Command::Courses,
-        "course" => Command::Course(Course::parse(&mut pargs)?),
-        "submit" => Command::Submit(Submit::parse(&mut pargs)?),
-        "template" => Command::Template(Template::parse(&mut pargs)?),
+        "list" => Command::List(parse_scope(&mut pargs)?),
+        "submit" => Command::Submit(
+            parse_scope(&mut pargs)?,
+            Submit::parse(&mut pargs)?
+        ),
+        "template" => Command::Template(
+            parse_scope(&mut pargs)?,
+            Template::parse(&mut pargs)?
+        ),
         "submissions" => Command::Submissions(
-            parse_course(&mut pargs)?,
+            parse_scope(&mut pargs)?,
             pargs
                 .value_from_str(["-t", "--task"])
                 .context("Failed parsing task ID")?,
         ),
         "submission" => Command::Submission(
-            parse_course(&mut pargs)?,
+            parse_scope(&mut pargs)?,
             pargs
                 .free_from_str()
                 .context("Failed parsing submission ID")?,
