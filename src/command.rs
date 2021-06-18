@@ -37,6 +37,9 @@ OPTIONS:
                                     
 "#;
 
+pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run `help` 
+to get a list of available commands."#;
+
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
 the `-l` or `--language` flags, e.g.:
 
@@ -125,7 +128,7 @@ impl Command {
         }
 
         let command = pargs.subcommand()?.unwrap_or_default();
-        Ok(match command.as_str() {
+        let result = match command.as_str() {
             "" => Command::None,
             "help" => Command::Help,
             "login" => Command::Login,
@@ -133,10 +136,10 @@ impl Command {
             "status" => Command::Status,
             "courses" => Command::Courses,
             "course" => Command::Course(
-                Course::parse(&mut pargs).context("Failed parsing command `course`")?,
+                Course::parse(&mut pargs).context("Failed parsing command `Course`")?,
             ),
             "submit" => Command::Submit(
-                Submit::parse(&mut pargs).context("Failed parsing command `submit`")?,
+                Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
             ),
             "submissions" => Command::Submissions(
                 parse_course(&mut pargs)?,
@@ -151,7 +154,15 @@ impl Command {
                     .context("Failed parsing submission ID")?,
             ),
             _ => return Err(anyhow!("Invalid command: {}", command)),
-        })
+        };
+
+        let unused_args = pargs.finish();
+        if !unused_args.is_empty() {
+            return Err(anyhow!("Unused arguments: {:?}", unused_args))
+                .context(format!("Could not parse command `{}`", command));
+        }
+
+        Ok(result)
     }
 }
 
@@ -408,5 +419,11 @@ mod tests {
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(command, Command::Submission(None, 1512)));
+    }
+
+    #[test]
+    fn unused_command_line_parameters_cause_an_error() {
+        let pargs = to_pargs(&["help", "-c", "alon"]);
+        assert!(Command::parse_command(pargs).is_err());
     }
 }

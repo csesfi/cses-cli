@@ -44,3 +44,12 @@ fn help_flag_overrides_submit_command() {
         .stdout(regex_match(r"(?i)usage"))
         .stderr(predicate::str::is_empty());
 }
+
+#[distributed_slice(TESTS)]
+fn hint_is_displayed_if_no_command_is_provided() {
+    let assert = command().assert();
+    assert
+        .success()
+        .stdout(regex_match(r"(?i)run.*help"))
+        .stderr(predicate::str::is_empty());
+}
