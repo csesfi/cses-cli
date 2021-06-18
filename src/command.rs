@@ -5,18 +5,15 @@ use crate::entities::Language;
 pub static HELP_STR: &str = r#"CSES CLI
 
 USAGE:
-    cses-cli <command> [OPTIONS] [FLAGS]
-
-FLAGS:
-    -h, --help              Prints this help message.
+    cses-cli <command> [OPTIONS]
 
 COMMANDS:
-    help                    Prints this help message.
+    help                    Print this help message.
     login                   Log in to cses.fi.
     logout                  Invalidate the current login session.
-    status                  Prints the login status.
-    courses                 Displays a list of courses.
-    course <course-id>      Displays the contents of a course.
+    status                  Print the login status.
+    courses                 Display a list of courses.
+    course <course-id>      Display the contents of a course.
     submit [-ctlo] <file>   Submit a file to cses.fi.
         Task ID, language, and the language option may be automatically deduced
         by the server, in which case they do not need to be supplied as options.
@@ -40,20 +37,20 @@ OPTIONS:
         Optionally specifies a language option. For example, the language "C++"
         has possible options "C++11" and "C++17".
     -f <file>, --file <file>
-        Selects the template with filename `file`.
+        Selects the template with filename "file".
 "#;
 
-pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run `help` 
+pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run "help" 
 to get a list of available commands."#;
 
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
-the `-l` or `--language` flags, e.g.:
+the "-l" or "--language" flags, e.g.:
 
 cses-cli submit hello_world.rs -l Rust
 "#;
 
 pub static TASK_HINT: &str = r#"You can manually specify the task with
-the `-t` or `--task` flags, e.g.:
+the "-t" or "--task" flags, e.g.:
 
 cses-cli submit hello_world.rs -t 1337
 "#;
@@ -161,45 +158,51 @@ impl Command {
         }
 
         let command = pargs.subcommand()?.unwrap_or_default();
-        let result = match command.as_str() {
-            "" => Command::None,
-            "help" => Command::Help,
-            "login" => Command::Login,
-            "logout" => Command::Logout,
-            "status" => Command::Status,
-            "courses" => Command::Courses,
-            "course" => Command::Course(
-                Course::parse(&mut pargs).context("Failed parsing command `Course`")?,
-            ),
-            "submit" => Command::Submit(
-                Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
-            ),
-            "template" => Command::Template(
-                Template::parse(&mut pargs).context("Failed parsing command `template`")?,
-            ),
-            "submissions" => Command::Submissions(
-                parse_course(&mut pargs)?,
-                pargs
-                    .value_from_str(["-t", "--task"])
-                    .context("Failed parsing task ID")?,
-            ),
-            "submission" => Command::Submission(
-                parse_course(&mut pargs)?,
-                pargs
-                    .free_from_str()
-                    .context("Failed parsing submission ID")?,
-            ),
-            _ => return Err(anyhow!("Invalid command: {}", command)),
-        };
-
-        let unused_args = pargs.finish();
-        if !unused_args.is_empty() {
-            return Err(anyhow!("Unused arguments: {:?}", unused_args))
-                .context(format!("Could not parse command `{}`", command));
-        }
+        let result = delegate_command(pargs, &command)
+            .with_context(|| format!("Failed parsing command \"{}\"", command))?;
 
         Ok(result)
     }
+}
+
+fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Command> {
+    let result = match command {
+        "" => Command::None,
+        "help" => Command::Help,
+        "login" => Command::Login,
+        "logout" => Command::Logout,
+        "status" => Command::Status,
+        "courses" => Command::Courses,
+        "course" => Command::Course(
+            Course::parse(&mut pargs)?,
+        ),
+        "submit" => Command::Submit(
+            Submit::parse(&mut pargs)?,
+        ),
+        "template" => Command::Template(
+            Template::parse(&mut pargs)?,
+        ),
+        "submissions" => Command::Submissions(
+            parse_course(&mut pargs)?,
+            pargs
+                .value_from_str(["-t", "--task"])
+                .context("Failed parsing task ID")?,
+        ),
+        "submission" => Command::Submission(
+            parse_course(&mut pargs)?,
+            pargs
+                .free_from_str()
+                .context("Failed parsing submission ID")?,
+        ),
+        _ => return Err(anyhow!("Invalid command")),
+    };
+
+    let unused_args = pargs.finish();
+    if !unused_args.is_empty() {
+        return Err(anyhow!("Unused arguments: {:?}", unused_args));
+    }
+
+    Ok(result)
 }
 
 #[cfg(test)]
