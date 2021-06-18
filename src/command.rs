@@ -173,15 +173,9 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         "logout" => Command::Logout,
         "status" => Command::Status,
         "courses" => Command::Courses,
-        "course" => Command::Course(
-            Course::parse(&mut pargs)?,
-        ),
-        "submit" => Command::Submit(
-            Submit::parse(&mut pargs)?,
-        ),
-        "template" => Command::Template(
-            Template::parse(&mut pargs)?,
-        ),
+        "course" => Command::Course(Course::parse(&mut pargs)?),
+        "submit" => Command::Submit(Submit::parse(&mut pargs)?),
+        "template" => Command::Template(Template::parse(&mut pargs)?),
         "submissions" => Command::Submissions(
             parse_course(&mut pargs)?,
             pargs
