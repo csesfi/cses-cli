@@ -112,31 +112,10 @@ def get_submission_list(token_info, course_id, task):
     print(f"course_id: {course_id}")
     print(f"task_id: {task}")
     if task == 404:
-        return ({"submissions": []}, 200)
-    return ({"submissions": [
-        {
-            "id": 1234567,
-            "time": "2017-07-21T17:32:28Z",
-            "language": {
-                "name": "CPython",
-                "option": None
-            },
-            "code_time": 500,
-            "size": 1000,
-            "result": "pass"
-        },
-        {
-            "id": 7654321,
-            "time": "2020-07-21T17:32:28Z",
-            "language": {
-                "name": "C++",
-                 "option": "C++17"
-            },
-            "code_time": None,
-            "size": 200,
-            "result": "fail"
-        }
-    ]}, 200)
+        return (constants.EMPTY_SUBMISSION_LIST, 200)
+    if task == 2:
+        return (constants.SUBMISSION_LIST_WITH_MISSING_FIELDS, 200)
+    return (constants.SUBMISSION_LIST, 200)
 
 def get_courses(token_info):
     if token_info == {}:

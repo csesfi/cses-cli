@@ -30,6 +30,7 @@ mod common;
 mod courses;
 mod help;
 mod login;
+mod submission;
 mod submit;
 
 use common::TESTS;
