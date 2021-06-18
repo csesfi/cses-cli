@@ -107,32 +107,34 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                  "code": "client_error"}, 404)
     return (submission_info, 200)
 
-def get_submission_list(token_info, course_id, task_id):
+def get_submission_list(token_info, course_id, task):
     print(f"token_info: {token_info}")
     print(f"course_id: {course_id}")
-    print(f"task_id: {task_id}")
-    return ({"submissions:": [
+    print(f"task_id: {task}")
+    if task == 404:
+        return ({"submissions": []}, 200)
+    return ({"submissions": [
         {
-            "id": "1234567",
+            "id": 1234567,
             "time": "2017-07-21T17:32:28Z",
             "language": {
                 "name": "CPython",
                 "option": None
             },
-            "code_time": "500",
-            "size": "1000",
-            "result": "PASS"
+            "code_time": 500,
+            "size": 1000,
+            "result": "pass"
         },
         {
-            "id": "7654321",
+            "id": 7654321,
             "time": "2020-07-21T17:32:28Z",
             "language": {
                 "name": "C++",
                  "option": "C++17"
             },
             "code_time": None,
-            "size": "200",
-            "result": "FAIL"
+            "size": 200,
+            "result": "fail"
         }
     ]}, 200)
 

@@ -8,35 +8,33 @@ USAGE:
     cses-cli <command> [OPTIONS] [FLAGS]
 
 FLAGS:
-    -h, --help          Prints this help message.
+    -h, --help              Prints this help message.
 
 COMMANDS:
-    help                Prints this help message.
-    login               Log in to cses.fi
-    logout              Invalidate the current login session.
-    status              Prints the login status.
-    courses             Displays a list of courses.
-    course <course ID>  Displays the contents of a course.
-    submit <file>       Submit a file to cses.fi.
+    help                    Prints this help message.
+    login                   Log in to cses.fi.
+    logout                  Invalidate the current login session.
+    status                  Prints the login status.
+    courses                 Displays a list of courses.
+    course <course-id>      Displays the contents of a course.
+    submit [-ctlo] <file>   Submit a file to cses.fi.
+        Task ID, language, and the language option may be automatically deduced
+        by the server, in which case they do not need to be supplied as options.
+    submissions [-c] (-t)   List previous submissions to a task.
+    submission [-c] <id>    Show details about the submission with given ID.
 
-        Submit options:
-
-        -c course_id
-        --course course_id
-            Submit the file to course `course_id`.
-
-        -t task_id
-        --task task_id
-            Submit the file to task `task_id`.
-
-        -l language
-        --language language
-            Specifies the programming language of the submitted file.
-
-        -o language_option
-        --lang-opt language_option
-            Specifies the possible language options. For example, language `C++`
-            could have options `C++11` and `C++17`.
+OPTIONS:
+    -c <course-id>, --course <course-id>
+        Textual course ID, e.g. "problemset". Any previously supplied value is
+        remembered.
+    -t <task-id>, --task <task-id>
+        Numeric task ID.
+    -l <language>, --language <language>
+        Specifies the programming language of the submitted file.
+    -o <language-option>, --option <language-option>
+        Optionally specifies a language option. For example, the language "C++"
+        has possible options "C++11" and "C++17".
+                                    
 "#;
 
 pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run `help` 
@@ -54,6 +52,8 @@ the `-t` or `--task` flags, e.g.:
 cses-cli submit hello_world.rs -t 1337
 "#;
 
+type CourseId = Option<String>;
+
 #[derive(Debug)]
 pub enum Command {
     None,
@@ -64,10 +64,17 @@ pub enum Command {
     Courses,
     Course(Course),
     Submit(Submit),
+    Submissions(CourseId, u64),
+    Submission(CourseId, u64),
+}
+fn parse_course(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    pargs
+        .opt_value_from_str(["-c", "--course"])
+        .context("Failed parsing course ID")
 }
 #[derive(Debug)]
 pub struct Submit {
-    pub course_id: Option<String>,
+    pub course_id: CourseId,
     pub task_id: Option<u64>,
     pub language: Language,
     pub file_name: String,
@@ -75,7 +82,7 @@ pub struct Submit {
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            course_id: pargs.opt_value_from_str(["-c", "--course"])?,
+            course_id: parse_course(pargs)?,
             task_id: pargs.opt_value_from_str(["-t", "--task"])?,
             language: Language {
                 name: pargs.opt_value_from_str(["-l", "--language"])?,
@@ -122,18 +129,30 @@ impl Command {
 
         let command = pargs.subcommand()?.unwrap_or_default();
         let result = match command.as_str() {
-            "" => Ok(Command::None),
-            "help" => Ok(Command::Help),
-            "login" => Ok(Command::Login),
-            "logout" => Ok(Command::Logout),
-            "status" => Ok(Command::Status),
-            "courses" => Ok(Command::Courses),
-            "course" => Ok(Command::Course(
+            "" => Command::None,
+            "help" => Command::Help,
+            "login" => Command::Login,
+            "logout" => Command::Logout,
+            "status" => Command::Status,
+            "courses" => Command::Courses,
+            "course" => Command::Course(
                 Course::parse(&mut pargs).context("Failed parsing command `Course`")?,
-            )),
-            "submit" => Ok(Command::Submit(
+            ),
+            "submit" => Command::Submit(
                 Submit::parse(&mut pargs).context("Failed parsing command `Submit`")?,
-            )),
+            ),
+            "submissions" => Command::Submissions(
+                parse_course(&mut pargs)?,
+                pargs
+                    .value_from_str(["-t", "--task"])
+                    .context("Failed parsing task ID")?,
+            ),
+            "submission" => Command::Submission(
+                parse_course(&mut pargs)?,
+                pargs
+                    .free_from_str()
+                    .context("Failed parsing submission ID")?,
+            ),
             _ => return Err(anyhow!("Invalid command: {}", command)),
         };
 
@@ -143,7 +162,7 @@ impl Command {
                 .context(format!("Could not parse command `{}`", command));
         }
 
-        result
+        Ok(result)
     }
 }
 
@@ -365,6 +384,41 @@ mod tests {
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(command, Command::Courses));
+    }
+
+    #[test]
+    fn submissions_without_course_parsed() {
+        let pargs = to_pargs(&["submissions", "-t", "140"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(command, Command::Submissions(None, 140)));
+    }
+
+    #[test]
+    fn submissions_with_course_parsed() {
+        let pargs = to_pargs(&["submissions", "--task", "140", "-c", "alon"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submissions(Some(course), 140)
+            if course == "alon"
+        ));
+    }
+
+    #[test]
+    fn submissions_fails_without_task() {
+        let pargs = to_pargs(&["submissions", "-c", "alon"]);
+        let command = Command::parse_command(pargs);
+        assert!(command.is_err());
+    }
+
+    #[test]
+    fn submission_without_course_parsed() {
+        let pargs = to_pargs(&["submission", "1512"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(command, Command::Submission(None, 1512)));
     }
 
     #[test]

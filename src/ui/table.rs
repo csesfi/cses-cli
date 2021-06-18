@@ -57,6 +57,13 @@ impl TableCell {
         }
     }
 
+    pub fn optional(content: Option<impl ToString>) -> Self {
+        match content {
+            Some(content) => content.into(),
+            None => TableCell::empty(),
+        }
+    }
+
     #[allow(unused)]
     pub fn empty() -> Self {
         Self {

@@ -1,8 +1,10 @@
 mod courses;
 mod login;
 mod submission;
+mod submissions;
 mod submit;
 mod table;
+mod util;
 
 use anyhow::{Error, Result};
 use console::{Style, Term};
@@ -56,6 +58,16 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Submit(submit) => {
                 let submission_info = submit::submit(self, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
+            }
+            Command::Submissions(course_id, task_id) => {
+                service::select_course(&mut self.res, course_id)?;
+                submissions::list(self, task_id)?;
+            }
+            Command::Submission(course_id, submission_id) => {
+                service::select_course(&mut self.res, course_id)?;
+                let submission_info =
+                    service::submission_info(&mut self.res, submission_id, false)?;
+                submission::print_submission_info(self, submission_info, false)?;
             }
             _ => {
                 self.term.write_line("Command not yet implemented")?;
