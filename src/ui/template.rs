@@ -7,7 +7,11 @@ pub fn get_template(ui: &mut Ui<impl RP>, params: command::Template) -> Result<(
     let template_parameters = service::create_template_parameters(&mut ui.res, &params)?;
     let template_response = service::get_template(&mut ui.res, &template_parameters)?;
     if service::file_exists(&ui.res, &template_response.filename) {
-        let overwrite_message = format!("A file ./{} already exists. Are you sure you want to overwrite the file with the downloaded template (yes/No)? ", &template_response.filename);
+        let overwrite_message = format!(
+            "A file ./{} already exists. Are you sure you want to overwrite \
+            the file with the downloaded template (yes/No)? ",
+            &template_response.filename
+        );
         if !prompt_yes_no(ui, &overwrite_message)? {
             return Ok(());
         }
