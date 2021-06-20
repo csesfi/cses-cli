@@ -2,7 +2,7 @@ name: Test server
 
 on:
   push:
-    branches: [ main, lint-test-server ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
     types: [ opened, synchronize ]
@@ -23,7 +23,12 @@ jobs:
         uses: snok/install-poetry@v1.1.6
         with:
           virtualenvs-create: true
-          virtualevns-in-project: false
+          virtualenvs-in-project: false
+      - name: Cache pip wheels
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache
+          key: wheels-ubuntu-latest-${{ hashFiles('**/poetry.lock') }}
       - name: Install poetry dependencies
         run: poetry install --no-interaction
       - name: Lint with pylint
