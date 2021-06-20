@@ -1,0 +1,30 @@
+name: Test server
+
+on:
+  push:
+    branches: [ main, lint-test-server ]
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api/mock_server
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.1.6
+        with:
+          virtualenvs-create: true
+          virtualevns-in-project: false
+      - name: Install poetry dependencies
+        run: poetry install --no-interaction
+      - name: Lint with pylint
+        run: poetry run pylint *
