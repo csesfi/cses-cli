@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow, bail};
+use anyhow::{anyhow, bail, Context, Result};
 
 use crate::entities::{Language, Scope};
 
@@ -135,23 +135,6 @@ impl Template {
         })
     }
 }
-#[derive(Debug)]
-pub struct Course {
-    pub course_id: String,
-}
-impl Course {
-    fn parse(pargs: &mut pico_args::Arguments) -> Result<Course> {
-        Ok(Course {
-            course_id: {
-                if let Ok(course_id) = pargs.free_from_str() {
-                    course_id
-                } else {
-                    anyhow::bail!("Course ID not specified")
-                }
-            },
-        })
-    }
-}
 impl Command {
     pub fn from_command_line() -> Result<Command> {
         let pargs = pico_args::Arguments::from_env();
@@ -181,14 +164,8 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         "status" => Command::Status,
         "courses" => Command::Courses,
         "list" => Command::List(parse_scope(&mut pargs)?),
-        "submit" => Command::Submit(
-            parse_scope(&mut pargs)?,
-            Submit::parse(&mut pargs)?
-        ),
-        "template" => Command::Template(
-            parse_scope(&mut pargs)?,
-            Template::parse(&mut pargs)?
-        ),
+        "submit" => Command::Submit(parse_scope(&mut pargs)?, Submit::parse(&mut pargs)?),
+        "template" => Command::Template(parse_scope(&mut pargs)?, Template::parse(&mut pargs)?),
         "submissions" => Command::Submissions(
             parse_scope(&mut pargs)?,
             pargs
@@ -281,7 +258,7 @@ mod tests {
         let pargs = to_pargs(&["submit", "test.cpp"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        assert!(matches!(command, Command::Submit(_)));
+        assert!(matches!(command, Command::Submit(..)));
     }
 
     #[test]
@@ -291,7 +268,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(submit)
+            Command::Submit(_, submit)
             if submit.file_name == "test.cpp"
         ));
 
@@ -300,7 +277,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(submit)
+            Command::Submit(_, submit)
             if submit.file_name == "qwerty.rs"
         ));
     }
@@ -312,7 +289,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { course_id: Some(course), .. })
+            Command::Submit(Some(Scope::Course(course)), _)
             if course == "alon"
         ));
     }
@@ -324,7 +301,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { course_id: Some(course), .. })
+            Command::Submit(Some(Scope::Course(course)), _)
             if course == "alon"
         ));
     }
@@ -336,7 +313,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { task_id: Some(task), .. })
+            Command::Submit(_, Submit { task_id: Some(task), .. })
             if task == 123
         ));
     }
@@ -348,7 +325,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { task_id: Some(task), .. })
+            Command::Submit(_, Submit { task_id: Some(task), .. })
             if task == 123
         ));
     }
@@ -368,7 +345,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language: Language { name: Some(lang), ..}, .. })
+            Command::Submit(_, Submit { language: Language { name: Some(lang), ..}, .. })
             if lang == "Rust"
         ));
     }
@@ -380,7 +357,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language: Language { name: Some(lang), .. }, .. })
+            Command::Submit(_, Submit { language: Language { name: Some(lang), .. }, .. })
             if lang == "Rust"
         ));
     }
@@ -392,7 +369,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language: Language{ option: Some(opt), .. }, .. })
+            Command::Submit(_, Submit { language: Language { option: Some(opt), .. }, .. })
             if opt == "C++17"
         ));
     }
@@ -403,7 +380,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Submit { language: Language{ option: Some(opt), .. }, ..})
+            Command::Submit(_, Submit { language: Language { option: Some(opt), .. }, ..})
             if opt == "C++17"
         ));
     }
@@ -436,39 +413,48 @@ mod tests {
     fn command_template_works_with_language_and_task() {
         let pargs = to_pargs(&["template", "-c", "course", "-t", "123", "-l", "language"]);
         let command = Command::parse_command(pargs).unwrap();
-        assert!(matches!(command, Command::Template(
-        Template {
-            course_id: Some(course_id),
-            task_id: Some(task_id),
-            language: Some(language),
-            file_name: None,
-        }) if course_id == "course" && task_id == 123 && language == "language"
+        assert!(matches!(command,
+            Command::Template(
+                Some(Scope::Course(course_id)),
+                Template {
+                    task_id: Some(task_id),
+                    language: Some(language),
+                    file_name: None,
+                }
+            )
+            if course_id == "course" && task_id == 123 && language == "language"
         ));
     }
     #[test]
     fn command_template_works_without_course_id() {
         let pargs = to_pargs(&["template", "-t", "123", "-l", "language"]);
         let command = Command::parse_command(pargs).unwrap();
-        assert!(matches!(command, Command::Template(
-        Template {
-            course_id: None,
-            task_id: Some(task_id),
-            language: Some(language),
-            file_name: None,
-        }) if task_id == 123 && language == "language"
+        assert!(matches!(command,
+            Command::Template(
+                None,
+                Template {
+                    task_id: Some(task_id),
+                    language: Some(language),
+                    file_name: None,
+                }
+            )
+            if task_id == 123 && language == "language"
         ));
     }
     #[test]
     fn command_template_works_with_file_name() {
         let pargs = to_pargs(&["template", "-c", "course", "-f", "file"]);
         let command = Command::parse_command(pargs).unwrap();
-        assert!(matches!(command, Command::Template(
-        Template {
-            course_id: Some(course_id),
-            task_id: None,
-            language: None,
-            file_name: Some(file_name),
-        }) if course_id == "course" && file_name == "file"
+        assert!(matches!(command,
+            Command::Template(
+                Some(Scope::Course(course_id)),
+                Template {
+                    task_id: None,
+                    language: None,
+                    file_name: Some(file_name),
+                }
+            )
+            if course_id == "course" && file_name == "file"
         ));
     }
     #[test]
@@ -483,26 +469,32 @@ mod tests {
             "language",
         ]);
         let command = Command::parse_command(pargs).unwrap();
-        assert!(matches!(command, Command::Template(
-        Template {
-            course_id: Some(course_id),
-            task_id: Some(task_id),
-            language: Some(language),
-            file_name: None,
-        }) if course_id == "course" && task_id == 123 && language == "language"
+        assert!(matches!(command,
+            Command::Template(
+                Some(Scope::Course(course_id)),
+                Template {
+                    task_id: Some(task_id),
+                    language: Some(language),
+                    file_name: None,
+                }
+            )
+            if course_id == "course" && task_id == 123 && language == "language"
         ));
     }
     #[test]
     fn command_template_works_with_long_parameters_file_name() {
         let pargs = to_pargs(&["template", "--file", "file"]);
         let command = Command::parse_command(pargs).unwrap();
-        assert!(matches!(command, Command::Template(
-        Template {
-            course_id: None,
-            task_id: None,
-            language: None,
-            file_name: Some(file_name),
-        }) if file_name == "file"
+        assert!(matches!(command,
+            Command::Template(
+                None,
+                Template {
+                    task_id: None,
+                    language: None,
+                    file_name: Some(file_name),
+                }
+            )
+            if file_name == "file"
         ));
     }
     #[test]
@@ -520,7 +512,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submissions(Some(course), 140)
+            Command::Submissions(Some(Scope::Course(course)), 140)
             if course == "alon"
         ));
     }

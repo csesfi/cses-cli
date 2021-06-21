@@ -31,7 +31,7 @@ impl StorageData {
         self.token.as_deref()
     }
     pub fn get_scope(&self) -> Option<Scope> {
-        self.scope.and_then(|s| s.parse().ok())
+        self.scope.as_ref().and_then(|s| s.parse().ok())
     }
     pub fn set_token(&mut self, val: String) {
         self.token = Some(val);
@@ -108,6 +108,9 @@ mod tests {
         storage_data.set_token(String::from("token"));
         storage_data.set_scope(Scope::Course(String::from("course")));
         assert_eq!(String::from("token"), storage_data.get_token().unwrap());
-        assert_eq!(Scope::Course(String::from("course")), storage_data.get_scope().unwrap());
+        assert_eq!(
+            Scope::Course(String::from("course")),
+            storage_data.get_scope().unwrap()
+        );
     }
 }

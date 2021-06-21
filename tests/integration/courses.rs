@@ -49,7 +49,7 @@ fn can_see_the_hidden_course_when_logged_in() {
 #[distributed_slice(TESTS)]
 fn all_course_section_headers_are_displayed() {
     command()
-        .args(&["course", "teku"])
+        .args(&["list", "-c", "teku"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)info"))
@@ -60,7 +60,7 @@ fn all_course_section_headers_are_displayed() {
 #[distributed_slice(TESTS)]
 fn course_section_optional_text_is_displayed() {
     command()
-        .args(&["course", "teku"])
+        .args(&["list", "--course", "teku"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)general info"))
@@ -70,7 +70,7 @@ fn course_section_optional_text_is_displayed() {
 #[distributed_slice(TESTS)]
 fn course_item_parameters_are_displayed() {
     command()
-        .args(&["course", "teku"])
+        .args(&["list", "-c", "teku"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)1068"))
@@ -82,7 +82,7 @@ fn course_item_parameters_are_displayed() {
 #[distributed_slice(TESTS)]
 fn task_status_is_none_when_not_logged_in() {
     command()
-        .args(&["course", "teku"])
+        .args(&["list", "-c", "teku"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)-"))
@@ -94,7 +94,7 @@ fn task_status_is_none_when_not_logged_in() {
 fn task_status_is_shown_when_logged_in() {
     log_in();
     command()
-        .args(&["course", "teku"])
+        .args(&["list", "-c", "teku"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)\+"))
@@ -104,7 +104,7 @@ fn task_status_is_shown_when_logged_in() {
 #[distributed_slice(TESTS)]
 fn invalid_course_id_returns_error() {
     command()
-        .args(&["course", "kute"])
+        .args(&["list", "-c", "kute"])
         .assert()
         .failure()
         .stdout(contains("not found"))

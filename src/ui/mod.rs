@@ -56,6 +56,7 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::List(scope) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
+                // TODO: remove match, function should take Scope as a whole
                 match scope {
                     Scope::Course(course) => {
                         courses::list_course_content(self, &course)?;
@@ -66,11 +67,26 @@ impl<R: ResourcesProvider> Ui<R> {
                 }
             }
             Command::Submit(scope, submit) => {
-                let submission_info = submit::submit(self, submit)?;
+                let scope = service::select_scope(&mut self.res, scope)?;
+                let course = match scope {
+                    Scope::Course(course) => course,
+                    Scope::Contest(_) => {
+                        return Err(anyhow!("Contest listing not yet implemented"));
+                    }
+                };
+                let submission_info = submit::submit(self, course, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
             }
             Command::Template(scope, template) => {
-                template::get_template(self, template)?;
+                let scope = service::select_scope(&mut self.res, scope)?;
+                match scope {
+                    Scope::Course(course) => {
+                        template::get_template(self, course, template)?;
+                    }
+                    Scope::Contest(_) => {
+                        return Err(anyhow!("Contest templates not yet implemented"));
+                    }
+                }
             }
             Command::Submissions(scope, task_id) => {
                 service::select_scope(&mut self.res, scope)?;
