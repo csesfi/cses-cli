@@ -8,10 +8,12 @@ fn submission_list_contains_all_fields_with_content() {
         .assert()
         .success()
         .stdout(regex_match(r"(?i)ID"))
+        .stdout(regex_match(r"(?i)1234567"))
         .stdout(regex_match(r"(?i)time"))
         .stdout(regex_match(r"(?i)lang"))
         .stdout(regex_match(r"(?i)code time"))
         .stdout(regex_match(r"(?i)code size"))
+        .stdout(regex_match(r"(?i)1000"))
         .stdout(regex_match(r"(?i)result"))
         .stderr(predicate::str::is_empty());
 }
@@ -24,10 +26,12 @@ fn submission_list_does_not_contain_fields_with_no_content() {
         .assert()
         .success()
         .stdout(regex_match(r"(?i)ID"))
+        .stdout(regex_match(r"(?i)1234567"))
         .stdout(regex_match(r"(?i)time"))
         .stdout(regex_match(r"(?i)lang"))
         .stdout(regex_match(r"(?i)code time")) // Should be missing
         .stdout(regex_match(r"(?i)code size").not())
+        .stdout(regex_match(r"(?i)1000").not())
         .stdout(regex_match(r"(?i)result"))
         .stderr(predicate::str::is_empty());
 }
@@ -40,10 +44,12 @@ fn if_submission_list_is_empty_show_message() {
         .assert()
         .success()
         .stdout(regex_match(r"(?i)ID").not())
+        .stdout(regex_match(r"(?i)1234567").not())
         .stdout(regex_match(r"(?i)time").not())
         .stdout(regex_match(r"(?i)lang").not())
         .stdout(regex_match(r"(?i)code time").not())
         .stdout(regex_match(r"(?i)code size").not())
+        .stdout(regex_match(r"(?i)1000").not())
         .stdout(regex_match(r"(?i)result").not())
         .stdout(regex_match(r"(?i)No submissions"))
         .stderr(predicate::str::is_empty());
