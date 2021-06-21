@@ -1,15 +1,15 @@
 use crate::command;
-use crate::entities::{TemplateParameters, TemplateResponse};
+use crate::entities::{Scope, TemplateParameters, TemplateResponse};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
 pub fn create_template_parameters(
     _res: &mut Resources<impl RP>,
-    course_id: String,
+    scope: Scope,
     parameters: command::Template,
 ) -> Result<TemplateParameters> {
     Ok(TemplateParameters {
-        course: course_id,
+        scope,
         file: parameters.file_name,
         task: parameters.task_id,
         language: parameters.language,
@@ -24,7 +24,7 @@ pub fn get_template(
         let token = res.storage.get().get_token();
         Ok(res.api.get_template(
             token,
-            &parameters.course,
+            &parameters.scope,
             parameters.task,
             parameters.language.as_deref(),
             parameters.file.as_deref(),

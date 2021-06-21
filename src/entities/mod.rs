@@ -35,9 +35,17 @@ pub struct SubmissionInfo {
     pub pending: bool,
     pub test_progress: Option<TestProgress>,
     pub result: Option<String>,
+    pub feedback: Option<Vec<SubtaskInfo>>,
     pub tests: Option<Vec<SubmissionTestInfo>>,
     pub compiler: Option<String>,
     pub test_report: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubtaskInfo {
+    pub number: u64,
+    pub verdict: String,
+    pub score: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -45,6 +53,7 @@ pub struct SubmissionTestInfo {
     pub number: u64,
     pub verdict: String,
     pub time: Option<u64>,
+    pub group: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -59,9 +68,9 @@ pub struct TaskOutline {
     pub name: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug)]
 pub struct SubmitParameters {
-    pub course: String,
+    pub scope: Scope,
     pub file: String,
     pub task: Option<u64>,
     pub language: Language,
@@ -69,7 +78,7 @@ pub struct SubmitParameters {
 
 #[derive(Debug)]
 pub struct TemplateParameters {
-    pub course: String,
+    pub scope: Scope,
     pub task: Option<u64>,
     pub language: Option<String>,
     pub file: Option<String>,
@@ -99,7 +108,8 @@ pub struct SubmissionListingInfo {
     pub language: Language,
     pub code_time: Option<u64>,
     pub size: Option<u64>,
-    pub result: CourseTaskStatus,
+    pub result: Option<CourseTaskStatus>,
+    pub score: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]

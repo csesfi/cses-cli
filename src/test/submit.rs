@@ -17,8 +17,11 @@ fn submit_parameters_passed_through() -> Result<()> {
         },
         file_name: "submission.py".to_string(),
     };
-    let submit_params =
-        service::create_submit_parameters(&mut fake_resources, "crs".to_owned(), submit)?;
+    let submit_params = service::create_submit_parameters(
+        &mut fake_resources,
+        Scope::Course("crs".to_owned()),
+        submit,
+    )?;
     assert_eq!(submit_params.file, "submission.py");
 
     Ok(())
@@ -30,9 +33,9 @@ fn submit_mock() -> Result<()> {
     fake_resources
         .api
         .expect_submit_task()
-        .withf(|token, course_id, task_id, submission| {
+        .withf(|token, scope, task_id, submission| {
             token == "gnewwoiJ"
-                && course_id == "crs"
+                && unwrap_scope(scope) == "crs"
                 && *task_id == Some(3)
                 && submission.language.name == Some("Python".to_string())
                 && submission.filename == "extracted_filename"
@@ -49,7 +52,7 @@ fn submit_mock() -> Result<()> {
     storage_data.set_scope(Scope::Course("crs".to_string()));
     fake_resources.storage.data = storage_data;
     let submit_params = SubmitParameters {
-        course: "crs".to_owned(),
+        scope: Scope::Course("crs".to_owned()),
         file: "extracted_filename".to_owned(),
         task: Some(3),
         language: Language {
@@ -60,4 +63,11 @@ fn submit_mock() -> Result<()> {
     let submission_response = service::submit(&mut fake_resources, submit_params)?;
     assert_eq!(submission_response.id, 17);
     Ok(())
+}
+
+fn unwrap_scope(scope: &Scope) -> String {
+    match scope {
+        Scope::Course(course_id) => course_id.to_string(),
+        Scope::Contest(contest_id) => format!("{}", contest_id),
+    }
 }

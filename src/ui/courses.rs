@@ -1,5 +1,5 @@
 use crate::{
-    entities::{CourseItem, CourseItemRaw, CourseTaskStatus},
+    entities::{CourseItem, CourseItemRaw, CourseTaskStatus, Scope},
     service,
     ui::table::{Table, TableAlign, TableCell},
     RP,
@@ -25,8 +25,8 @@ pub fn list_courses(ui: &mut Ui<impl RP>) -> Result<()> {
     Ok(())
 }
 
-pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> {
-    let course = service::course_content(&mut ui.res, course_id)?;
+pub fn list_content(ui: &mut Ui<impl RP>, scope: &Scope) -> Result<()> {
+    let course = service::course_content(&mut ui.res, scope)?;
 
     if course.sections.is_empty() {
         return Ok(writeln!(ui.term, "No course content!")?);
@@ -76,7 +76,7 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
-                    TableCell::styled(styled_task_status(status)),
+                    TableCell::styled(styled_task_status(Some(status))),
                     TableCell::from(link),
                 ]);
             }
@@ -85,10 +85,11 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
     Ok(table)
 }
 
-pub fn styled_task_status(status: CourseTaskStatus) -> StyledObject<&'static str> {
+pub fn styled_task_status(status: Option<CourseTaskStatus>) -> StyledObject<&'static str> {
     match status {
-        CourseTaskStatus::Pass => style("+").green(),
-        CourseTaskStatus::Fail => style("X").red(),
-        CourseTaskStatus::None => style("-").dim(),
+        Some(CourseTaskStatus::Pass) => style("+").green(),
+        Some(CourseTaskStatus::Fail) => style("X").red(),
+        Some(CourseTaskStatus::None) => style("-").dim(),
+        None => style("-").dim(),
     }
 }

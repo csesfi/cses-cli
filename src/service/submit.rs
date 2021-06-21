@@ -7,11 +7,11 @@ use anyhow::{Context, Result};
 
 pub fn create_submit_parameters(
     _res: &mut Resources<impl RP>,
-    course_id: String,
+    scope: Scope,
     parameters: command::Submit,
 ) -> Result<SubmitParameters> {
     Ok(SubmitParameters {
-        course: course_id,
+        scope,
         file: parameters.file_name,
         task: parameters.task_id,
         language: parameters.language,
@@ -24,7 +24,7 @@ pub fn submit(
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         require_login(res)?;
-        let course_id = submit_parameters.course;
+        let scope = submit_parameters.scope;
         let task_id = submit_parameters.task;
         let content = res.filesystem.get_file(&submit_parameters.file)?;
         let filename = res.filesystem.get_file_name(&submit_parameters.file)?;
@@ -36,7 +36,7 @@ pub fn submit(
         };
         Ok(res
             .api
-            .submit_task(require_login(res)?, &course_id, task_id, &submission)?)
+            .submit_task(require_login(res)?, &scope, task_id, &submission)?)
     })()
     .context("Failed submitting file")
 }
@@ -48,14 +48,13 @@ pub fn submission_info(
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         let storage = res.storage.get();
-        // FIXME
-        let course_id = match storage.get_scope() {
-            Some(Scope::Course(course)) => course,
+        let scope = match storage.get_scope() {
+            Some(scope) => scope,
             _ => panic!(),
         };
         Ok(res
             .api
-            .get_submit(require_login(res)?, &course_id, submission_id, poll)?)
+            .get_submit(require_login(res)?, &scope, submission_id, poll)?)
     })()
     .context("Failed querying submission status from the server")
 }
@@ -66,14 +65,13 @@ pub fn submission_list(
 ) -> Result<Vec<SubmissionListingInfo>> {
     (|| -> Result<_> {
         let storage = res.storage.get();
-        // FIXME
-        let course_id = match storage.get_scope() {
-            Some(Scope::Course(course)) => course,
+        let scope = match storage.get_scope() {
+            Some(scope) => scope,
             _ => panic!(),
         };
         let response = res
             .api
-            .get_submit_list(require_login(res)?, &course_id, task_id)?;
+            .get_submit_list(require_login(res)?, &scope, task_id)?;
         Ok(response.submissions)
     })()
     .context("Failed querying submissions from the server")

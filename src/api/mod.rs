@@ -1,6 +1,6 @@
 mod escape;
 use crate::entities::{
-    CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, TemplateResponse,
+    CourseContent, CourseList, Language, Scope, SubmissionInfo, SubmissionList, TemplateResponse,
     UserOutline,
 };
 use escape::Escape;
@@ -56,34 +56,30 @@ pub trait CsesApi {
     fn submit_task(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         task_id: Option<u64>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo>;
     fn get_submit(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
     fn get_submit_list(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         task_id: u64,
     ) -> ApiResult<SubmissionList>;
     #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
-    fn get_course_content<'a>(
-        &self,
-        token: Option<&'a str>,
-        course_id: &str,
-    ) -> ApiResult<CourseContent>;
+    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<CourseContent>;
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
-        course_id: &str,
+        scope: &Scope,
         task_id: Option<u64>,
         language: Option<&'a str>,
         file: Option<&'a str>,
@@ -117,15 +113,20 @@ impl CsesApi for CsesHttpApi {
     fn submit_task(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         task_id: Option<u64>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo> {
-        let mut request = minreq::post(format!(
-            "{}/courses/{}/submissions",
-            self.url,
-            Escape(course_id)
-        ))
+        let mut request = match scope {
+            Scope::Course(course_id) => minreq::post(format!(
+                "{}/courses/{}/submissions",
+                self.url,
+                Escape(&course_id),
+            )),
+            Scope::Contest(contest_id) => {
+                minreq::post(format!("{}/contests/{}/submissions", self.url, contest_id,))
+            }
+        }
         .with_body(json::to_string(submission))
         .with_header("X-Auth-Token", token)
         .with_header("Content-Type", "application/json");
@@ -143,17 +144,24 @@ impl CsesApi for CsesHttpApi {
     fn get_submit(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "true" } else { "false" };
-        let response = minreq::get(format!(
-            "{}/courses/{}/submissions/{}",
-            self.url,
-            Escape(course_id),
-            submission_id
-        ))
+
+        let response = match scope {
+            Scope::Course(course_id) => minreq::get(format!(
+                "{}/courses/{}/submissions/{}",
+                self.url,
+                Escape(course_id),
+                submission_id
+            )),
+            Scope::Contest(contest_id) => minreq::get(format!(
+                "{}/contests/{}/submissions/{}",
+                self.url, contest_id, submission_id
+            )),
+        }
         .with_header("X-Auth-Token", token)
         .with_param("poll", poll)
         .send()?;
@@ -165,14 +173,19 @@ impl CsesApi for CsesHttpApi {
     fn get_submit_list(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         task_id: u64,
     ) -> ApiResult<SubmissionList> {
-        let response = minreq::get(format!(
-            "{}/courses/{}/submissions",
-            self.url,
-            Escape(course_id)
-        ))
+        let response = match scope {
+            Scope::Course(course_id) => minreq::get(format!(
+                "{}/courses/{}/submissions",
+                self.url,
+                Escape(course_id)
+            )),
+            Scope::Contest(contest_id) => {
+                minreq::get(format!("{}/contests/{}/submissions", self.url, contest_id))
+            }
+        }
         .with_header("X-Auth-Token", token)
         .with_param("task", task_id.to_string())
         .send()?;
@@ -200,12 +213,15 @@ impl CsesApi for CsesHttpApi {
         }
     }
 
-    fn get_course_content<'a>(
-        &self,
-        token: Option<&'a str>,
-        course_id: &str,
-    ) -> ApiResult<CourseContent> {
-        let mut request = minreq::get(format!("{}/courses/{}/list", self.url, course_id));
+    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<CourseContent> {
+        let mut request = match scope {
+            Scope::Course(course_id) => {
+                minreq::get(format!("{}/courses/{}/list", self.url, Escape(course_id)))
+            }
+            Scope::Contest(contest_id) => {
+                minreq::get(format!("{}/contests/{}/list", self.url, contest_id))
+            }
+        };
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
@@ -218,16 +234,21 @@ impl CsesApi for CsesHttpApi {
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
-        course_id: &str,
+        scope: &Scope,
         task_id: Option<u64>,
         language: Option<&'a str>,
         file_name: Option<&'a str>,
     ) -> ApiResult<TemplateResponse> {
-        let mut request = minreq::get(format!(
-            "{}/courses/{}/templates",
-            self.url,
-            Escape(course_id)
-        ));
+        let mut request = match scope {
+            Scope::Course(course_id) => minreq::get(format!(
+                "{}/courses/{}/templates",
+                self.url,
+                Escape(course_id)
+            )),
+            Scope::Contest(contest_id) => {
+                minreq::get(format!("{}/contests/{}/templates", self.url, contest_id))
+            }
+        };
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }

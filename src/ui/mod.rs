@@ -12,7 +12,6 @@ use console::{Style, Term};
 
 use crate::api::ApiError;
 use crate::command::{HELP_STR, LANGUAGE_HINT, NO_COMMAND_PROVIDED_HINT, TASK_HINT};
-use crate::entities::Scope;
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider, RP};
 
@@ -56,37 +55,16 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::List(scope) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                // TODO: remove match, function should take Scope as a whole
-                match scope {
-                    Scope::Course(course) => {
-                        courses::list_course_content(self, &course)?;
-                    }
-                    Scope::Contest(_) => {
-                        return Err(anyhow!("Contest listing not yet implemented"));
-                    }
-                }
+                courses::list_content(self, &scope)?;
             }
             Command::Submit(scope, submit) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                let course = match scope {
-                    Scope::Course(course) => course,
-                    Scope::Contest(_) => {
-                        return Err(anyhow!("Contest listing not yet implemented"));
-                    }
-                };
-                let submission_info = submit::submit(self, course, submit)?;
+                let submission_info = submit::submit(self, scope, submit)?;
                 submission::print_submission_info(self, submission_info, true)?;
             }
             Command::Template(scope, template) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                match scope {
-                    Scope::Course(course) => {
-                        template::get_template(self, course, template)?;
-                    }
-                    Scope::Contest(_) => {
-                        return Err(anyhow!("Contest templates not yet implemented"));
-                    }
-                }
+                template::get_template(self, scope, template)?;
             }
             Command::Submissions(scope, task_id) => {
                 service::select_scope(&mut self.res, scope)?;

@@ -1,7 +1,7 @@
 mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
 use crate::entities::{
-    CourseContent, CourseList, SubmissionInfo, SubmissionList, TemplateResponse, UserOutline,
+    CourseContent, CourseList, Scope, SubmissionInfo, SubmissionList, TemplateResponse, UserOutline,
 };
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
@@ -25,7 +25,7 @@ impl CsesApi for FakeCsesApi {
     fn submit_task(
         &self,
         _token: &str,
-        _course_id: &str,
+        _scope: &Scope,
         _task_id: Option<u64>,
         _submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo> {
@@ -35,7 +35,7 @@ impl CsesApi for FakeCsesApi {
     fn get_submit(
         &self,
         _token: &str,
-        _course_id: &str,
+        _scope: &Scope,
         _submission_id: u64,
         _poll: bool,
     ) -> ApiResult<SubmissionInfo> {
@@ -45,7 +45,7 @@ impl CsesApi for FakeCsesApi {
     fn get_submit_list(
         &self,
         _token: &str,
-        _course_id: &str,
+        _scope: &Scope,
         _task_id: u64,
     ) -> ApiResult<SubmissionList> {
         todo!()
@@ -58,7 +58,7 @@ impl CsesApi for FakeCsesApi {
     fn get_template<'a>(
         &self,
         _token: Option<&'a str>,
-        _course_id: &str,
+        _scope: &Scope,
         _task_id: Option<u64>,
         _language: Option<&'a str>,
         _file: Option<&'a str>,
@@ -66,11 +66,7 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_course_content<'a>(
-        &self,
-        _token: Option<&'a str>,
-        _course_id: &str,
-    ) -> ApiResult<CourseContent> {
+    fn get_content<'a>(&self, _token: Option<&'a str>, _scope: &Scope) -> ApiResult<CourseContent> {
         todo!()
     }
 }

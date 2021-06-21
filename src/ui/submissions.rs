@@ -37,6 +37,7 @@ pub fn list(ui: &mut Ui<impl RP>, task_id: u64) -> Result<()> {
             // JSON and it being null can't be distinguished with miniserde
             format_code_time(submission.code_time).into(),
             TableCell::optional(submission.size),
+            // FIXME: unwrap
             TableCell::styled(styled_task_status(submission.result)).align(TableAlign::Center),
         ]);
     }
