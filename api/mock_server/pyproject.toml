@@ -7,6 +7,7 @@ authors = ["Kalle Luopajärvi <kalle.luopajarvi@helsinki.fi>"]
 [tool.poetry.dependencies]
 python = "^3.6"
 connexion = "^2.7.0"
+prance = "^0.21.2"
 
 [tool.poetry.dev-dependencies]
 

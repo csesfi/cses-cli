@@ -6,6 +6,9 @@ import time
 
 import base64
 import connexion
+import prance
+
+from pathlib import Path
 
 from connexion import NoContent
 from connexion import RestyResolver
@@ -66,7 +69,7 @@ def logout_post(token_info):
     return (NoContent, 204)
 
 
-def submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
+def courses_submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
 
     details = connexion.request.json
     try:
@@ -93,7 +96,11 @@ def submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
     return (submission_info, 200)
 
 
-def get_submission(token_info, course_id, submission_id, poll=False):
+def contests_submissions_post(token_info, contest_id, task=constants.DEFAULT_TASK):
+    pass
+
+
+def courses_get_submission(token_info, course_id, submission_id, poll=False):
     print(f"get submit: {token_info}")
     print(f"course_id: {course_id}")
     print(f"submission_id: {submission_id}")
@@ -108,7 +115,11 @@ def get_submission(token_info, course_id, submission_id, poll=False):
                  "code": "client_error"}, 404)
     return (submission_info, 200)
 
-def get_submission_list(token_info, course_id, task):
+def contests_get_submission(token_info, contest_id, submission_id, poll=False):
+    pass
+
+
+def courses_get_submission_list(token_info, course_id, task):
     print(f"token_info: {token_info}")
     print(f"course_id: {course_id}")
     print(f"task_id: {task}")
@@ -138,6 +149,10 @@ def get_submission_list(token_info, course_id, task):
             "result": "fail"
         }
     ]}, 200)
+
+
+def contests_get_submission_list(token_info, contest_id, task):
+    pass
 
 
 def get_courses(token_info):
@@ -174,14 +189,21 @@ def get_course_content(token_info, course_id):
     ]}, 200)
 
 
+def get_contest_content(token_info, contest_id):
+    pass
 
-def get_template(token_info, course_id, task=None, language=None, filename=None):
+
+def courses_get_template(token_info, course_id, task=None, language=None, filename=None):
     has_token = (token_info != {})
     t = Template(has_token, course_id, task, language, filename)
     if t in TEMPLATES:
         return (TEMPLATES[t], 200)
 
     return ({"message": "Template not found", "code": "client_error"}, 400)
+
+
+def contests_get_template(token_info, contest_id, task=None, language=None, filename=None):
+    pass
 
 
 def apikey_auth(apikey, required_scopes=None):
@@ -217,9 +239,14 @@ def render_method_not_allowed(exception):
     return ({"message": "Invalid HTTP method", "code": "client_error"}, 405)
 
 
+def combine_specs(file):
+    parser = prance.ResolvingParser(str(file.absolute()), lazy=True, strict=True)
+    parser.parse()
+    return parser.specification
+
 APP.add_error_handler(BadRequestProblem, render_invalid_query)
 APP.add_error_handler(Unauthorized, render_api_authentication_failed)
 APP.add_error_handler(MethodNotAllowed, render_method_not_allowed)
-APP.add_api("openapi.yaml", validate_responses=True,
+APP.add_api(combine_specs(Path("../openapi.yaml")), validate_responses=True,
             resolver=RestyResolver('api'))
 APP.run(host="127.0.0.1", port=4011 if constants.INTEGRATION else 4010)
