@@ -68,14 +68,8 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::Submit(scope, submit) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                let course = match scope {
-                    Scope::Course(course) => course,
-                    Scope::Contest(_) => {
-                        return Err(anyhow!("Contest listing not yet implemented"));
-                    }
-                };
-                let submission_info = submit::submit(self, course, submit)?;
-                submission::print_submission_info(self, submission_info, true)?;
+                let submission_info = submit::submit(self, &scope, submit)?;
+                submission::print_submission_info(self, &scope, submission_info, true)?;
             }
             Command::Template(scope, template) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
@@ -89,14 +83,14 @@ impl<R: ResourcesProvider> Ui<R> {
                 }
             }
             Command::Submissions(scope, task_id) => {
-                service::select_scope(&mut self.res, scope)?;
-                submissions::list(self, task_id)?;
+                let scope = service::select_scope(&mut self.res, scope)?;
+                submissions::list(self, &scope, task_id)?;
             }
             Command::Submission(scope, submission_id) => {
-                service::select_scope(&mut self.res, scope)?;
+                let scope = service::select_scope(&mut self.res, scope)?;
                 let submission_info =
-                    service::submission_info(&mut self.res, submission_id, false)?;
-                submission::print_submission_info(self, submission_info, false)?;
+                    service::submission_info(&mut self.res, &scope, submission_id, false)?;
+                submission::print_submission_info(self, &scope, submission_info, false)?;
             }
             _ => {
                 return Err(anyhow!("Command not yet implemented"));

@@ -2,16 +2,21 @@ use super::require_login;
 use crate::api::CodeSubmit;
 use crate::command;
 use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters};
-use crate::{CsesApi, Filesystem, Resources, Storage, RP};
+use crate::{CsesApi, Filesystem, Resources, RP};
 use anyhow::{Context, Result};
 
 pub fn create_submit_parameters(
     _res: &mut Resources<impl RP>,
-    course_id: String,
+    scope: &Scope,
     parameters: command::Submit,
 ) -> Result<SubmitParameters> {
+    // FIXME
+    let course = match scope {
+        Scope::Course(course) => course,
+        _ => panic!(),
+    };
     Ok(SubmitParameters {
-        course: course_id,
+        course: course.to_string(),
         file: parameters.file_name,
         task: parameters.task_id,
         language: parameters.language,
@@ -43,14 +48,14 @@ pub fn submit(
 
 pub fn submission_info(
     res: &mut Resources<impl RP>,
+    scope: &Scope,
     submission_id: u64,
     poll: bool,
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
-        let storage = res.storage.get();
         // FIXME
-        let course_id = match storage.get_scope() {
-            Some(Scope::Course(course)) => course,
+        let course_id = match scope {
+            Scope::Course(course) => course,
             _ => panic!(),
         };
         Ok(res
@@ -62,13 +67,13 @@ pub fn submission_info(
 
 pub fn submission_list(
     res: &mut Resources<impl RP>,
+    scope: &Scope,
     task_id: u64,
 ) -> Result<Vec<SubmissionListingInfo>> {
     (|| -> Result<_> {
-        let storage = res.storage.get();
         // FIXME
-        let course_id = match storage.get_scope() {
-            Some(Scope::Course(course)) => course,
+        let course_id = match scope {
+            Scope::Course(course) => course,
             _ => panic!(),
         };
         let response = res
