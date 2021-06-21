@@ -4,10 +4,12 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 
+use crate::entities::Scope;
+
 #[derive(Default, Serialize, Deserialize, Debug)]
 pub struct StorageData {
     token: Option<String>,
-    course: Option<String>,
+    scope: Option<String>,
 }
 
 #[cfg(unix)]
@@ -28,14 +30,14 @@ impl StorageData {
     pub fn get_token(&self) -> Option<&str> {
         self.token.as_deref()
     }
-    pub fn get_course(&self) -> Option<&str> {
-        self.course.as_deref()
+    pub fn get_scope(&self) -> Option<Scope> {
+        self.scope.as_ref().and_then(|s| s.parse().ok())
     }
     pub fn set_token(&mut self, val: String) {
         self.token = Some(val);
     }
-    pub fn set_course(&mut self, val: String) {
-        self.course = Some(val);
+    pub fn set_scope(&mut self, val: Scope) {
+        self.scope = Some(val.to_string());
     }
 }
 
@@ -104,8 +106,11 @@ mod tests {
     fn setters_and_getters_work() {
         let mut storage_data: StorageData = Default::default();
         storage_data.set_token(String::from("token"));
-        storage_data.set_course(String::from("course"));
+        storage_data.set_scope(Scope::Course(String::from("course")));
         assert_eq!(String::from("token"), storage_data.get_token().unwrap());
-        assert_eq!(String::from("course"), storage_data.get_course().unwrap());
+        assert_eq!(
+            Scope::Course(String::from("course")),
+            storage_data.get_scope().unwrap()
+        );
     }
 }

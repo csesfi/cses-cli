@@ -1,15 +1,15 @@
 use super::require_login;
 use crate::api::CodeSubmit;
 use crate::command;
-use crate::entities::{SubmissionInfo, SubmissionListingInfo, SubmitParameters};
+use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
 pub fn create_submit_parameters(
-    res: &mut Resources<impl RP>,
+    _res: &mut Resources<impl RP>,
+    course_id: String,
     parameters: command::Submit,
 ) -> Result<SubmitParameters> {
-    let course_id = super::select_course(res, parameters.course_id)?;
     Ok(SubmitParameters {
         course: course_id,
         file: parameters.file_name,
@@ -48,10 +48,14 @@ pub fn submission_info(
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         let storage = res.storage.get();
-        let course_id = storage.get_course().unwrap();
+        // FIXME
+        let course_id = match storage.get_scope() {
+            Some(Scope::Course(course)) => course,
+            _ => panic!(),
+        };
         Ok(res
             .api
-            .get_submit(require_login(res)?, course_id, submission_id, poll)?)
+            .get_submit(require_login(res)?, &course_id, submission_id, poll)?)
     })()
     .context("Failed querying submission status from the server")
 }
@@ -62,10 +66,14 @@ pub fn submission_list(
 ) -> Result<Vec<SubmissionListingInfo>> {
     (|| -> Result<_> {
         let storage = res.storage.get();
-        let course_id = storage.get_course().unwrap();
+        // FIXME
+        let course_id = match storage.get_scope() {
+            Some(Scope::Course(course)) => course,
+            _ => panic!(),
+        };
         let response = res
             .api
-            .get_submit_list(require_login(res)?, course_id, task_id)?;
+            .get_submit_list(require_login(res)?, &course_id, task_id)?;
         Ok(response.submissions)
     })()
     .context("Failed querying submissions from the server")

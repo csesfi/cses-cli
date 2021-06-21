@@ -1,5 +1,7 @@
 mod course;
 pub use course::*;
+mod scope;
+pub use scope::*;
 
 use miniserde::{Deserialize, Serialize};
 
