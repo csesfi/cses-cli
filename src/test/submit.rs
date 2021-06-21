@@ -18,7 +18,7 @@ fn submit_parameters_passed_through() -> Result<()> {
         file_name: "submission.py".to_string(),
     };
     let submit_params =
-        service::create_submit_parameters(&mut fake_resources, "crs".to_owned(), submit)?;
+        service::create_submit_parameters(&mut fake_resources, &Scope::Course("crs".to_string()), submit)?;
     assert_eq!(submit_params.file, "submission.py");
 
     Ok(())
