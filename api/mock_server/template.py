@@ -1,4 +1,6 @@
 import base64
+
+
 class Template:
     def __init__(self, has_token, course_id, task_id, language, file):
         self.has_token = has_token
@@ -15,15 +17,29 @@ class Template:
             and self.file == other.file
 
     def __hash__(self):
-        return hash((self.has_token, self.course_id, self.task_id, \
-            self.language, self.file))
+        return hash((self.has_token, self.course_id, self.task_id,
+                     self.language, self.file))
 
-def _to_b64(s):
-    return base64.b64encode(s.encode()).decode()
+
+def _to_b64(string):
+    return base64.b64encode(string.encode()).decode()
+
 
 TEMPLATES = {
-    Template(True, "cses", None, None, None): {"template_source": _to_b64("code1"), "filename": "code1"},
-    Template(False, "cses", 1, "Rust", None): {"template_source": _to_b64("rust1"), "filename": "rust1.rs"},
-    Template(True, "cses", 1, "Rust", None): {"template_source": _to_b64("rust2"), "filename": "rust2.rs"},
-    Template(False, "cses", None, None, "rust3.rs"): {"template_source": _to_b64("rust3"), "filename": "rust3.rs"}
+    Template(True, "cses", None, None, None): {
+        "template_source": _to_b64("code1"),
+        "filename": "code1"
+    },
+    Template(False, "cses", 1, "Rust", None): {
+        "template_source": _to_b64("rust1"),
+        "filename": "rust1.rs"
+    },
+    Template(True, "cses", 1, "Rust", None): {
+        "template_source": _to_b64("rust2"),
+        "filename": "rust2.rs"
+    },
+    Template(False, "cses", None, None, "rust3.rs"): {
+        "template_source": _to_b64("rust3"),
+        "filename": "rust3.rs"
+    }
 }
