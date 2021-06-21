@@ -238,11 +238,6 @@ CourseSubmissionInfo:
         The compiler report in case of COMPILE ERROR or just some warnings
         from the compiler.
 
-ContestSubmissionResult:
-  type: integer
-  description: >
-    The number of points for the submission.
-
 ContestSubmissionInfo:
   additionalProperties: false
   required:
@@ -285,7 +280,7 @@ ContestSubmissionInfo:
         > An optional property describing the progress of the testing phase.
       $ref: "schemas.yaml#/TestProgress"
     result:
-      $ref: "schemas.yaml#/ContestSubmissionResult"
+      $ref: "schemas.yaml#/ContestTaskSubmissionStatus"
     test_report:
       type: string
       description: >
@@ -527,7 +522,7 @@ CourseTask:
       description: >
         A link to the task's info page.
     status:
-      $ref: "schemas.yaml#/CourseTaskStatus"
+      $ref: "schemas.yaml#/CourseTaskSubmissionStatus"
 
 ContestTask:
   additionalProperties: false
@@ -555,9 +550,9 @@ ContestTask:
       description: >
         A link to the task's info page.
     status:
-      $ref: "schemas.yaml#/ContestTaskStatus"
+      $ref: "schemas.yaml#/ContestTaskSubmissionStatus"
 
-CourseTaskStatus:
+CourseTaskSubmissionStatus:
   type: string
   enum:
     - none
@@ -566,10 +561,10 @@ CourseTaskStatus:
   description: >
     Status of a task or submission. Value is one of "none", "pass" or "fail".
 
-ContestTaskStatus:
+ContestTaskSubmissionStatus:
   type: integer
   description: >
-    The number of points for the best submission.
+    Status of a task or submission. The number of points.
 
 CourseSubmissionList:
   additionalProperties: false
@@ -610,7 +605,7 @@ CourseSubmissionList:
             description: >
               Code size in chars.
           result:
-            $ref: "schemas.yaml#/CourseTaskStatus"
+            $ref: "schemas.yaml#/CourseTaskSubmissionStatus"
 
 ContestSubmissionList:
   additionalProperties: false
@@ -651,4 +646,4 @@ ContestSubmissionList:
             description: >
               Code size in chars.
           result:
-            $ref: "schemas.yaml#/ContestSubmissionResult"
+            $ref: "schemas.yaml#/ContestTaskSubmissionStatus"
