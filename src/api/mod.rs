@@ -117,19 +117,10 @@ impl CsesApi for CsesHttpApi {
         task_id: Option<u64>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo> {
-        let mut request = match scope {
-            Scope::Course(course_id) => minreq::post(format!(
-                "{}/courses/{}/submissions",
-                self.url,
-                Escape(&course_id),
-            )),
-            Scope::Contest(contest_id) => {
-                minreq::post(format!("{}/contests/{}/submissions", self.url, contest_id,))
-            }
-        }
-        .with_body(json::to_string(submission))
-        .with_header("X-Auth-Token", token)
-        .with_header("Content-Type", "application/json");
+        let mut request = minreq::post(format_url(&self.url, scope, "submissions"))
+            .with_body(json::to_string(submission))
+            .with_header("X-Auth-Token", token)
+            .with_header("Content-Type", "application/json");
 
         if let Some(task_id) = task_id {
             request = request.with_param("task", task_id.to_string());
@@ -149,19 +140,11 @@ impl CsesApi for CsesHttpApi {
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "true" } else { "false" };
-
-        let response = match scope {
-            Scope::Course(course_id) => minreq::get(format!(
-                "{}/courses/{}/submissions/{}",
-                self.url,
-                Escape(course_id),
-                submission_id
-            )),
-            Scope::Contest(contest_id) => minreq::get(format!(
-                "{}/contests/{}/submissions/{}",
-                self.url, contest_id, submission_id
-            )),
-        }
+        let response = minreq::get(format_url(
+            &self.url,
+            scope,
+            &format!("submissions/{}", submission_id),
+        ))
         .with_header("X-Auth-Token", token)
         .with_param("poll", poll)
         .send()?;
@@ -176,19 +159,10 @@ impl CsesApi for CsesHttpApi {
         scope: &Scope,
         task_id: u64,
     ) -> ApiResult<SubmissionList> {
-        let response = match scope {
-            Scope::Course(course_id) => minreq::get(format!(
-                "{}/courses/{}/submissions",
-                self.url,
-                Escape(course_id)
-            )),
-            Scope::Contest(contest_id) => {
-                minreq::get(format!("{}/contests/{}/submissions", self.url, contest_id))
-            }
-        }
-        .with_header("X-Auth-Token", token)
-        .with_param("task", task_id.to_string())
-        .send()?;
+        let response = minreq::get(format_url(&self.url, scope, "submissions"))
+            .with_header("X-Auth-Token", token)
+            .with_param("task", task_id.to_string())
+            .send()?;
         check_error(&response)?;
         let response_body: SubmissionList = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -214,14 +188,7 @@ impl CsesApi for CsesHttpApi {
     }
 
     fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<CourseContent> {
-        let mut request = match scope {
-            Scope::Course(course_id) => {
-                minreq::get(format!("{}/courses/{}/list", self.url, Escape(course_id)))
-            }
-            Scope::Contest(contest_id) => {
-                minreq::get(format!("{}/contests/{}/list", self.url, contest_id))
-            }
-        };
+        let mut request = minreq::get(format_url(&self.url, scope, "list"));
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
@@ -239,16 +206,7 @@ impl CsesApi for CsesHttpApi {
         language: Option<&'a str>,
         file_name: Option<&'a str>,
     ) -> ApiResult<TemplateResponse> {
-        let mut request = match scope {
-            Scope::Course(course_id) => minreq::get(format!(
-                "{}/courses/{}/templates",
-                self.url,
-                Escape(course_id)
-            )),
-            Scope::Contest(contest_id) => {
-                minreq::get(format!("{}/contests/{}/templates", self.url, contest_id))
-            }
-        };
+        let mut request = minreq::get(format_url(&self.url, scope, "templates"));
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
@@ -285,6 +243,17 @@ fn check_error(response: &Response) -> ApiResult<()> {
 
 fn successful_response(response: &Response) -> bool {
     (200..300).contains(&response.status_code)
+}
+
+fn format_url(base_url: &str, scope: &Scope, path: &str) -> String {
+    match scope {
+        Scope::Course(course_id) => {
+            format!("{}/courses/{}/{}", base_url, Escape(course_id), path)
+        }
+        Scope::Contest(contest_id) => {
+            format!("{}/contests/{}/{}", base_url, contest_id, path)
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
