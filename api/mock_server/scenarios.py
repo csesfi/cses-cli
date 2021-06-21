@@ -1,5 +1,5 @@
 from submission import SubmissionScenario, submission_progress, \
-                       SubmissionInfo, test_result, test_progress
+    SubmissionInfo, test_result, test_progress
 import constants
 
 SCENARIOS = [
