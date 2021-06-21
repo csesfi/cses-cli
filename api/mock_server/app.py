@@ -106,7 +106,7 @@ def courses_get_submission(token_info, course_id, submission_id, poll=False):
     print(f"submission_id: {submission_id}")
     print(f"poll: {poll}")
     if submission_id == 1 and not poll:
-         return (constants.OLD_SUBMISSION, 200)
+        return (constants.OLD_SUBMISSION, 200)
     if not constants.INTEGRATION and poll:
         time.sleep(1.5)
     submission_info = STATE.get_submission_info(submission_id)
@@ -114,6 +114,7 @@ def courses_get_submission(token_info, course_id, submission_id, poll=False):
         return ({"message": "Submission not found",
                  "code": "client_error"}, 404)
     return (submission_info, 200)
+
 
 def contests_get_submission(token_info, contest_id, submission_id, poll=False):
     pass
@@ -124,31 +125,10 @@ def courses_get_submission_list(token_info, course_id, task):
     print(f"course_id: {course_id}")
     print(f"task_id: {task}")
     if task == 404:
-        return ({"submissions": []}, 200)
-    return ({"submissions": [
-        {
-            "id": 1234567,
-            "time": "2017-07-21T17:32:28Z",
-            "language": {
-                "name": "CPython",
-                "option": None
-            },
-            "code_time": 500,
-            "size": 1000,
-            "result": "pass"
-        },
-        {
-            "id": 7654321,
-            "time": "2020-07-21T17:32:28Z",
-            "language": {
-                "name": "C++",
-                 "option": "C++17"
-            },
-            "code_time": None,
-            "size": 200,
-            "result": "fail"
-        }
-    ]}, 200)
+        return (constants.EMPTY_SUBMISSION_LIST, 200)
+    if task == 2:
+        return (constants.SUBMISSION_LIST_WITH_MISSING_FIELDS, 200)
+    return (constants.SUBMISSION_LIST, 200)
 
 
 def contests_get_submission_list(token_info, contest_id, task):
@@ -193,11 +173,12 @@ def get_contest_content(token_info, contest_id):
     pass
 
 
-def courses_get_template(token_info, course_id, task=None, language=None, filename=None):
+def courses_get_template(token_info, course_id, task=None,
+                         language=None, filename=None):
     has_token = (token_info != {})
-    t = Template(has_token, course_id, task, language, filename)
-    if t in TEMPLATES:
-        return (TEMPLATES[t], 200)
+    template = Template(has_token, course_id, task, language, filename)
+    if template in TEMPLATES:
+        return (TEMPLATES[template], 200)
 
     return ({"message": "Template not found", "code": "client_error"}, 400)
 
