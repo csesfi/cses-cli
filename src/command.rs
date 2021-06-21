@@ -8,10 +8,10 @@ USAGE:
     cses-cli <command> [OPTIONS]
 
 COMMANDS:
-    help                    Print this help message.
+    help                    Display this help message.
     login                   Log in to cses.fi.
     logout                  Invalidate the current login session.
-    status                  Print the login status.
+    status                  Display the login status.
     courses                 Display a list of courses.
     course <course-id>      Display the contents of a course.
     submit [-ctlo] <file>   Submit a file to cses.fi.
