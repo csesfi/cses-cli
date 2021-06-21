@@ -1,0 +1,654 @@
+BaseError:
+  additionalProperties: false
+  required:
+    - message
+    - code
+  type: object
+
+  properties:
+    message:
+      description: Human-readable error message from the server.
+      type: string
+    code:
+      description: Machine-readable error code from the server.
+      type: string
+      enum:
+        - invalid_api_key
+        - pending_api_key
+        - server_error
+        - client_error
+        - task_deduction_error
+        - language_deduction_error
+
+InvalidApiKeyError:
+  allOf:
+    - $ref: "schemas.yaml#/BaseError"
+    - type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - invalid_api_key
+
+PendingApiKeyError:
+  allOf:
+    - $ref: "schemas.yaml#/BaseError"
+    - type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - pending_api_key
+
+ClientError:
+  allOf:
+    - $ref: "schemas.yaml#/BaseError"
+    - type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - client_error
+
+TaskDeductionError:
+  description: >
+    The server failed to find a matching task for the submission.
+  allOf:
+    - $ref: "schemas.yaml#/BaseError"
+    - type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - task_deduction_error
+
+LanguageDeductionError:
+  description: >
+    The server failed to deduce the language of the submission.
+  allOf:
+    - $ref: "schemas.yaml#/BaseError"
+    - type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - language_deduction_error
+
+ServerError:
+  allOf:
+    - $ref: "schemas.yaml#/BaseError"
+    - type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - server_error
+
+Language:
+  additionalProperties: false
+  required:
+    - name
+    - option
+  type: object
+
+  properties:
+    name:
+      type: string
+      nullable: true
+      description: >
+        Name of the language, e.g. "C++", "Haskell", "Python2".
+    option:
+      type: string
+      nullable: true
+      description: >
+        Optional language version specifier, e.g. "CPython" or "PyPy".
+
+TestProgress:
+  additionalProperties: false
+  required:
+    - finished_tests
+    - total_tests
+  type: object
+
+  properties:
+    finished_tests:
+      type: integer
+      minimum: 0
+      description: >
+        The number of finished tests.
+    total_tests:
+      type: integer
+      minimum: 0
+      description: >
+        The total number of tests.
+
+TaskOutline:
+  additionalProperties: false
+  required:
+    - id
+    - name
+  type: object
+
+  properties:
+    id:
+      type: integer
+      description: >
+        Task ID.
+    name:
+      type: string
+      description: >
+        The name of the task.
+
+UserOutline:
+  additionalProperties: false
+  required:
+    - id
+    - username
+  type: object
+
+  properties:
+    id:
+      type: integer
+      description: >
+        User ID.
+    username:
+      type: string
+      description: >
+        Raw username or nickname.
+    displayname:
+      type: string
+      description: >
+        Optional display name. A more descriptive name for external accounts.
+
+CourseSubmissionInfo:
+  additionalProperties: false
+  required:
+    - id
+    - task
+    - sender
+    - time
+    - language
+    - status
+    - pending
+  type: object
+
+  properties:
+    id:
+      type: integer
+      description: >
+        ID of the submission.
+    task:
+      $ref: "schemas.yaml#/TaskOutline"
+    sender:
+      $ref: "schemas.yaml#/UserOutline"
+    time:
+      type: string
+      format: date-time
+      description: >
+        Submission time in ISO 8601 format. (Timezone format has not been decided upon)
+    language:
+      $ref: "schemas.yaml#/Language"
+    status:
+      type: string
+      description: >
+        Status of the submission, e.g. "PENDING" or "READY".
+    pending:
+      type: boolean
+      description: >
+        Whether the submission is still being graded,
+        and the information may change soon.
+    test_progress:
+      description: >
+        > An optional property describing the progress of the testing phase.
+      $ref: "schemas.yaml#/TestProgress"
+    result:
+      type: string
+      description: >
+        Verdict of the submission, e.g. "ACCEPTED".
+    test_report:
+      type: string
+      description: >
+        An optional description of the tests for when more specific
+        information of the tests is not shown to the user. Used at least
+        on the TiRa course.
+    tests:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - number
+          - verdict
+          - time
+        properties:
+          number:
+            type: integer
+            description: Test case number, starting from 1.
+          verdict:
+            type: string
+            description: >
+              Verdict of the test, e.g. "WRONG ANSWER".
+          time:
+            type: integer
+            nullable: true
+            description: Run time of the test in milliseconds.
+    compiler:
+      type: string
+      description: >
+        The compiler report in case of COMPILE ERROR or just some warnings
+        from the compiler.
+
+ContestSubmissionResult:
+  type: integer
+  description: >
+    The number of points for the submission.
+
+ContestSubmissionInfo:
+  additionalProperties: false
+  required:
+    - id
+    - task
+    - sender
+    - time
+    - language
+    - status
+    - pending
+  type: object
+
+  properties:
+    id:
+      type: integer
+      description: >
+        ID of the submission.
+    task:
+      $ref: "schemas.yaml#/TaskOutline"
+    sender:
+      $ref: "schemas.yaml#/UserOutline"
+    time:
+      type: string
+      format: date-time
+      description: >
+        Submission time in ISO 8601 format. (Timezone format has not been decided upon)
+    language:
+      $ref: "schemas.yaml#/Language"
+    status:
+      type: string
+      description: >
+        Status of the submission, e.g. "PENDING" or "READY".
+    pending:
+      type: boolean
+      description: >
+        Whether the submission is still being graded,
+        and the information may change soon.
+    test_progress:
+      description: >
+        > An optional property describing the progress of the testing phase.
+      $ref: "schemas.yaml#/TestProgress"
+    result:
+      $ref: "schemas.yaml#/ContestSubmissionResult"
+    test_report:
+      type: string
+      description: >
+        An optional description of the tests for when more specific
+        information of the tests is not shown to the user. Used at least
+        on the TiRa course.
+    feedback:
+      type: array
+      description: >
+        Feedback for the different test groups.
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - group
+          - verdict
+          - score
+        properties:
+          group:
+            type: integer
+            description: Test group ID.
+          verdict:
+            type: string
+            description: Verdict of the test group, e.g. "WRONG ANSWER".
+          score:
+            type: integer
+            description: The number of points for the test group.
+    tests:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - number
+          - verdict
+          - time
+          - groups
+        properties:
+          number:
+            type: integer
+            description: Test case number, starting from 1.
+          verdict:
+            type: string
+            description: >
+              Verdict of the test, e.g. "WRONG ANSWER".
+          time:
+            type: integer
+            nullable: true
+            description: Run time of the test in milliseconds.
+          groups:
+            type: array
+            items:
+              type: integer
+              description: The IDs of groups which the test belongs to.
+    compiler:
+      type: string
+      description: >
+        The compiler report in case of COMPILE ERROR or just some warnings
+        from the compiler.
+
+CourseList:
+  additionalProperties: false
+  required:
+    - courses
+  type: object
+
+  properties:
+    courses:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - id
+          - name
+          - description
+        properties:
+          id:
+            type: string
+            description: >
+              Course ID.
+          name:
+            type: string
+            description: >
+              The name of the course.
+          description:
+            type: string
+            description: >
+              The course's description.
+
+CourseContent:
+  additionalProperties: false
+  required:
+    - sections
+  type: object
+
+  properties:
+    sections:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - header
+          - list
+        properties:
+          header:
+            type: string
+            description: >
+              A header describing a section.
+          text:
+            type: string
+            description: >
+              An optional text below the header.
+          list:
+            type: array
+            description: >
+              A list containing texts, links and tasks.
+            items:
+              oneOf:
+                - $ref: 'schemas.yaml#/Text'
+                - $ref: 'schemas.yaml#/Link'
+                - $ref: 'schemas.yaml#/CourseTask'
+              discriminator:
+                propertyName: objectType
+                mapping:
+                  text: 'schemas.yaml#/Text'
+                  link: 'schemas.yaml#/Link'
+                  task: 'schemas.yaml#/CourseTask'
+
+ContestContent:
+  additionalProperties: false
+  required:
+    - sections
+  type: object
+
+  properties:
+    sections:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - header
+          - list
+        properties:
+          header:
+            type: string
+            description: >
+              A header describing a section.
+          text:
+            type: string
+            description: >
+              An optional text below the header.
+          list:
+            type: array
+            description: >
+              A list containing texts, links and tasks.
+            items:
+              oneOf:
+                - $ref: 'schemas.yaml#/Text'
+                - $ref: 'schemas.yaml#/Link'
+                - $ref: 'schemas.yaml#/ContestTask'
+              discriminator:
+                propertyName: objectType
+                mapping:
+                  text: 'schemas.yaml#/Text'
+                  link: 'schemas.yaml#/Link'
+                  task: 'schemas.yaml#/ContestTask'
+
+Text:
+  additionalProperties: false
+  required:
+    - objectType
+    - name
+    - id
+    - link
+  type: object
+
+  properties:
+    objectType:
+      type: string
+    name:
+      type: string
+      description: >
+        The name of the text.
+    id:
+      type: integer
+      description: >
+        The text's ID.
+    link:
+      type: string
+      description: >
+        A link to the text.
+
+Link:
+  additionalProperties: false
+  required:
+    - objectType
+    - name
+    - link
+  type: object
+
+  properties:
+    objectType:
+      type: string
+    name:
+      type: string
+      description: >
+        The name of the link.
+    link:
+      type: string
+      description: >
+        A link to another web page.
+
+CourseTask:
+  additionalProperties: false
+  required:
+    - objectType
+    - name
+    - id
+    - link
+    - status
+  type: object
+
+  properties:
+    objectType:
+      type: string
+    name:
+      type: string
+      description: >
+        The name of the task.
+    id:
+      type: integer
+      description: >
+        The task's ID.
+    link:
+      type: string
+      description: >
+        A link to the task's info page.
+    status:
+      $ref: "schemas.yaml#/CourseTaskStatus"
+
+ContestTask:
+  additionalProperties: false
+  required:
+    - objectType
+    - name
+    - id
+    - link
+    - status
+  type: object
+
+  properties:
+    objectType:
+      type: string
+    name:
+      type: string
+      description: >
+        The name of the task.
+    id:
+      type: integer
+      description: >
+        The task's ID.
+    link:
+      type: string
+      description: >
+        A link to the task's info page.
+    status:
+      $ref: "schemas.yaml#/ContestTaskStatus"
+
+CourseTaskStatus:
+  type: string
+  enum:
+    - none
+    - pass
+    - fail
+  description: >
+    Status of a task or submission. Value is one of "none", "pass" or "fail".
+
+ContestTaskStatus:
+  type: integer
+  description: >
+    The number of points for the best submission.
+
+CourseSubmissionList:
+  additionalProperties: false
+  required:
+    - submissions
+  type: object
+  properties:
+    submissions:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - id
+          - time
+          - language
+          - result
+        properties:
+          id:
+            type: integer
+            description: >
+              ID of the submission.
+          time:
+            type: string
+            format: date-time
+            description: >
+              Submission time in ISO 8601 format. 
+              (Timezone format has not been decided upon)
+          language:
+            $ref: "schemas.yaml#/Language"
+          code_time:
+            type: integer
+            nullable: true
+            description: >
+              Run time of the code in milliseconds.
+          size:
+            type: integer
+            description: >
+              Code size in chars.
+          result:
+            $ref: "schemas.yaml#/CourseTaskStatus"
+
+ContestSubmissionList:
+  additionalProperties: false
+  required:
+    - submissions
+  type: object
+  properties:
+    submissions:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - id
+          - time
+          - language
+          - result
+        properties:
+          id:
+            type: integer
+            description: >
+              ID of the submission.
+          time:
+            type: string
+            format: date-time
+            description: >
+              Submission time in ISO 8601 format. 
+              (Timezone format has not been decided upon)
+          language:
+            $ref: "schemas.yaml#/Language"
+          code_time:
+            type: integer
+            nullable: true
+            description: >
+              Run time of the code in milliseconds.
+          size:
+            type: integer
+            description: >
+              Code size in chars.
+          result:
+            $ref: "schemas.yaml#/ContestSubmissionResult"

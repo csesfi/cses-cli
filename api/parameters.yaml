@@ -1,0 +1,73 @@
+CourseId:
+  in: path
+  name: course_id
+  schema:
+    type: string
+  required: true
+  description: >
+    Alphanumeric identifier of the course. Same as in course URLs.
+
+ContestId:
+  in: path
+  name: contest_id
+  schema:
+    type: integer
+  required: true
+  description: >
+    Numeric identifier of the course. Same as in contest URLs.
+
+TaskId:
+  in: query
+  name: task
+  schema:
+    type: integer
+  required: true
+  description: Task ID.
+
+OptionalTaskId:
+  in: query
+  name: task
+  schema:
+    type: integer
+  required: false
+  description: > 
+    Task ID. If not provided the server 
+    tries to deduce it from the file name.
+
+SubmissionId:
+  in: path
+  name: submission_id
+  schema:
+    type: integer
+  required: true
+  description: Submission ID. 
+
+LongPoll:
+  in: query
+  name: poll
+  schema:
+    type: boolean
+    default: false
+  description: >
+    Whether or not to use long polling. If set to `true` and the
+    submission is still pending, the server will wait up to some
+    amount of time, before responding with a result. If grading of
+    this submission completes during this time, the response is
+    sent immediately.
+
+OptionalTemplateFilename:
+  in: query
+  name: filename
+  schema:
+    type: string
+  required: false
+  description: Template filename.
+
+OptionalProgrammingLanguage:
+  in: query
+  name: language
+  schema:
+    type: string
+  required: false
+  description: >
+    Name of the programming language.

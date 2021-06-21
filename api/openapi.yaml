@@ -9,541 +9,13 @@ info:
     url: https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE
 
 components:
-  responses:
-    InvalidApiKeyError:
-      description: Invalid api key error response from the server.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/InvalidApiKeyError"
-
-    GetLoginError:
-      description: >
-        API key pending authentication or invalid. Only given by `GET /login`.
-      content:
-        application/json:
-          schema:
-            oneOf:
-              - $ref: "#/components/schemas/InvalidApiKeyError"
-              - $ref: "#/components/schemas/PendingApiKeyError"
-
-    ClientError:
-      description: General error response from the server.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ClientError"
-          examples:
-            example1:
-              summary: An example error message
-              value:
-                message: Too many requests
-                code: client_error
-
-    SubmissionClientError:
-      description: >
-        Either a general client error or a specialized error
-        if server failed to deduce missing parts of the submission.
-      content:
-        application/json:
-          schema:
-            oneOf:
-              - $ref: "#/components/schemas/TaskDeductionError"
-              - $ref: "#/components/schemas/LanguageDeductionError"
-              - $ref: "#/components/schemas/ClientError"
-
-          examples:
-            task_error_example:
-              summary: An example task deduction error
-              value:
-                message: >
-                  Couldn't find a task for the submitted file.
-                  For this course, the filename should be e.g.
-                  `hello_world.cpp` for the task Hello World.
-                code: task_deduction_error
-
-            language_error_example:
-              summary: An example language deduction error message
-              value:
-                message: >
-                  The filename extension `.asdf` doesn't specify
-                  any available language.
-                code: language_deduction_error
-
-    ServerError:
-      description: General server error.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ServerError"
-
-  schemas:
-    BaseError:
-      additionalProperties: false
-      required:
-        - message
-        - code
-      type: object
-
-      properties:
-        message:
-          description: Human-readable error message from the server.
-          type: string
-        code:
-          description: Machine-readable error code from the server.
-          type: string
-          enum:
-            - invalid_api_key
-            - pending_api_key
-            - server_error
-            - client_error
-            - task_deduction_error
-            - language_deduction_error
-
-    InvalidApiKeyError:
-      allOf:
-        - $ref: "#/components/schemas/BaseError"
-        - type: object
-          properties:
-            code:
-              type: string
-              enum:
-                - invalid_api_key
-
-    PendingApiKeyError:
-      allOf:
-        - $ref: "#/components/schemas/BaseError"
-        - type: object
-          properties:
-            code:
-              type: string
-              enum:
-                - pending_api_key
-
-    ClientError:
-      allOf:
-        - $ref: "#/components/schemas/BaseError"
-        - type: object
-          properties:
-            code:
-              type: string
-              enum:
-                - client_error
-
-    TaskDeductionError:
-      description: >
-        The server failed to find a matching task for the submission.
-      allOf:
-        - $ref: "#/components/schemas/BaseError"
-        - type: object
-          properties:
-            code:
-              type: string
-              enum:
-                - task_deduction_error
-
-    LanguageDeductionError:
-      description: >
-        The server failed to deduce the language of the submission.
-      allOf:
-        - $ref: "#/components/schemas/BaseError"
-        - type: object
-          properties:
-            code:
-              type: string
-              enum:
-                - language_deduction_error
-
-    ServerError:
-      allOf:
-        - $ref: "#/components/schemas/BaseError"
-        - type: object
-          properties:
-            code:
-              type: string
-              enum:
-                - server_error
-
-    Language:
-      additionalProperties: false
-      required:
-        - name
-        - option
-      type: object
-
-      properties:
-        name:
-          type: string
-          nullable: true
-          description: >
-            Name of the language, e.g. "C++", "Haskell", "Python2".
-        option:
-          type: string
-          nullable: true
-          description: >
-            Optional language version specifier, e.g. "CPython" or "PyPy".
-
-    TestProgress:
-      additionalProperties: false
-      required:
-        - finished_tests
-        - total_tests
-      type: object
-
-      properties:
-        finished_tests:
-          type: integer
-          minimum: 0
-          description: >
-            The number of finished tests.
-        total_tests:
-          type: integer
-          minimum: 0
-          description: >
-            The total number of tests.
-
-    TaskOutline:
-      additionalProperties: false
-      required:
-        - id
-        - name
-      type: object
-
-      properties:
-        id:
-          type: integer
-          description: >
-            Task ID.
-        name:
-          type: string
-          description: >
-            The name of the task.
-
-    UserOutline:
-      additionalProperties: false
-      required:
-        - id
-        - username
-      type: object
-
-      properties:
-        id:
-          type: integer
-          description: >
-            User ID.
-        username:
-          type: string
-          description: >
-            Raw username or nickname.
-        displayname:
-          type: string
-          description: >
-            Optional display name. A more descriptive name for external accounts.
-
-    SubmissionInfo:
-      additionalProperties: false
-      required:
-        - id
-        - task
-        - sender
-        - time
-        - language
-        - status
-        - pending
-      type: object
-
-      properties:
-        id:
-          type: integer
-          description: >
-            ID of the submission.
-        task:
-          $ref: "#/components/schemas/TaskOutline"
-        sender:
-          $ref: "#/components/schemas/UserOutline"
-        time:
-          type: string
-          format: date-time
-          description: >
-            Submission time in ISO 8601 format. (Timezone format has not been decided upon)
-        language:
-          $ref: "#/components/schemas/Language"
-        status:
-          type: string
-          description: >
-            Status of the submission, e.g. "PENDING" or "READY".
-        pending:
-          type: boolean
-          description: >
-            Whether the submission is still being graded,
-            and the information may change soon.
-        test_progress:
-          description: >
-            > An optional property describing the progress of the testing phase.
-          $ref: "#/components/schemas/TestProgress"
-        result:
-          type: string
-          description: >
-            Verdict of the submission, e.g. "ACCEPTED".
-        test_report:
-          type: string
-          description: >
-            An optional description of the tests for when more specific
-            information of the tests is not shown to the user. Used at least
-            on the TiRa course.
-        tests:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - number
-              - verdict
-              - time
-            properties:
-              number:
-                type: integer
-                description: Test case number, starting from 1.
-              verdict:
-                type: string
-                description: >
-                  Verdict of the test, e.g. "WRONG ANSWER".
-              time:
-                type: integer
-                nullable: true
-                description: Run time of the test in milliseconds.
-        compiler:
-          type: string
-          description: >
-            The compiler report in case of COMPILE ERROR or just some warnings
-            from the compiler.
-
-    CourseList:
-      additionalProperties: false
-      required:
-        - courses
-      type: object
-
-      properties:
-        courses:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - id
-              - name
-              - description
-            properties:
-              id:
-                type: string
-                description: >
-                  Course ID.
-              name:
-                type: string
-                description: >
-                  The name of the course.
-              description:
-                type: string
-                description: >
-                  The course's description.
-    
-    CourseContent:
-      additionalProperties: false
-      required:
-        - sections
-      type: object
-
-      properties:
-        sections:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - header
-              - list
-            properties:
-              header:
-                type: string
-                description: >
-                  A header describing a section.
-              text:
-                type: string
-                description: >
-                  An optional text below the header.
-              list:
-                type: array
-                description: >
-                  A list containing texts, links and tasks.
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Text'
-                    - $ref: '#/components/schemas/Link'
-                    - $ref: '#/components/schemas/Task'
-                  discriminator:
-                    propertyName: objectType
-                    mapping:
-                      text: '#/components/schemas/Text'
-                      link: '#/components/schemas/Link'
-                      task: '#/components/schemas/Task'
-
-    Text:
-      additionalProperties: false
-      required:
-        - objectType
-        - name
-        - id
-        - link
-      type: object
-
-      properties:
-        objectType:
-          type: string
-        name:
-          type: string
-          description: >
-            The name of the text.
-        id:
-          type: integer
-          description: >
-            The text's ID.
-        link:
-          type: string
-          description: >
-            A link to the text.
-
-    Link:
-      additionalProperties: false
-      required:
-        - objectType
-        - name
-        - link
-      type: object
-
-      properties:
-        objectType:
-          type: string
-        name:
-          type: string
-          description: >
-            The name of the link.
-        link:
-          type: string
-          description: >
-            A link to another web page.
-
-    Task:
-      additionalProperties: false
-      required:
-        - objectType
-        - name
-        - id
-        - link
-        - status
-      type: object
-
-      properties:
-        objectType:
-          type: string
-        name:
-          type: string
-          description: >
-            The name of the task.
-        id:
-          type: integer
-          description: >
-            The task's ID.
-        link:
-          type: string
-          description: >
-            A link to the task's info page.
-        status:
-          $ref: "#/components/schemas/CourseTaskStatus"
-
-    CourseTaskStatus:
-      type: string
-      enum:
-        - none
-        - pass
-        - fail
-      description: >
-        Status of a task or submission. Value is one of "none", "pass" or "fail".
-
-    SubmissionList:
-      additionalProperties: false
-      required:
-        - submissions
-      type: object
-      properties:
-        submissions:
-          type: array
-          items:
-            type: object
-            additionalProperties: false
-            required:
-              - id
-              - time
-              - language
-              - result
-            properties:
-              id:
-                type: integer
-                description: >
-                  ID of the submission.
-              time:
-                type: string
-                format: date-time
-                description: >
-                  Submission time in ISO 8601 format. 
-                  (Timezone format has not been decided upon)
-              language:
-                $ref: "#/components/schemas/Language"
-              code_time:
-                type: integer
-                nullable: true
-                description: >
-                  Run time of the code in milliseconds.
-              size:
-                type: integer
-                description: >
-                  Code size in chars.
-              result:
-                $ref: "#/components/schemas/CourseTaskStatus"
-
-  parameters:
-    CourseId:
-      in: path
-      name: course_id
-      schema:
-        type: string
-      required: true
-      description: >
-        Alphanumeric identifier of the course. Same as in course URLs.
-
-    TaskId:
-      in: query
-      name: task
-      schema:
-        type: integer
-      required: true
-      description: Task ID.
-
-    SubmissionId:
-      in: path
-      name: submission_id
-      schema:
-        type: integer
-      required: true
-      description: Submission ID. 
-
-  # define possible authentication methods
   securitySchemes:
     apiKeyAuth: # could be any name
       type: apiKey
       in: header
       name: X-Auth-Token
       x-apikeyInfoFunc: app.apikey_auth
+
 
 security:
   - apiKeyAuth: []
@@ -584,10 +56,10 @@ paths:
                     type: string
 
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
 
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
 
     get:
       operationId: app.login_get
@@ -608,16 +80,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserOutline"
+                $ref: "schemas.yaml#/UserOutline"
 
         "401":
-          $ref: "#/components/responses/GetLoginError"
+          $ref: "responses.yaml#/GetLoginError"
 
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
 
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
 
   /logout:
     post:
@@ -636,19 +108,19 @@ paths:
           description: Api token deauthorized successfully.
 
         "401":
-          $ref: "#/components/responses/InvalidApiKeyError"
+          $ref: "responses.yaml#/InvalidApiKeyError"
 
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
 
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
 
   /courses/{course_id}/submissions:
     post:
-      operationId: app.submissions_post
+      operationId: app.courses_submissions_post
 
-      summary: Make new submission.
+      summary: Make new course submission.
       description: >
         Submit code file encoded as base64.
 
@@ -656,115 +128,133 @@ paths:
         - apiKeyAuth: []
 
       parameters:
-        - $ref: "#/components/parameters/CourseId"
-        - in: query
-          name: task
-          schema:
-            type: integer
-          required: false
-          description: > 
-            Task ID. If not provided the server 
-            tries to deduce it from the file name.
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/OptionalTaskId"
 
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              required:
-                - language
-                - filename
-                - content
-              additionalProperties: false
+        $ref: 'request_bodies.yaml#/SubmissionBody'
 
-              type: object
-              properties:
-                language:
-                  $ref: "#/components/schemas/Language"
-                filename:
-                  type: string
-                  description: Original name of the file.
-                content:
-                  type: string
-                  format: byte
-                  description: Content of the file encoded as base64.
       responses:
         "200":
-          description: >
-            Submission was sent successfully. The new submission ID is
-            included in the response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SubmissionInfo"
+          $ref: "responses.yaml#/SuccessfulCourseSubmissionPost"
         "400":
-          $ref: "#/components/responses/SubmissionClientError"
+          $ref: "responses.yaml#/SubmissionClientError"
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
 
     get:
-      operationId: app.get_submission_list
+      operationId: app.courses_get_submission_list
 
-      summary: Retrieve information about submissions on a courses task.
+      summary: Retrieve information about submissions on a course task.
 
       security:
         - apiKeyAuth: []
 
       parameters:
-        - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/TaskId"
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/TaskId"
 
       responses:
         "200":
-          description: >
-            Info about a submissions were retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SubmissionList"
+          $ref: "responses.yaml#/SuccessfulCourseSubmissionListGet"
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
+
+  /contests/{contest_id}/submissions:
+    post:
+      operationId: app.contests_submissions_post
+
+      summary: Make new contest submission.
+      description: >
+        Submit code file encoded as base64.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/OptionalTaskId"
+
+      requestBody:
+        $ref: 'request_bodies.yaml#/SubmissionBody'
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulContestSubmissionPost"
+        "400":
+          $ref: "responses.yaml#/SubmissionClientError"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
+    get:
+      operationId: app.contests_get_submission_list
+
+      summary: Retrieve information about submissions on a contests task.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/TaskId"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulContestSubmissionListGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
 
   /courses/{course_id}/submissions/{submission_id}:
     get:
-      operationId: app.get_submission
+      operationId: app.courses_get_submission
 
-      summary: Retrieve information about a submission.
+      summary: Retrieve information about a course submission.
 
       security:
         - apiKeyAuth: []
 
       parameters:
-        - $ref: "#/components/parameters/CourseId"
-        - $ref: "#/components/parameters/SubmissionId"
-        - in: query
-          name: poll
-          schema:
-            type: boolean
-            default: false
-          description: >
-            Whether or not to use long polling. If set to `true` and the
-            submission is still pending, the server will wait up to some
-            amount of time, before responding with a result. If grading of
-            this submission completes during this time, the response is
-            sent immediately.
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/SubmissionId"
+        - $ref: "parameters.yaml#/LongPoll"
 
       responses:
         "200":
-          description: >
-            Info about a submission was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SubmissionInfo"
+          $ref: "responses.yaml#/SuccessfulCourseSubmissionInfoGet"
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
+
+  /contests/{contest_id}/submissions/{submission_id}:
+    get:
+      operationId: app.contests_get_submission
+
+      summary: Retrieve information about a contest submission.
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/SubmissionId"
+        - $ref: "parameters.yaml#/LongPoll"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulContestSubmissionInfoGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
 
   /courses:
     get:
@@ -778,17 +268,12 @@ paths:
 
       responses:
         "200":
-          description: >
-            Info about available courses was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CourseList"
+          $ref: "responses.yaml#/SuccessfulCourseListGet"
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
         "5XX":
-          $ref: "#/components/responses/ServerError"
-  
+          $ref: "responses.yaml#/ServerError"
+
   /courses/{course_id}/list:
     get:
       operationId: app.get_course_content
@@ -800,24 +285,40 @@ paths:
         - {}
 
       parameters:
-        - $ref: "#/components/parameters/CourseId"
+        - $ref: "parameters.yaml#/CourseId"
 
       responses:
         "200":
-          description: >
-            The listed information was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CourseContent"
+          $ref: "responses.yaml#/SuccessfulCourseContentGet"
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
         "5XX":
-          $ref: "#/components/responses/ServerError"
-          
+          $ref: "responses.yaml#/ServerError"
+
+  /contests/{contest_id}/list:
+    get:
+      operationId: app.get_contest_content
+
+      summary: Retrieve the listed information related to a contest.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulContestContentGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
   /courses/{course_id}/templates:
     get:
-      operationId: app.get_template
+      operationId: app.courses_get_template
 
       summary: Retrieve a code template.
 
@@ -831,50 +332,44 @@ paths:
         - {}
 
       parameters:
-        - $ref: "#/components/parameters/CourseId"
-        - in: query
-          name: task
-          schema:
-            type: integer
-          required: false
-          description: Task ID.
-        - in: query
-          name: filename
-          schema:
-            type: string
-          required: false
-          description: Template filename.
-        - in: query
-          name: language
-          schema:
-            type: string
-          required: false
-          description: >
-            Name of the programming language.
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/OptionalTaskId"
+        - $ref: "parameters.yaml#/OptionalTemplateFilename"
+        - $ref: "parameters.yaml#/OptionalProgrammingLanguage"
 
       responses:
         "200":
-          description: >
-            The code template was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                additionalProperties: false
-                required:
-                  - template_source
-                  - filename
-                type: object
-
-                properties:
-                  template_source:
-                    type: string
-                    description: >
-                      Source code of the template.
-                  filename:
-                    type: string
-                    description: >
-                      Filename of the template.
+          $ref: "responses.yaml#/SuccessfulCodeTemplateGet"
         "4XX":
-          $ref: "#/components/responses/ClientError"
+          $ref: "responses.yaml#/ClientError"
         "5XX":
-          $ref: "#/components/responses/ServerError"
+          $ref: "responses.yaml#/ServerError"
+
+  /contests/{contest_id}/templates:
+    get:
+      operationId: app.contests_get_template
+
+      summary: Retrieve a code template.
+
+      description: >
+        Requests a code template matching the given parameters.
+        The server decides whether some code template matches the
+        given parameters or not.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/OptionalTaskId"
+        - $ref: "parameters.yaml#/OptionalTemplateFilename"
+        - $ref: "parameters.yaml#/OptionalProgrammingLanguage"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulCodeTemplateGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
