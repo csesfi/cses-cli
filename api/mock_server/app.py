@@ -5,10 +5,10 @@
 import time
 
 import base64
+from pathlib import Path
+
 import connexion
 import prance
-
-from pathlib import Path
 
 from connexion import NoContent
 from connexion import RestyResolver
@@ -69,7 +69,8 @@ def logout_post(token_info):
     return (NoContent, 204)
 
 
-def courses_submissions_post(token_info, course_id, task=constants.DEFAULT_TASK):
+def courses_submissions_post(token_info, course_id,
+                             task=constants.DEFAULT_TASK):
 
     details = connexion.request.json
     try:
@@ -96,7 +97,8 @@ def courses_submissions_post(token_info, course_id, task=constants.DEFAULT_TASK)
     return (submission_info, 200)
 
 
-def contests_submissions_post(token_info, contest_id, task=constants.DEFAULT_TASK):
+def contests_submissions_post(token_info, contest_id,
+                              task=constants.DEFAULT_TASK):
     pass
 
 
@@ -183,7 +185,8 @@ def courses_get_template(token_info, course_id, task=None,
     return ({"message": "Template not found", "code": "client_error"}, 400)
 
 
-def contests_get_template(token_info, contest_id, task=None, language=None, filename=None):
+def contests_get_template(token_info, contest_id, task=None, language=None,
+                          filename=None):
     pass
 
 
@@ -221,9 +224,11 @@ def render_method_not_allowed(exception):
 
 
 def combine_specs(file):
-    parser = prance.ResolvingParser(str(file.absolute()), lazy=True, strict=True)
+    parser = prance.ResolvingParser(
+        str(file.absolute()), lazy=True, strict=True)
     parser.parse()
     return parser.specification
+
 
 APP.add_error_handler(BadRequestProblem, render_invalid_query)
 APP.add_error_handler(Unauthorized, render_api_authentication_failed)
