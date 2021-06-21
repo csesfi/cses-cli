@@ -81,6 +81,60 @@ OLD_SUBMISSION = {
     "test_report": "All tests accepted"
 }
 
+SUBMISSION_LIST = {
+    "submissions": [
+        {
+            "id": 1234567,
+            "time": "2017-07-21T17:32:28Z",
+            "language": {
+                "name": "CPython",
+                "option": None
+            },
+            "code_time": 500,
+            "size": 1000,
+            "result": "pass"
+        },
+        {
+            "id": 7654321,
+            "time": "2020-07-21T17:32:28Z",
+            "language": {
+                "name": "C++",
+                 "option": "C++17"
+            },
+            "code_time": None,
+            "size": 200,
+            "result": "fail"
+        }
+    ]
+}
+
+SUBMISSION_LIST_WITH_MISSING_FIELDS = {
+    "submissions": [
+        {
+            "id": 1234567,
+            "time": "2017-07-21T17:32:28Z",
+            "language": {
+                "name": "CPython",
+                "option": None
+            },
+            "result": "pass"
+        },
+        {
+            "id": 7654321,
+            "time": "2020-07-21T17:32:28Z",
+            "language": {
+                "name": "C++",
+                 "option": "C++17"
+            },
+            "result": "fail"
+        }
+    ]
+}
+
+EMPTY_SUBMISSION_LIST = {
+    "submissions": []
+}
+
 # Base progress information
 CPP_PROGRESS_BASE = {
     "task": SUMMA_TASK,
