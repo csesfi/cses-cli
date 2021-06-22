@@ -92,7 +92,7 @@ SUBMISSION_LIST = {
             },
             "code_time": 500,
             "size": 1000,
-            "result": "pass"
+            "outcome_status": "pass"
         },
         {
             "id": 7654321,
@@ -103,7 +103,7 @@ SUBMISSION_LIST = {
             },
             "code_time": None,
             "size": 200,
-            "result": "fail"
+            "outcome_status": "fail"
         }
     ]
 }
@@ -117,7 +117,7 @@ SUBMISSION_LIST_WITH_MISSING_FIELDS = {
                 "name": "CPython",
                 "option": None
             },
-            "result": "pass"
+            "outcome_status": "pass"
         },
         {
             "id": 7654321,
@@ -126,7 +126,7 @@ SUBMISSION_LIST_WITH_MISSING_FIELDS = {
                 "name": "C++",
                  "option": "C++17"
             },
-            "result": "fail"
+            "outcome_status": "fail"
         }
     ]
 }

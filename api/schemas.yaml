@@ -110,6 +110,9 @@ TestProgress:
     - total_tests
   type: object
 
+  description: >
+    An optional property describing the progress of the testing phase.
+
   properties:
     finished_tests:
       type: integer
@@ -277,10 +280,12 @@ ContestSubmissionInfo:
         and the information may change soon.
     test_progress:
       description: >
-        > An optional property describing the progress of the testing phase.
+        An optional property describing the progress of the testing phase.
       $ref: "schemas.yaml#/TestProgress"
-    result:
-      $ref: "schemas.yaml#/ContestTaskSubmissionStatus"
+    score:
+      type: integer
+      description: >
+        Result of the submission. The number of points.
     test_report:
       type: string
       description: >
@@ -522,7 +527,7 @@ CourseTask:
       description: >
         A link to the task's info page.
     status:
-      $ref: "schemas.yaml#/CourseTaskSubmissionStatus"
+      $ref: "schemas.yaml#/OutcomeStatus"
 
 ContestTask:
   additionalProperties: false
@@ -531,7 +536,7 @@ ContestTask:
     - name
     - id
     - link
-    - status
+    - score
   type: object
 
   properties:
@@ -549,22 +554,24 @@ ContestTask:
       type: string
       description: >
         A link to the task's info page.
-    status:
-      $ref: "schemas.yaml#/ContestTaskSubmissionStatus"
+    score:
+      $ref: "schemas.yaml#/OutcomeScore"
 
-CourseTaskSubmissionStatus:
+OutcomeStatus:
   type: string
   enum:
     - none
     - pass
     - fail
   description: >
-    Status of a task or submission. Value is one of "none", "pass" or "fail".
+    Outcome of a task or submission. Value is one of "none", "pass" or "fail".
+    Used with courses.
 
-ContestTaskSubmissionStatus:
+OutcomeScore:
   type: integer
+  nullable: true
   description: >
-    Status of a task or submission. The number of points.
+    Outcome of a task or submission. The number of points. Used with contests.
 
 CourseSubmissionList:
   additionalProperties: false
@@ -581,7 +588,7 @@ CourseSubmissionList:
           - id
           - time
           - language
-          - result
+          - outcome_status
         properties:
           id:
             type: integer
@@ -591,7 +598,7 @@ CourseSubmissionList:
             type: string
             format: date-time
             description: >
-              Submission time in ISO 8601 format. 
+              Submission time in ISO 8601 format.
               (Timezone format has not been decided upon)
           language:
             $ref: "schemas.yaml#/Language"
@@ -604,8 +611,8 @@ CourseSubmissionList:
             type: integer
             description: >
               Code size in chars.
-          result:
-            $ref: "schemas.yaml#/CourseTaskSubmissionStatus"
+          outcome_status:
+            $ref: "schemas.yaml#/OutcomeStatus"
 
 ContestSubmissionList:
   additionalProperties: false
@@ -622,7 +629,7 @@ ContestSubmissionList:
           - id
           - time
           - language
-          - result
+          - outcome_score
         properties:
           id:
             type: integer
@@ -632,7 +639,7 @@ ContestSubmissionList:
             type: string
             format: date-time
             description: >
-              Submission time in ISO 8601 format. 
+              Submission time in ISO 8601 format.
               (Timezone format has not been decided upon)
           language:
             $ref: "schemas.yaml#/Language"
@@ -645,5 +652,5 @@ ContestSubmissionList:
             type: integer
             description: >
               Code size in chars.
-          result:
-            $ref: "schemas.yaml#/ContestTaskSubmissionStatus"
+          outcome_score:
+            $ref: "schemas.yaml#/OutcomeScore"
