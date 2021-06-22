@@ -63,14 +63,14 @@ pub struct TaskOutline {
 pub struct SubmitParameters {
     pub course: String,
     pub file: String,
-    pub task: Option<TaskId>,
+    pub task: Option<String>,
     pub language: Language,
 }
 
 #[derive(Debug)]
 pub struct TemplateParameters {
     pub course: String,
-    pub task: Option<TaskId>,
+    pub task: Option<String>,
     pub language: Option<String>,
     pub file: Option<String>,
 }

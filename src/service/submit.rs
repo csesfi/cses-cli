@@ -1,7 +1,7 @@
 use super::require_login;
 use crate::api::CodeSubmit;
 use crate::command;
-use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters, TaskId};
+use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters};
 use crate::{CsesApi, Filesystem, Resources, RP};
 use anyhow::{Context, Result};
 
@@ -31,10 +31,10 @@ pub fn submit(
         require_login(res)?;
         let course_id = submit_parameters.course;
         // FIXME
-        let task = submit_parameters.task.map(|t| match t {
-            TaskId::Number(id) => id,
-            _ => panic!(),
-        });
+        let task = submit_parameters
+            .task
+            .as_deref()
+            .map(|t| t.parse().unwrap());
         let content = res.filesystem.get_file(&submit_parameters.file)?;
         let filename = res.filesystem.get_file_name(&submit_parameters.file)?;
         let content = res.filesystem.encode_base64(&content);

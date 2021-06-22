@@ -1,5 +1,5 @@
 use crate::command;
-use crate::entities::{TaskId, TemplateParameters, TemplateResponse};
+use crate::entities::{TemplateParameters, TemplateResponse};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
@@ -26,10 +26,7 @@ pub fn get_template(
             token,
             &parameters.course,
             // FIXME
-            parameters.task.map(|t| match t {
-                TaskId::Number(id) => id,
-                _ => panic!(),
-            }),
+            parameters.task.as_deref().map(|t| t.parse().unwrap()),
             parameters.language.as_deref(),
             parameters.file.as_deref(),
         )?)

@@ -6,12 +6,6 @@ pub enum Scope {
     Contest(u64),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum TaskId {
-    Number(u64),
-    Letter(char),
-}
-
 impl FromStr for Scope {
     type Err = ParseIntError;
     fn from_str(s: &str) -> Result<Self, ParseIntError> {
@@ -20,20 +14,6 @@ impl FromStr for Scope {
             Ok(number) => Scope::Contest(number),
             Err(_) => Scope::Course(s.to_owned()),
         })
-    }
-}
-
-impl FromStr for TaskId {
-    type Err = ParseIntError;
-    fn from_str(s: &str) -> Result<Self, ParseIntError> {
-        if s.len() == 1 {
-            if let Some(letter) = s.chars().next() {
-                if letter.is_ascii_alphabetic() {
-                    return Ok(TaskId::Letter(letter.to_ascii_uppercase()));
-                }
-            }
-        }
-        Ok(TaskId::Number(s.parse()?))
     }
 }
 
@@ -47,22 +27,12 @@ impl fmt::Display for Scope {
     }
 }
 
-impl fmt::Display for TaskId {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            TaskId::Number(id) => write!(f, "{}", id)?,
-            TaskId::Letter(id) => write!(f, "{}", id)?,
-        }
-        Ok(())
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn scope_from_str_course() {
+    fn from_str_course() {
         let scope = "text123".parse().unwrap();
         assert!(matches!(
             scope,
@@ -72,32 +42,20 @@ mod tests {
     }
 
     #[test]
-    fn scope_from_str_contest() {
+    fn from_str_contest() {
         let scope = "123".parse().unwrap();
-        assert!(matches!(
-            scope,
-            Scope::Contest(123)
-        ));
+        assert!(matches!(scope, Scope::Contest(123)));
     }
 
     #[test]
-    fn scope_to_string_course() {
+    fn to_string_course() {
         let string = Scope::Course("text123".to_owned()).to_string();
         assert_eq!(string, "text123");
     }
 
     #[test]
-    fn scope_to_string_contest() {
+    fn to_string_contest() {
         let string = Scope::Contest(123).to_string();
         assert_eq!(string, "123");
-    }
-
-    #[test]
-    fn task_id_from_str_number() {
-        let task_id = "123".parse().unwrap();
-        assert!(matches!(
-            task_id,
-            TaskId::Number(123)
-        ));
     }
 }

@@ -1,7 +1,7 @@
 use super::fake_resources;
 use super::fake_resources_with_mock_api;
 use crate::command::Submit;
-use crate::entities::{Language, Scope, SubmissionInfo, SubmitParameters, TaskId};
+use crate::entities::{Language, Scope, SubmissionInfo, SubmitParameters};
 use crate::service;
 use crate::storage::StorageData;
 use anyhow::Result;
@@ -10,7 +10,7 @@ use anyhow::Result;
 fn submit_parameters_passed_through() -> Result<()> {
     let mut fake_resources = fake_resources();
     let submit = Submit {
-        task: Some(TaskId::Number(17)),
+        task: Some("17".to_owned()),
         language: Language {
             name: Some("Python2".to_string()),
             option: None,
@@ -54,7 +54,7 @@ fn submit_mock() -> Result<()> {
     let submit_params = SubmitParameters {
         course: "crs".to_owned(),
         file: "extracted_filename".to_owned(),
-        task: Some(TaskId::Number(3)),
+        task: Some("3".to_owned()),
         language: Language {
             name: Some("Python".to_owned()),
             option: None,

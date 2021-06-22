@@ -1,6 +1,6 @@
 use anyhow::{anyhow, bail, Context, Result};
 
-use crate::entities::{Language, Scope, TaskId};
+use crate::entities::{Language, Scope};
 
 pub static HELP_STR: &str = r#"CSES CLI
 
@@ -72,13 +72,13 @@ pub enum Command {
 }
 #[derive(Debug)]
 pub struct Submit {
-    pub task: Option<TaskId>,
+    pub task: Option<String>,
     pub language: Language,
     pub file_name: String,
 }
 #[derive(Debug)]
 pub struct Template {
-    pub task: Option<TaskId>,
+    pub task: Option<String>,
     pub language: Option<String>,
     pub file_name: Option<String>,
 }
@@ -99,8 +99,10 @@ fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
         None
     })
 }
-fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<TaskId>> {
-    Ok(pargs.opt_value_from_str(["-t", "--task"])?)
+fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
+    Ok(pargs
+        .opt_value_from_str(["-t", "--task"])?
+        .map(|s: String| s.to_uppercase()))
 }
 fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-l", "--language"])?)
@@ -313,8 +315,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task: Some(TaskId::Number(task)), .. })
-            if task == 123
+            Command::Submit(_, Submit { task: Some(task), .. })
+            if task == "123"
         ));
     }
 
@@ -325,17 +327,9 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task: Some(TaskId::Number(task)), .. })
-            if task == 123
+            Command::Submit(_, Submit { task: Some(task), .. })
+            if task == "123"
         ));
-    }
-
-    #[test]
-    fn submit_task_id_should_be_integer() {
-        let pargs = to_pargs(&["submit", "test.cpp", "--task", "asdf"]);
-        assert!(Command::parse_command(pargs).is_err());
-        let pargs = to_pargs(&["submit", "test.cpp", "-t", "asdf"]);
-        assert!(Command::parse_command(pargs).is_err());
     }
 
     #[test]
@@ -417,12 +411,12 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task: Some(TaskId::Number(task_id)),
+                    task: Some(task),
                     language: Some(language),
                     file_name: None,
                 }
             )
-            if course_id == "course" && task_id == 123 && language == "language"
+            if course_id == "course" && task == "123" && language == "language"
         ));
     }
     #[test]
@@ -433,12 +427,12 @@ mod tests {
             Command::Template(
                 None,
                 Template {
-                    task: Some(TaskId::Number(task_id)),
+                    task: Some(task),
                     language: Some(language),
                     file_name: None,
                 }
             )
-            if task_id == 123 && language == "language"
+            if task == "123" && language == "language"
         ));
     }
     #[test]
@@ -473,12 +467,12 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task: Some(TaskId::Number(task_id)),
+                    task: Some(task),
                     language: Some(language),
                     file_name: None,
                 }
             )
-            if course_id == "course" && task_id == 123 && language == "language"
+            if course_id == "course" && task == "123" && language == "language"
         ));
     }
     #[test]
