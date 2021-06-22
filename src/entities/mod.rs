@@ -53,7 +53,7 @@ pub struct TestProgress {
 
 #[derive(Debug, Default, Deserialize)]
 pub struct TaskOutline {
-    pub id: u64,
+    pub id: String,
     pub name: String,
 }
 

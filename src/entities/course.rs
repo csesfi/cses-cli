@@ -37,7 +37,7 @@ pub struct CourseItemRaw {
     #[serde(rename = "objectType")]
     object_type: CourseItemType,
     name: String,
-    id: Option<u64>,
+    id: Option<String>,
     link: String,
     status: Option<CourseTaskStatus>,
 }
@@ -67,7 +67,11 @@ impl CourseItemRaw {
         Ok(match &self.object_type {
             CourseItemType::Text => CourseItem::Text {
                 name: &self.name,
-                id: self.id.ok_or_else(|| anyhow!("Could not get ID"))?,
+                id: self
+                    .id
+                    .clone()
+                    .ok_or_else(|| anyhow!("Could not get ID"))?
+                    .parse()?,
                 link: &self.link,
             },
             CourseItemType::Link => CourseItem::Link {
@@ -76,7 +80,11 @@ impl CourseItemRaw {
             },
             CourseItemType::Task => CourseItem::Task {
                 name: &self.name,
-                id: self.id.ok_or_else(|| anyhow!("Could not get ID"))?,
+                id: self
+                    .id
+                    .clone()
+                    .ok_or_else(|| anyhow!("Could not get ID"))?
+                    .parse()?,
                 link: &self.link,
                 status: self.status.ok_or_else(|| anyhow!("Could not get status"))?,
             },
