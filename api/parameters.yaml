@@ -20,7 +20,7 @@ TaskId:
   in: query
   name: task
   schema:
-    type: integer
+    type: string
   required: true
   description: Task ID.
 
@@ -28,7 +28,7 @@ OptionalTaskId:
   in: query
   name: task
   schema:
-    type: integer
+    type: string
   required: false
   description: > 
     Task ID. If not provided the server 

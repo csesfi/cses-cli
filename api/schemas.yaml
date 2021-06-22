@@ -125,6 +125,11 @@ TestProgress:
       description: >
         The total number of tests.
 
+TaskId:
+  type: string
+  description: >
+    Task ID.
+
 TaskOutline:
   additionalProperties: false
   required:
@@ -134,9 +139,7 @@ TaskOutline:
 
   properties:
     id:
-      type: integer
-      description: >
-        Task ID.
+      $ref: "schemas.yaml#/TaskId"
     name:
       type: string
       description: >
@@ -473,7 +476,7 @@ Text:
       description: >
         The name of the text.
     id:
-      type: integer
+      type: string
       description: >
         The text's ID.
     link:
@@ -519,9 +522,7 @@ CourseTask:
       description: >
         The name of the task.
     id:
-      type: integer
-      description: >
-        The task's ID.
+      $ref: "schemas.yaml#/TaskId"
     link:
       type: string
       description: >
@@ -547,9 +548,7 @@ ContestTask:
       description: >
         The name of the task.
     id:
-      type: integer
-      description: >
-        The task's ID.
+      $ref: "schemas.yaml#/TaskId"
     link:
       type: string
       description: >

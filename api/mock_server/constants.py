@@ -61,7 +61,7 @@ PY_CODE = {
 
 # Task information
 SUMMA_TASK = {
-    "id": 123,
+    "id": "123",
     "name": "Summa",
 }
 
@@ -174,7 +174,7 @@ INFO_HEADER = ""
 INSTRUCTIONS_TEXT = {
     "objectType": "text",
     "name": "Instructions",
-    "id": 7582,
+    "id": "7582",
     "link": "https://cses.fi/alon/text/2434",
 }
 
@@ -187,7 +187,7 @@ EXTERNAL_WEBSITE_LINK = {
 TASK_1 = {
     "objectType": "task",
     "name": "Wierd algorithm",
-    "id": 1068,
+    "id": "1068",
     "link": "https://cses.fi/alon/task/1068",
     "status": "none"
 }
@@ -195,7 +195,7 @@ TASK_1 = {
 TASK_2 = {
     "objectType": "task",
     "name": "Increasing array",
-    "id": 1094,
+    "id": "1094",
     "link": "https://cses.fi/alon/task/1094",
     "status": "none"
 }
@@ -203,7 +203,7 @@ TASK_2 = {
 TASK_1_WITH_STATUS = {
     "objectType": "task",
     "name": "Wierd algorithm",
-    "id": 1068,
+    "id": "1068",
     "link": "https://cses.fi/alon/task/1068",
     "status": "pass"
 }
@@ -211,7 +211,7 @@ TASK_1_WITH_STATUS = {
 TASK_2_WITH_STATUS = {
     "objectType": "task",
     "name": "Increasing array",
-    "id": 1094,
+    "id": "1094",
     "link": "https://cses.fi/alon/task/1094",
     "status": "fail"
 }
