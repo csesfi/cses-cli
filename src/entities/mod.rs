@@ -1,5 +1,7 @@
 mod course;
 pub use course::*;
+mod scope;
+pub use scope::*;
 
 use miniserde::{Deserialize, Serialize};
 
@@ -57,18 +59,18 @@ pub struct TaskOutline {
     pub name: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug)]
 pub struct SubmitParameters {
     pub course: String,
     pub file: String,
-    pub task: Option<u64>,
+    pub task: Option<String>,
     pub language: Language,
 }
 
 #[derive(Debug)]
 pub struct TemplateParameters {
     pub course: String,
-    pub task: Option<u64>,
+    pub task: Option<String>,
     pub language: Option<String>,
     pub file: Option<String>,
 }

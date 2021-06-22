@@ -4,14 +4,14 @@ use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
 pub fn create_template_parameters(
-    res: &mut Resources<impl RP>,
+    _res: &mut Resources<impl RP>,
+    course_id: String,
     parameters: command::Template,
 ) -> Result<TemplateParameters> {
-    let course_id = super::select_course(res, parameters.course_id)?;
     Ok(TemplateParameters {
         course: course_id,
         file: parameters.file_name,
-        task: parameters.task_id,
+        task: parameters.task,
         language: parameters.language,
     })
 }
@@ -25,7 +25,8 @@ pub fn get_template(
         Ok(res.api.get_template(
             token,
             &parameters.course,
-            parameters.task,
+            // FIXME
+            parameters.task.as_deref().map(|t| t.parse().unwrap()),
             parameters.language.as_deref(),
             parameters.file.as_deref(),
         )?)

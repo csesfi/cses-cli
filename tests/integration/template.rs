@@ -6,7 +6,7 @@ fn download_template_fails_without_course() {
         .args(&["template"])
         .assert()
         .failure()
-        .stdout(contains("Course not provided"));
+        .stdout(contains("not provided"));
 }
 #[distributed_slice(TESTS)]
 fn download_template_succeeds_with_only_course() {
