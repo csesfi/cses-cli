@@ -4,7 +4,7 @@ import constants
 
 SCENARIOS = [
     SubmissionScenario(
-        SubmissionInfo(course_id="kurssi", task_id=2,
+        SubmissionInfo(scope_id="kurssi", task_id="2",
                        submission_json=constants.RUST_CODE),
         submission_progress([
             {
@@ -27,7 +27,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="alon", task_id=4,
+        SubmissionInfo(scope_id="alon", task_id="4",
                        submission_json=constants.CPP_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -46,7 +46,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=13,
+        SubmissionInfo(scope_id="cses", task_id="13",
                        submission_json=constants.RS_13_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -58,7 +58,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=42,
+        SubmissionInfo(scope_id="cses", task_id="42",
                        submission_json=constants.CPP_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -72,7 +72,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=111,
+        SubmissionInfo(scope_id="cses", task_id="111",
                        submission_json=constants.UNKNOWN_CODE_NO_DETAILS),
         submission_progress([
             {
@@ -90,7 +90,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=444,
+        SubmissionInfo(scope_id="cses", task_id="444",
                        submission_json=constants.CPP_CODE_NO_DETAILS),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -104,7 +104,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=555,
+        SubmissionInfo(scope_id="cses", task_id="555",
                        submission_json=constants.CPP_CODE_NO_LANGUAGE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -118,7 +118,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="progress", task_id=7,
+        SubmissionInfo(scope_id="progress", task_id="7",
                        submission_json=constants.CPP_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -143,7 +143,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="progress", task_id=8,
+        SubmissionInfo(scope_id="progress", task_id="8",
                        submission_json=constants.CPP_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -171,7 +171,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="cses", task_id=constants.DEFAULT_TASK,
+        SubmissionInfo(scope_id="cses", task_id=constants.DEFAULT_TASK,
                        submission_json=constants.CPP_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
@@ -184,7 +184,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="tira21k", task_id=23,
+        SubmissionInfo(scope_id="tira21k", task_id="23",
                        submission_json=constants.PY_CODE),
         submission_progress([
             {
@@ -207,7 +207,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(course_id="tira21k", task_id=23,
+        SubmissionInfo(scope_id="tira21k", task_id="23",
                        submission_json=constants.PY_TODO_CODE),
         submission_progress([
             {

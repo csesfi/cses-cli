@@ -15,7 +15,7 @@ def __file_details(filename: str, new_name: str = None) -> str:
 
 
 # Task number
-DEFAULT_TASK = 34
+DEFAULT_TASK = "34"
 
 # Submitter
 UOLEVI = {
@@ -66,7 +66,7 @@ SUMMA_TASK = {
 }
 
 # Non pending submission
-OLD_SUBMISSION = {
+OLD_SUBMISSION_COURSE = {
     "id": 1,
     "task": SUMMA_TASK,
     "sender": UOLEVI,
@@ -81,7 +81,7 @@ OLD_SUBMISSION = {
     "test_report": "All tests accepted"
 }
 
-SUBMISSION_LIST = {
+SUBMISSION_LIST_COURSE = {
     "submissions": [
         {
             "id": 1234567,
@@ -108,7 +108,7 @@ SUBMISSION_LIST = {
     ]
 }
 
-SUBMISSION_LIST_WITH_MISSING_FIELDS = {
+SUBMISSION_LIST_COURSE_WITH_MISSING_FIELDS = {
     "submissions": [
         {
             "id": 1234567,
@@ -184,7 +184,7 @@ EXTERNAL_WEBSITE_LINK = {
     "link": "https://alon.mooc.fi/materiaali",
 }
 
-TASK_1 = {
+TASK_1_COURSE = {
     "objectType": "task",
     "name": "Wierd algorithm",
     "id": "1068",
@@ -192,7 +192,7 @@ TASK_1 = {
     "status": "none"
 }
 
-TASK_2 = {
+TASK_2_COURSE = {
     "objectType": "task",
     "name": "Increasing array",
     "id": "1094",
@@ -200,7 +200,7 @@ TASK_2 = {
     "status": "none"
 }
 
-TASK_1_WITH_STATUS = {
+TASK_1_COURSE_WITH_STATUS = {
     "objectType": "task",
     "name": "Wierd algorithm",
     "id": "1068",
@@ -208,7 +208,7 @@ TASK_1_WITH_STATUS = {
     "status": "pass"
 }
 
-TASK_2_WITH_STATUS = {
+TASK_2_COURSE_WITH_STATUS = {
     "objectType": "task",
     "name": "Increasing array",
     "id": "1094",
