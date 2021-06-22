@@ -57,4 +57,47 @@ impl fmt::Display for TaskId {
     }
 }
 
-// TODO: Tests
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn scope_from_str_course() {
+        let scope = "text123".parse().unwrap();
+        assert!(matches!(
+            scope,
+            Scope::Course(id)
+            if id == "text123"
+        ));
+    }
+
+    #[test]
+    fn scope_from_str_contest() {
+        let scope = "123".parse().unwrap();
+        assert!(matches!(
+            scope,
+            Scope::Contest(123)
+        ));
+    }
+
+    #[test]
+    fn scope_to_string_course() {
+        let string = Scope::Course("text123".to_owned()).to_string();
+        assert_eq!(string, "text123");
+    }
+
+    #[test]
+    fn scope_to_string_contest() {
+        let string = Scope::Contest(123).to_string();
+        assert_eq!(string, "123");
+    }
+
+    #[test]
+    fn task_id_from_str_number() {
+        let task_id = "123".parse().unwrap();
+        assert!(matches!(
+            task_id,
+            TaskId::Number(123)
+        ));
+    }
+}
