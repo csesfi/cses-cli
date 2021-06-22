@@ -9,13 +9,9 @@ impl TraceSend for Request {
         // minreq::Request unfortunately exposes none of its contents, so we
         // can't conveniently print them here
         let result = self.send();
-        let trace = if cfg!(debug_assertions) {
-            match std::env::var("CSES_CLI_TRACE") {
-                Ok(val) => !val.is_empty(),
-                Err(_) => false,
-            }
-        } else {
-            false
+        let trace = match std::env::var("CSES_CLI_TRACE") {
+            Ok(val) => !val.is_empty(),
+            Err(_) => false,
         };
         if trace {
             if let Ok(response) = &result {
