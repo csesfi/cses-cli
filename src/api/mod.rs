@@ -14,17 +14,12 @@ use trace_send::TraceSend;
 
 pub struct CsesHttpApi {
     url: String,
+    trace: bool,
 }
 
 impl CsesHttpApi {
-    pub fn new(url: String) -> Self {
-        Self { url }
-    }
-}
-
-impl Default for CsesHttpApi {
-    fn default() -> Self {
-        Self::new(String::from("http://127.0.0.1:4010"))
+    pub fn new(url: String, trace: bool) -> Self {
+        Self { url, trace }
     }
 }
 
@@ -94,7 +89,7 @@ pub trait CsesApi {
 
 impl CsesApi for CsesHttpApi {
     fn login(&self) -> ApiResult<LoginResponse> {
-        let response = minreq::post(format!("{}/login", self.url)).trace_send()?;
+        let response = minreq::post(format!("{}/login", self.url)).trace_send(self.trace)?;
         check_error(&response)?;
         Ok(json::from_str(response.as_str()?)?)
     }
@@ -102,7 +97,7 @@ impl CsesApi for CsesHttpApi {
     fn login_status(&self, token: &str) -> ApiResult<UserOutline> {
         let response = minreq::get(format!("{}/login", self.url))
             .with_header("X-Auth-Token", token)
-            .trace_send()?;
+            .trace_send(self.trace)?;
         check_error(&response)?;
         let response: UserOutline = json::from_str(response.as_str()?)?;
         Ok(response)
@@ -111,7 +106,7 @@ impl CsesApi for CsesHttpApi {
     fn logout(&self, token: &str) -> ApiResult<()> {
         let response = minreq::post(format!("{}/logout", self.url))
             .with_header("X-Auth-Token", token)
-            .trace_send()?;
+            .trace_send(self.trace)?;
         check_error(&response)?;
         Ok(())
     }
@@ -136,7 +131,7 @@ impl CsesApi for CsesHttpApi {
             request = request.with_param("task", task_id.to_string());
         }
 
-        let response = request.trace_send()?;
+        let response = request.trace_send(self.trace)?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -158,7 +153,7 @@ impl CsesApi for CsesHttpApi {
         ))
         .with_header("X-Auth-Token", token)
         .with_param("poll", poll)
-        .trace_send()?;
+        .trace_send(self.trace)?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -177,7 +172,7 @@ impl CsesApi for CsesHttpApi {
         ))
         .with_header("X-Auth-Token", token)
         .with_param("task", task_id.to_string())
-        .trace_send()?;
+        .trace_send(self.trace)?;
         check_error(&response)?;
         let response_body: SubmissionList = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -188,13 +183,14 @@ impl CsesApi for CsesHttpApi {
             Some(token) => {
                 let response = minreq::get(format!("{}/courses", self.url))
                     .with_header("X-Auth-Token", token)
-                    .trace_send()?;
+                    .trace_send(self.trace)?;
                 check_error(&response)?;
                 let course_list: CourseList = json::from_str(response.as_str()?)?;
                 Ok(course_list)
             }
             None => {
-                let response = minreq::get(format!("{}/courses", self.url)).trace_send()?;
+                let response =
+                    minreq::get(format!("{}/courses", self.url)).trace_send(self.trace)?;
                 check_error(&response)?;
                 let course_list: CourseList = json::from_str(response.as_str()?)?;
                 Ok(course_list)
@@ -211,7 +207,7 @@ impl CsesApi for CsesHttpApi {
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
-        let response = request.trace_send()?;
+        let response = request.trace_send(self.trace)?;
         check_error(&response)?;
         let course_content: CourseContent = json::from_str(response.as_str()?)?;
         Ok(course_content)
@@ -242,7 +238,7 @@ impl CsesApi for CsesHttpApi {
         if let Some(file_name) = file_name {
             request = request.with_param("filename", file_name);
         }
-        let response = request.trace_send()?;
+        let response = request.trace_send(self.trace)?;
         check_error(&response)?;
         Ok(json::from_str(response.as_str()?)?)
     }

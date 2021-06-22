@@ -34,13 +34,14 @@ fn run() -> anyhow::Result<()> {
         Ok(val) => !val.is_empty(),
         Err(_) => false,
     };
+    let trace = match std::env::var("CSES_CLI_TRACE") {
+        Ok(val) => !val.is_empty(),
+        Err(_) => false,
+    };
+    let url = std::env::var("CSES_API_URL").unwrap_or_else(|_| "http://127.0.0.1:4010".to_owned());
 
     let command = Command::from_command_line()?;
-    let api = if let Ok(url) = std::env::var("CSES_API_URL") {
-        CsesHttpApi::new(url)
-    } else {
-        CsesHttpApi::default()
-    };
+    let api = CsesHttpApi::new(url, trace);
     let storage = FileStorage::new(test)?;
     let filesystem = ConcreteFilesystem::default();
     let resources: Resources<DefaultResources> = Resources {
