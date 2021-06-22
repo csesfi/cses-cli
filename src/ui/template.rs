@@ -3,9 +3,8 @@ use crate::{command, entities::Scope, service, RP};
 use anyhow::Result;
 use std::io::Write;
 
-pub fn get_template(ui: &mut Ui<impl RP>, scope: Scope, params: command::Template) -> Result<()> {
-    let template_parameters = service::create_template_parameters(&mut ui.res, scope, params)?;
-    let template_response = service::get_template(&mut ui.res, &template_parameters)?;
+pub fn get_template(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Template) -> Result<()> {
+    let template_response = service::get_template(&mut ui.res, scope, params)?;
     if service::file_exists(&ui.res, &template_response.filename) {
         let overwrite_message = format!(
             "A file ./{} already exists.\nDo you want to overwrite it \

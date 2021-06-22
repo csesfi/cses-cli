@@ -2,7 +2,6 @@ mod courses;
 mod login;
 mod submission;
 mod submissions;
-mod submit;
 mod table;
 mod template;
 mod util;
@@ -11,7 +10,7 @@ use anyhow::{anyhow, Context, Error, Result};
 use console::{Style, Term};
 
 use crate::api::ApiError;
-use crate::command::{HELP_STR, LANGUAGE_HINT, NO_COMMAND_PROVIDED_HINT, TASK_HINT};
+use crate::command::{HELP_STR, LANGUAGE_HINT, TASK_HINT};
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider, RP};
 
@@ -36,7 +35,8 @@ impl<R: ResourcesProvider> Ui<R> {
         service::ping(&mut self.res);
         match command {
             Command::None => {
-                self.term.write_line(NO_COMMAND_PROVIDED_HINT)?;
+                self.term.write_line(HELP_STR)?;
+                login::status(self).context("Could not get login status")?;
             }
             Command::Help => {
                 self.term.write_str(HELP_STR)?;
@@ -59,22 +59,22 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::Submit(scope, submit) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                let submission_info = submit::submit(self, scope, submit)?;
-                submission::print_submission_info(self, submission_info, true)?;
+                let submission_info = service::submit(&mut self.res, &scope, submit)?;
+                submission::print_submission_info(self, &scope, submission_info, true)?;
             }
             Command::Template(scope, template) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                template::get_template(self, scope, template)?;
+                template::get_template(self, &scope, template)?;
             }
             Command::Submissions(scope, task_id) => {
-                service::select_scope(&mut self.res, scope)?;
-                submissions::list(self, task_id)?;
+                let scope = service::select_scope(&mut self.res, scope)?;
+                submissions::list(self, &scope, task_id)?;
             }
             Command::Submission(scope, submission_id) => {
-                service::select_scope(&mut self.res, scope)?;
+                let scope = service::select_scope(&mut self.res, scope)?;
                 let submission_info =
-                    service::submission_info(&mut self.res, submission_id, false)?;
-                submission::print_submission_info(self, submission_info, false)?;
+                    service::submission_info(&mut self.res, &scope, submission_id, false)?;
+                submission::print_submission_info(self, &scope, submission_info, false)?;
             }
             _ => {
                 return Err(anyhow!("Command not yet implemented"));

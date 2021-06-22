@@ -121,6 +121,10 @@ paths:
       operationId: app.courses_submissions_post
 
       summary: Make new course submission.
+
+      tags:
+        - courses
+
       description: >
         Submit code file encoded as base64.
 
@@ -149,6 +153,9 @@ paths:
 
       summary: Retrieve information about submissions on a course task.
 
+      tags:
+        - courses
+
       security:
         - apiKeyAuth: []
 
@@ -169,6 +176,10 @@ paths:
       operationId: app.contests_submissions_post
 
       summary: Make new contest submission.
+
+      tags:
+        - contests
+
       description: >
         Submit code file encoded as base64.
 
@@ -197,6 +208,9 @@ paths:
 
       summary: Retrieve information about submissions on a contests task.
 
+      tags:
+        - contests
+
       security:
         - apiKeyAuth: []
 
@@ -217,6 +231,9 @@ paths:
       operationId: app.courses_get_submission
 
       summary: Retrieve information about a course submission.
+
+      tags:
+        - courses
 
       security:
         - apiKeyAuth: []
@@ -240,6 +257,9 @@ paths:
 
       summary: Retrieve information about a contest submission.
 
+      tags:
+        - contests
+
       security:
         - apiKeyAuth: []
 
@@ -262,6 +282,9 @@ paths:
 
       summary: Retrieve information about the available courses.
 
+      tags:
+        - courses
+
       security:
         - apiKeyAuth: []
         - {}
@@ -279,6 +302,9 @@ paths:
       operationId: app.get_course_content
 
       summary: Retrieve the listed information related to a course.
+
+      tags:
+        - courses
 
       security:
         - apiKeyAuth: []
@@ -301,6 +327,9 @@ paths:
 
       summary: Retrieve the listed information related to a contest.
 
+      tags:
+        - contests
+
       security:
         - apiKeyAuth: []
         - {}
@@ -321,6 +350,9 @@ paths:
       operationId: app.courses_get_template
 
       summary: Retrieve a code template.
+
+      tags:
+        - courses
 
       description: >
         Requests a code template matching the given parameters.
@@ -350,6 +382,9 @@ paths:
       operationId: app.contests_get_template
 
       summary: Retrieve a code template.
+
+      tags:
+        - contests
 
       description: >
         Requests a code template matching the given parameters.

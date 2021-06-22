@@ -64,24 +64,8 @@ pub struct TestProgress {
 
 #[derive(Debug, Default, Deserialize)]
 pub struct TaskOutline {
-    pub id: u64,
+    pub id: String,
     pub name: String,
-}
-
-#[derive(Debug)]
-pub struct SubmitParameters {
-    pub scope: Scope,
-    pub file: String,
-    pub task: Option<u64>,
-    pub language: Language,
-}
-
-#[derive(Debug)]
-pub struct TemplateParameters {
-    pub scope: Scope,
-    pub task: Option<u64>,
-    pub language: Option<String>,
-    pub file: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -108,7 +92,9 @@ pub struct SubmissionListingInfo {
     pub language: Language,
     pub code_time: Option<u64>,
     pub size: Option<u64>,
+    #[serde(rename = "outcome_status")]
     pub result: Option<CourseTaskStatus>,
+    #[serde(rename = "outcome_score")]
     pub score: Option<u64>,
 }
 

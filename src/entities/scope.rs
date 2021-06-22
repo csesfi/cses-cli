@@ -1,4 +1,4 @@
-use std::{num::ParseIntError, str::FromStr};
+use std::{fmt, num::ParseIntError, str::FromStr};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Scope {
@@ -17,13 +17,45 @@ impl FromStr for Scope {
     }
 }
 
-impl ToString for Scope {
-    fn to_string(&self) -> String {
+impl fmt::Display for Scope {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Scope::Course(id) => id.clone(),
-            Scope::Contest(id) => id.to_string(),
+            Scope::Course(id) => write!(f, "{}", id)?,
+            Scope::Contest(id) => write!(f, "{}", id)?,
         }
+        Ok(())
     }
 }
 
-// TODO: Tests
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn from_str_course() {
+        let scope = "text123".parse().unwrap();
+        assert!(matches!(
+            scope,
+            Scope::Course(id)
+            if id == "text123"
+        ));
+    }
+
+    #[test]
+    fn from_str_contest() {
+        let scope = "123".parse().unwrap();
+        assert!(matches!(scope, Scope::Contest(123)));
+    }
+
+    #[test]
+    fn to_string_course() {
+        let string = Scope::Course("text123".to_owned()).to_string();
+        assert_eq!(string, "text123");
+    }
+
+    #[test]
+    fn to_string_contest() {
+        let string = Scope::Contest(123).to_string();
+        assert_eq!(string, "123");
+    }
+}

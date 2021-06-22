@@ -30,7 +30,7 @@ OPTIONS:
         Any previously supplied value is remembered.
     -t <task-id>, --task <task-id>
         For courses, the numeric task ID.
-        For contests, the letter of the task (A-Z).
+        For contests, the letter of the task (A-Z). Case insensitive.
     -l <language>, --language <language>
         Specifies the programming language of the submitted file or the
         downloaded template.
@@ -40,9 +40,6 @@ OPTIONS:
     -f <file>, --file <file>
         Selects the template with filename "file".
 "#;
-
-pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run "help" 
-to get a list of available commands."#;
 
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
 the "-l" or "--language" flags, e.g.:
@@ -72,13 +69,13 @@ pub enum Command {
 }
 #[derive(Debug)]
 pub struct Submit {
-    pub task_id: Option<u64>,
+    pub task: Option<String>,
     pub language: Language,
     pub file_name: String,
 }
 #[derive(Debug)]
 pub struct Template {
-    pub task_id: Option<u64>,
+    pub task: Option<String>,
     pub language: Option<String>,
     pub file_name: Option<String>,
 }
@@ -99,7 +96,7 @@ fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
         None
     })
 }
-fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<u64>> {
+fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-t", "--task"])?)
 }
 fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
@@ -111,7 +108,7 @@ fn parse_language_option(pargs: &mut pico_args::Arguments) -> Result<Option<Stri
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            task_id: parse_task_id(pargs)?,
+            task: parse_task_id(pargs)?,
             language: Language {
                 name: parse_language_name(pargs)?,
                 option: parse_language_option(pargs)?,
@@ -129,7 +126,7 @@ impl Submit {
 impl Template {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
         Ok(Template {
-            task_id: parse_task_id(pargs)?,
+            task: parse_task_id(pargs)?,
             language: parse_language_name(pargs)?,
             file_name: pargs.opt_value_from_str(["-f", "--file"])?,
         })
@@ -313,8 +310,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task_id: Some(task), .. })
-            if task == 123
+            Command::Submit(_, Submit { task: Some(task), .. })
+            if task == "123"
         ));
     }
 
@@ -325,17 +322,9 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task_id: Some(task), .. })
-            if task == 123
+            Command::Submit(_, Submit { task: Some(task), .. })
+            if task == "123"
         ));
-    }
-
-    #[test]
-    fn submit_task_id_should_be_integer() {
-        let pargs = to_pargs(&["submit", "test.cpp", "--task", "asdf"]);
-        assert!(Command::parse_command(pargs).is_err());
-        let pargs = to_pargs(&["submit", "test.cpp", "-t", "asdf"]);
-        assert!(Command::parse_command(pargs).is_err());
     }
 
     #[test]
@@ -417,12 +406,12 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task_id: Some(task_id),
+                    task: Some(task),
                     language: Some(language),
                     file_name: None,
                 }
             )
-            if course_id == "course" && task_id == 123 && language == "language"
+            if course_id == "course" && task == "123" && language == "language"
         ));
     }
     #[test]
@@ -433,12 +422,12 @@ mod tests {
             Command::Template(
                 None,
                 Template {
-                    task_id: Some(task_id),
+                    task: Some(task),
                     language: Some(language),
                     file_name: None,
                 }
             )
-            if task_id == 123 && language == "language"
+            if task == "123" && language == "language"
         ));
     }
     #[test]
@@ -449,7 +438,7 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task_id: None,
+                    task: None,
                     language: None,
                     file_name: Some(file_name),
                 }
@@ -473,12 +462,12 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task_id: Some(task_id),
+                    task: Some(task),
                     language: Some(language),
                     file_name: None,
                 }
             )
-            if course_id == "course" && task_id == 123 && language == "language"
+            if course_id == "course" && task == "123" && language == "language"
         ));
     }
     #[test]
@@ -489,7 +478,7 @@ mod tests {
             Command::Template(
                 None,
                 Template {
-                    task_id: None,
+                    task: None,
                     language: None,
                     file_name: Some(file_name),
                 }
@@ -536,5 +525,44 @@ mod tests {
     fn unused_command_line_parameters_cause_an_error() {
         let pargs = to_pargs(&["help", "-c", "alon"]);
         assert!(Command::parse_command(pargs).is_err());
+    }
+
+    #[test]
+    fn contest_parsed_as_integer() {
+        let pargs = to_pargs(&["submit", "--contest", "124", "main.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Some(Scope::Contest(124)), _)
+        ));
+    }
+
+    #[test]
+    fn non_numeric_contest_causes_an_error() {
+        let pargs = to_pargs(&["submit", "--contest", "124t", "main.cpp"]);
+        assert!(Command::parse_command(pargs).is_err());
+    }
+
+    #[test]
+    fn dash_c_option_can_be_contest() {
+        let pargs = to_pargs(&["submit", "-c", "125", "main.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Some(Scope::Contest(125)), _)
+        ));
+    }
+
+    #[test]
+    fn dash_c_option_is_course_if_non_numeric() {
+        let pargs = to_pargs(&["submit", "-c", "125Z", "main.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Some(Scope::Course(_)), _)
+        ));
     }
 }

@@ -1,57 +1,40 @@
 use super::require_login;
 use crate::api::CodeSubmit;
 use crate::command;
-use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters};
-use crate::{CsesApi, Filesystem, Resources, Storage, RP};
+use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo};
+use crate::{CsesApi, Filesystem, Resources, RP};
 use anyhow::{Context, Result};
-
-pub fn create_submit_parameters(
-    _res: &mut Resources<impl RP>,
-    scope: Scope,
-    parameters: command::Submit,
-) -> Result<SubmitParameters> {
-    Ok(SubmitParameters {
-        scope,
-        file: parameters.file_name,
-        task: parameters.task_id,
-        language: parameters.language,
-    })
-}
 
 pub fn submit(
     res: &mut Resources<impl RP>,
-    submit_parameters: SubmitParameters,
+    scope: &Scope,
+    parameters: command::Submit,
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         require_login(res)?;
-        let scope = submit_parameters.scope;
-        let task_id = submit_parameters.task;
-        let content = res.filesystem.get_file(&submit_parameters.file)?;
-        let filename = res.filesystem.get_file_name(&submit_parameters.file)?;
+        let task = parameters.task.as_deref();
+        let content = res.filesystem.get_file(&parameters.file_name)?;
+        let filename = res.filesystem.get_file_name(&parameters.file_name)?;
         let content = res.filesystem.encode_base64(&content);
         let submission = CodeSubmit {
-            language: submit_parameters.language,
+            language: parameters.language,
             filename,
             content,
         };
         Ok(res
             .api
-            .submit_task(require_login(res)?, &scope, task_id, &submission)?)
+            .submit_task(require_login(res)?, &scope, task, &submission)?)
     })()
     .context("Failed submitting file")
 }
 
 pub fn submission_info(
     res: &mut Resources<impl RP>,
+    scope: &Scope,
     submission_id: u64,
     poll: bool,
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
-        let storage = res.storage.get();
-        let scope = match storage.get_scope() {
-            Some(scope) => scope,
-            _ => panic!(),
-        };
         Ok(res
             .api
             .get_submit(require_login(res)?, &scope, submission_id, poll)?)
@@ -61,14 +44,10 @@ pub fn submission_info(
 
 pub fn submission_list(
     res: &mut Resources<impl RP>,
+    scope: &Scope,
     task_id: u64,
 ) -> Result<Vec<SubmissionListingInfo>> {
     (|| -> Result<_> {
-        let storage = res.storage.get();
-        let scope = match storage.get_scope() {
-            Some(scope) => scope,
-            _ => panic!(),
-        };
         let response = res
             .api
             .get_submit_list(require_login(res)?, &scope, task_id)?;
