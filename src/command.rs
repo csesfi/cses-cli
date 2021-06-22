@@ -531,4 +531,43 @@ mod tests {
         let pargs = to_pargs(&["help", "-c", "alon"]);
         assert!(Command::parse_command(pargs).is_err());
     }
+
+    #[test]
+    fn contest_parsed_as_integer() {
+        let pargs = to_pargs(&["submit", "--contest", "124", "main.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Some(Scope::Contest(124)), _)
+        ));
+    }
+
+    #[test]
+    fn non_numeric_contest_causes_an_error() {
+        let pargs = to_pargs(&["submit", "--contest", "124t", "main.cpp"]);
+        assert!(Command::parse_command(pargs).is_err());
+    }
+
+    #[test]
+    fn dash_c_option_can_be_contest() {
+        let pargs = to_pargs(&["submit", "-c", "125", "main.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Some(Scope::Contest(125)), _)
+        ));
+    }
+
+    #[test]
+    fn dash_c_option_is_course_if_non_numeric() {
+        let pargs = to_pargs(&["submit", "-c", "125Z", "main.cpp"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submit(Some(Scope::Course(_)), _)
+        ));
+    }
 }
