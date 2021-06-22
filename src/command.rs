@@ -1,6 +1,6 @@
 use anyhow::{anyhow, bail, Context, Result};
 
-use crate::entities::{Language, Scope};
+use crate::entities::{Language, Scope, TaskId};
 
 pub static HELP_STR: &str = r#"CSES CLI
 
@@ -30,7 +30,7 @@ OPTIONS:
         Any previously supplied value is remembered.
     -t <task-id>, --task <task-id>
         For courses, the numeric task ID.
-        For contests, the letter of the task (A-Z).
+        For contests, the letter of the task (A-Z). Case insensitive.
     -l <language>, --language <language>
         Specifies the programming language of the submitted file or the
         downloaded template.
@@ -72,13 +72,13 @@ pub enum Command {
 }
 #[derive(Debug)]
 pub struct Submit {
-    pub task_id: Option<u64>,
+    pub task: Option<TaskId>,
     pub language: Language,
     pub file_name: String,
 }
 #[derive(Debug)]
 pub struct Template {
-    pub task_id: Option<u64>,
+    pub task: Option<TaskId>,
     pub language: Option<String>,
     pub file_name: Option<String>,
 }
@@ -99,7 +99,7 @@ fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
         None
     })
 }
-fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<u64>> {
+fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<TaskId>> {
     Ok(pargs.opt_value_from_str(["-t", "--task"])?)
 }
 fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
@@ -111,7 +111,7 @@ fn parse_language_option(pargs: &mut pico_args::Arguments) -> Result<Option<Stri
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            task_id: parse_task_id(pargs)?,
+            task: parse_task_id(pargs)?,
             language: Language {
                 name: parse_language_name(pargs)?,
                 option: parse_language_option(pargs)?,
@@ -129,7 +129,7 @@ impl Submit {
 impl Template {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
         Ok(Template {
-            task_id: parse_task_id(pargs)?,
+            task: parse_task_id(pargs)?,
             language: parse_language_name(pargs)?,
             file_name: pargs.opt_value_from_str(["-f", "--file"])?,
         })
@@ -313,7 +313,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task_id: Some(task), .. })
+            Command::Submit(_, Submit { task: Some(TaskId::Number(task)), .. })
             if task == 123
         ));
     }
@@ -325,7 +325,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task_id: Some(task), .. })
+            Command::Submit(_, Submit { task: Some(TaskId::Number(task)), .. })
             if task == 123
         ));
     }
@@ -417,7 +417,7 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task_id: Some(task_id),
+                    task: Some(TaskId::Number(task_id)),
                     language: Some(language),
                     file_name: None,
                 }
@@ -433,7 +433,7 @@ mod tests {
             Command::Template(
                 None,
                 Template {
-                    task_id: Some(task_id),
+                    task: Some(TaskId::Number(task_id)),
                     language: Some(language),
                     file_name: None,
                 }
@@ -449,7 +449,7 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task_id: None,
+                    task: None,
                     language: None,
                     file_name: Some(file_name),
                 }
@@ -473,7 +473,7 @@ mod tests {
             Command::Template(
                 Some(Scope::Course(course_id)),
                 Template {
-                    task_id: Some(task_id),
+                    task: Some(TaskId::Number(task_id)),
                     language: Some(language),
                     file_name: None,
                 }
@@ -489,7 +489,7 @@ mod tests {
             Command::Template(
                 None,
                 Template {
-                    task_id: None,
+                    task: None,
                     language: None,
                     file_name: Some(file_name),
                 }

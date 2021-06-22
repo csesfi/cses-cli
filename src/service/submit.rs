@@ -1,7 +1,7 @@
 use super::require_login;
 use crate::api::CodeSubmit;
 use crate::command;
-use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters};
+use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo, SubmitParameters, TaskId};
 use crate::{CsesApi, Filesystem, Resources, RP};
 use anyhow::{Context, Result};
 
@@ -18,7 +18,7 @@ pub fn create_submit_parameters(
     Ok(SubmitParameters {
         course: course.to_string(),
         file: parameters.file_name,
-        task: parameters.task_id,
+        task: parameters.task,
         language: parameters.language,
     })
 }
@@ -30,7 +30,11 @@ pub fn submit(
     (|| -> Result<_> {
         require_login(res)?;
         let course_id = submit_parameters.course;
-        let task_id = submit_parameters.task;
+        // FIXME
+        let task = submit_parameters.task.map(|t| match t {
+            TaskId::Number(id) => id,
+            _ => panic!(),
+        });
         let content = res.filesystem.get_file(&submit_parameters.file)?;
         let filename = res.filesystem.get_file_name(&submit_parameters.file)?;
         let content = res.filesystem.encode_base64(&content);
@@ -41,7 +45,7 @@ pub fn submit(
         };
         Ok(res
             .api
-            .submit_task(require_login(res)?, &course_id, task_id, &submission)?)
+            .submit_task(require_login(res)?, &course_id, task, &submission)?)
     })()
     .context("Failed submitting file")
 }
