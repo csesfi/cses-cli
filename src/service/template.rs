@@ -13,8 +13,7 @@ pub fn get_template(
         Ok(res.api.get_template(
             token,
             scope,
-            // FIXME
-            parameters.task.as_deref().map(|t| t.parse().unwrap()),
+            parameters.task.as_deref(),
             parameters.language.as_deref(),
             parameters.file_name.as_deref(),
         )?)

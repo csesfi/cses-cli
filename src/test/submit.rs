@@ -1,7 +1,5 @@
-use super::fake_resources;
 use super::fake_resources_with_mock_api;
 use crate::command;
-use crate::command::Submit;
 use crate::entities::{Language, Scope, SubmissionInfo};
 use crate::service;
 use crate::storage::StorageData;
@@ -16,7 +14,7 @@ fn submit_mock() -> Result<()> {
         .withf(|token, scope, task_id, submission| {
             token == "gnewwoiJ"
                 && scope.to_string() == "crs"
-                && *task_id == Some(3)
+                && *task_id == Some("3")
                 && submission.language.name == Some("Python".to_string())
                 && submission.filename == "extracted_filename"
                 && submission.content == "testing"

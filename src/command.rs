@@ -64,7 +64,7 @@ pub enum Command {
     List(Option<Scope>),
     Submit(Option<Scope>, Submit),
     Template(Option<Scope>, Template),
-    Submissions(Option<Scope>, u64),
+    Submissions(Option<Scope>, String),
     Submission(Option<Scope>, u64),
 }
 #[derive(Debug)]
@@ -491,7 +491,11 @@ mod tests {
         let pargs = to_pargs(&["submissions", "-t", "140"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        assert!(matches!(command, Command::Submissions(None, 140)));
+        assert!(matches!(
+            command,
+            Command::Submissions(None, task)
+            if task == "140"
+        ));
     }
 
     #[test]
@@ -501,8 +505,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submissions(Some(Scope::Course(course)), 140)
-            if course == "alon"
+            Command::Submissions(Some(Scope::Course(course)), task)
+            if course == "alon" && task == "140"
         ));
     }
 

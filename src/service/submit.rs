@@ -45,7 +45,7 @@ pub fn submission_info(
 pub fn submission_list(
     res: &mut Resources<impl RP>,
     scope: &Scope,
-    task_id: u64,
+    task_id: &str,
 ) -> Result<Vec<SubmissionListingInfo>> {
     (|| -> Result<_> {
         let response = res

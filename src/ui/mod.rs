@@ -68,7 +68,7 @@ impl<R: ResourcesProvider> Ui<R> {
             }
             Command::Submissions(scope, task_id) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                submissions::list(self, &scope, task_id)?;
+                submissions::list(self, &scope, &task_id)?;
             }
             Command::Submission(scope, submission_id) => {
                 let scope = service::select_scope(&mut self.res, scope)?;

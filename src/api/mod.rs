@@ -48,16 +48,17 @@ pub enum ApiError {
 
 pub type ApiResult<T> = Result<T, ApiError>;
 
+#[allow(clippy::needless_lifetimes)]
 #[cfg_attr(test, automock)]
 pub trait CsesApi {
     fn login(&self) -> ApiResult<LoginResponse>;
     fn login_status(&self, token: &str) -> ApiResult<UserOutline>;
     fn logout(&self, token: &str) -> ApiResult<()>;
-    fn submit_task(
+    fn submit_task<'a>(
         &self,
         token: &str,
         scope: &Scope,
-        task_id: Option<u64>,
+        task_id: Option<&'a str>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo>;
     fn get_submit(
@@ -71,16 +72,15 @@ pub trait CsesApi {
         &self,
         token: &str,
         scope: &Scope,
-        task_id: u64,
+        task_id: &str,
     ) -> ApiResult<SubmissionList>;
-    #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
     fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<CourseContent>;
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
         scope: &Scope,
-        task_id: Option<u64>,
+        task_id: Option<&'a str>,
         language: Option<&'a str>,
         file: Option<&'a str>,
     ) -> ApiResult<TemplateResponse>;
@@ -114,7 +114,7 @@ impl CsesApi for CsesHttpApi {
         &self,
         token: &str,
         scope: &Scope,
-        task_id: Option<u64>,
+        task_id: Option<&str>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo> {
         let mut request = minreq::post(format_url(&self.url, scope, "submissions"))
@@ -123,7 +123,7 @@ impl CsesApi for CsesHttpApi {
             .with_header("Content-Type", "application/json");
 
         if let Some(task_id) = task_id {
-            request = request.with_param("task", task_id.to_string());
+            request = request.with_param("task", task_id);
         }
 
         let response = request.send()?;
@@ -157,11 +157,11 @@ impl CsesApi for CsesHttpApi {
         &self,
         token: &str,
         scope: &Scope,
-        task_id: u64,
+        task_id: &str,
     ) -> ApiResult<SubmissionList> {
         let response = minreq::get(format_url(&self.url, scope, "submissions"))
             .with_header("X-Auth-Token", token)
-            .with_param("task", task_id.to_string())
+            .with_param("task", task_id)
             .send()?;
         check_error(&response)?;
         let response_body: SubmissionList = json::from_str(response.as_str()?)?;
@@ -202,7 +202,7 @@ impl CsesApi for CsesHttpApi {
         &self,
         token: Option<&'a str>,
         scope: &Scope,
-        task_id: Option<u64>,
+        task_id: Option<&'a str>,
         language: Option<&'a str>,
         file_name: Option<&'a str>,
     ) -> ApiResult<TemplateResponse> {
@@ -211,7 +211,7 @@ impl CsesApi for CsesHttpApi {
             request = request.with_header("X-Auth-Token", token);
         }
         if let Some(task_id) = task_id {
-            request = request.with_param("task", task_id.to_string());
+            request = request.with_param("task", task_id);
         }
         if let Some(language) = language {
             request = request.with_param("language", language);

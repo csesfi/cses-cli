@@ -22,11 +22,11 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn submit_task(
+    fn submit_task<'a>(
         &self,
         _token: &str,
         _scope: &Scope,
-        _task_id: Option<u64>,
+        _task_id: Option<&'a str>,
         _submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo> {
         todo!()
@@ -46,7 +46,7 @@ impl CsesApi for FakeCsesApi {
         &self,
         _token: &str,
         _scope: &Scope,
-        _task_id: u64,
+        _task_id: &str,
     ) -> ApiResult<SubmissionList> {
         todo!()
     }
@@ -59,7 +59,7 @@ impl CsesApi for FakeCsesApi {
         &self,
         _token: Option<&'a str>,
         _scope: &Scope,
-        _task_id: Option<u64>,
+        _task_id: Option<&'a str>,
         _language: Option<&'a str>,
         _file: Option<&'a str>,
     ) -> ApiResult<TemplateResponse> {
@@ -124,6 +124,7 @@ impl Filesystem for FakeFilesystem {
     }
 }
 
+#[allow(unused)]
 fn fake_resources() -> Resources<(FakeCsesApi, FakeStorage, FakeFilesystem)> {
     Resources {
         api: FakeCsesApi {},
