@@ -97,9 +97,7 @@ fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
     })
 }
 fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
-    Ok(pargs
-        .opt_value_from_str(["-t", "--task"])?
-        .map(|s: String| s.to_uppercase()))
+    Ok(pargs.opt_value_from_str(["-t", "--task"])?)
 }
 fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-l", "--language"])?)
