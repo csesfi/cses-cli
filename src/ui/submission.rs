@@ -22,7 +22,8 @@ pub fn print_submission_info(
     let mut spinner = Spinner::new(9);
     while submission_info.pending {
         spinner.rotate_and_print(ui)?;
-        submission_info = service::submission_info(&mut ui.res, scope, submission_info.id, long_poll)?;
+        submission_info =
+            service::submission_info(&mut ui.res, scope, submission_info.id, long_poll)?;
         ui.term.clear_last_lines(2)?;
         if !compiler_report_printed {
             compiler_report_printed = print_compiler_report(ui, &submission_info)?;

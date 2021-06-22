@@ -1,4 +1,8 @@
-use crate::{RP, command, entities::{Scope, SubmissionInfo}, service};
+use crate::{
+    command,
+    entities::{Scope, SubmissionInfo},
+    service, RP,
+};
 use anyhow::Result;
 
 use super::Ui;
