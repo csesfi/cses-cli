@@ -36,10 +36,10 @@ fn run() -> anyhow::Result<()> {
     };
 
     let command = Command::from_command_line()?;
-    let api = if !test {
-        CsesHttpApi::default()
+    let api = if let Ok(url) = std::env::var("CSES_API_URL") {
+        CsesHttpApi::new(url)
     } else {
-        CsesHttpApi::new(String::from("http://127.0.0.1:4011"))
+        CsesHttpApi::default()
     };
     let storage = FileStorage::new(test)?;
     let filesystem = ConcreteFilesystem::default();
