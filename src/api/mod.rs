@@ -1,4 +1,5 @@
 mod escape;
+mod trace_send;
 use crate::entities::{
     CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, TemplateResponse,
     UserOutline,
@@ -9,6 +10,7 @@ use minreq::Response;
 #[cfg(test)]
 use mockall::automock;
 use thiserror::Error;
+use trace_send::TraceSend;
 
 pub struct CsesHttpApi {
     url: String,
@@ -92,7 +94,7 @@ pub trait CsesApi {
 
 impl CsesApi for CsesHttpApi {
     fn login(&self) -> ApiResult<LoginResponse> {
-        let response = minreq::post(format!("{}/login", self.url)).send()?;
+        let response = minreq::post(format!("{}/login", self.url)).trace_send()?;
         check_error(&response)?;
         Ok(json::from_str(response.as_str()?)?)
     }
@@ -100,7 +102,7 @@ impl CsesApi for CsesHttpApi {
     fn login_status(&self, token: &str) -> ApiResult<UserOutline> {
         let response = minreq::get(format!("{}/login", self.url))
             .with_header("X-Auth-Token", token)
-            .send()?;
+            .trace_send()?;
         check_error(&response)?;
         let response: UserOutline = json::from_str(response.as_str()?)?;
         Ok(response)
@@ -109,7 +111,7 @@ impl CsesApi for CsesHttpApi {
     fn logout(&self, token: &str) -> ApiResult<()> {
         let response = minreq::post(format!("{}/logout", self.url))
             .with_header("X-Auth-Token", token)
-            .send()?;
+            .trace_send()?;
         check_error(&response)?;
         Ok(())
     }
@@ -134,7 +136,7 @@ impl CsesApi for CsesHttpApi {
             request = request.with_param("task", task_id.to_string());
         }
 
-        let response = request.send()?;
+        let response = request.trace_send()?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -156,7 +158,7 @@ impl CsesApi for CsesHttpApi {
         ))
         .with_header("X-Auth-Token", token)
         .with_param("poll", poll)
-        .send()?;
+        .trace_send()?;
         check_error(&response)?;
         let response_body: SubmissionInfo = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -175,7 +177,7 @@ impl CsesApi for CsesHttpApi {
         ))
         .with_header("X-Auth-Token", token)
         .with_param("task", task_id.to_string())
-        .send()?;
+        .trace_send()?;
         check_error(&response)?;
         let response_body: SubmissionList = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -186,13 +188,13 @@ impl CsesApi for CsesHttpApi {
             Some(token) => {
                 let response = minreq::get(format!("{}/courses", self.url))
                     .with_header("X-Auth-Token", token)
-                    .send()?;
+                    .trace_send()?;
                 check_error(&response)?;
                 let course_list: CourseList = json::from_str(response.as_str()?)?;
                 Ok(course_list)
             }
             None => {
-                let response = minreq::get(format!("{}/courses", self.url)).send()?;
+                let response = minreq::get(format!("{}/courses", self.url)).trace_send()?;
                 check_error(&response)?;
                 let course_list: CourseList = json::from_str(response.as_str()?)?;
                 Ok(course_list)
@@ -209,7 +211,7 @@ impl CsesApi for CsesHttpApi {
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
-        let response = request.send()?;
+        let response = request.trace_send()?;
         check_error(&response)?;
         let course_content: CourseContent = json::from_str(response.as_str()?)?;
         Ok(course_content)
@@ -240,7 +242,7 @@ impl CsesApi for CsesHttpApi {
         if let Some(file_name) = file_name {
             request = request.with_param("filename", file_name);
         }
-        let response = request.send()?;
+        let response = request.trace_send()?;
         check_error(&response)?;
         Ok(json::from_str(response.as_str()?)?)
     }
