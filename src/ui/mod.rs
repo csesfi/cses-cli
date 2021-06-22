@@ -11,7 +11,7 @@ use anyhow::{anyhow, Context, Error, Result};
 use console::{Style, Term};
 
 use crate::api::ApiError;
-use crate::command::{HELP_STR, LANGUAGE_HINT, NO_COMMAND_PROVIDED_HINT, TASK_HINT};
+use crate::command::{HELP_STR, LANGUAGE_HINT, TASK_HINT};
 use crate::entities::Scope;
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider, RP};
@@ -37,7 +37,8 @@ impl<R: ResourcesProvider> Ui<R> {
         service::ping(&mut self.res);
         match command {
             Command::None => {
-                self.term.write_line(NO_COMMAND_PROVIDED_HINT)?;
+                self.term.write_line(HELP_STR)?;
+                login::status(self).context("Could not get login status")?;
             }
             Command::Help => {
                 self.term.write_str(HELP_STR)?;

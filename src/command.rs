@@ -8,10 +8,10 @@ USAGE:
     cses-cli <command> [OPTIONS]
 
 COMMANDS:
-    help                    Print this help message.
+    help                    Display this help message.
     login                   Log in to cses.fi.
     logout                  Invalidate the current login session.
-    status                  Print the login status.
+    status                  Display the login status.
     courses                 Display a list of courses.
     list [-c]               Display the contents of a course or contest.
     submit [-ctlo] <file>   Submit a file to cses.fi.
@@ -40,9 +40,6 @@ OPTIONS:
     -f <file>, --file <file>
         Selects the template with filename "file".
 "#;
-
-pub static NO_COMMAND_PROVIDED_HINT: &str = r#"No command provided. Run "help" 
-to get a list of available commands."#;
 
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
 the "-l" or "--language" flags, e.g.:
