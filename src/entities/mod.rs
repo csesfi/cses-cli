@@ -55,7 +55,7 @@ pub struct TestProgress {
 
 #[derive(Debug, Default, Deserialize)]
 pub struct TaskOutline {
-    pub id: u64,
+    pub id: String,
     pub name: String,
 }
 
@@ -99,6 +99,7 @@ pub struct SubmissionListingInfo {
     pub language: Language,
     pub code_time: Option<u64>,
     pub size: Option<u64>,
+    #[serde(rename = "outcome_status")]
     pub result: CourseTaskStatus,
 }
 

@@ -1,0 +1,22 @@
+SubmissionBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        required:
+          - language
+          - filename
+          - content
+        additionalProperties: false
+
+        type: object
+        properties:
+          language:
+            $ref: "schemas.yaml#/Language"
+          filename:
+            type: string
+            description: Original name of the file.
+          content:
+            type: string
+            format: byte
+            description: Content of the file encoded as base64.
