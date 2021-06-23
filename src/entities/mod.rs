@@ -35,6 +35,7 @@ pub struct SubmissionInfo {
     pub pending: bool,
     pub test_progress: Option<TestProgress>,
     pub result: Option<String>,
+    pub score: Option<u64>,
     pub feedback: Option<Vec<SubtaskInfo>>,
     pub tests: Option<Vec<SubmissionTestInfo>>,
     pub compiler: Option<String>,
