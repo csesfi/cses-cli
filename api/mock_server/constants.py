@@ -242,13 +242,13 @@ ALL_COURSES = VISIBLE_COURSES + [
 ]
 
 TEST_TASK = {
-    "header": "Test task",
+    "name": "Test task",
     "time_limit": 1000,
     "memory_limit": 512,
     "text": "Solve this problem."
 }
 
 TEST_TASK_WITHOUT_TIME_AND_MEMORY_LIMIT = {
-    "header": "Test task",
+    "name": "Test task",
     "text": "Solve this problem."
 }
