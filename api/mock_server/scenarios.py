@@ -171,7 +171,7 @@ SCENARIOS = [
         ])
     ),
     SubmissionScenario(
-        SubmissionInfo(scope_id="cses", task_id=constants.DEFAULT_TASK,
+        SubmissionInfo(scope_id="cses", task_id=constants.DEFAULT_COURSE_TASK,
                        submission_json=constants.CPP_CODE),
         submission_progress([
             constants.CPP_PROGRESS_BASE,
