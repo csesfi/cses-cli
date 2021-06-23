@@ -1,0 +1,162 @@
+InvalidApiKeyError:
+  description: Invalid api key error response from the server.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/InvalidApiKeyError"
+
+GetLoginError:
+  description: >
+    API key pending authentication or invalid. Only given by `GET /login`.
+  content:
+    application/json:
+      schema:
+        oneOf:
+          - $ref: "schemas.yaml#/InvalidApiKeyError"
+          - $ref: "schemas.yaml#/PendingApiKeyError"
+
+ClientError:
+  description: General error response from the server.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/ClientError"
+      examples:
+        example1:
+          summary: An example error message
+          value:
+            message: Too many requests
+            code: client_error
+
+SubmissionClientError:
+  description: >
+    Either a general client error or a specialized error
+    if server failed to deduce missing parts of the submission.
+  content:
+    application/json:
+      schema:
+        oneOf:
+          - $ref: "schemas.yaml#/TaskDeductionError"
+          - $ref: "schemas.yaml#/LanguageDeductionError"
+          - $ref: "schemas.yaml#/ClientError"
+
+      examples:
+        task_error_example:
+          summary: An example task deduction error
+          value:
+            message: >
+              Couldn't find a task for the submitted file.
+              For this course, the filename should be e.g.
+              `hello_world.cpp` for the task Hello World.
+            code: task_deduction_error
+
+        language_error_example:
+          summary: An example language deduction error message
+          value:
+            message: >
+              The filename extension `.asdf` doesn't specify
+              any available language.
+            code: language_deduction_error
+
+ServerError:
+  description: General server error.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/ServerError"
+
+SuccessfulCourseSubmissionPost:
+  description: >
+    Submission was sent successfully. The new submission ID is
+    included in the response.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/CourseSubmissionInfo"
+
+SuccessfulContestSubmissionPost:
+  description: >
+    Submission was sent successfully. The new submission ID is
+    included in the response.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/ContestSubmissionInfo"
+
+SuccessfulCourseSubmissionListGet:
+  description: >
+    Info about a submissions were retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/CourseSubmissionList"
+
+SuccessfulContestSubmissionListGet:
+  description: >
+    Info about a submissions were retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/ContestSubmissionList"
+
+SuccessfulCourseSubmissionInfoGet:
+  description: >
+    Info about a submission was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/CourseSubmissionInfo"
+
+SuccessfulContestSubmissionInfoGet:
+  description: >
+    Info about a submission was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/ContestSubmissionInfo"
+
+SuccessfulCourseListGet:
+  description: >
+    Info about available courses was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/CourseList"
+
+SuccessfulCourseContentGet:
+  description: >
+    The listed information was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/CourseContent"
+
+SuccessfulContestContentGet:
+  description: >
+    The listed information was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/ContestContent"
+
+SuccessfulCodeTemplateGet:
+  description: >
+    The code template was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        additionalProperties: false
+        required:
+          - template_source
+          - filename
+        type: object
+
+        properties:
+          template_source:
+            type: string
+            description: >
+              Source code of the template.
+          filename:
+            type: string
+            description: >
+              Filename of the template.
