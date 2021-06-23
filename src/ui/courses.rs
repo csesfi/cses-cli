@@ -72,13 +72,27 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                 id,
                 link,
                 status,
+                score,
             } => {
-                table.add_row(vec![
-                    TableCell::from(id).align(TableAlign::Right),
-                    TableCell::from(name),
-                    TableCell::styled(styled_task_status(Some(status))),
-                    TableCell::from(link),
-                ]);
+                match score {
+                    Some(score) => {
+                        // FIXME: Add styling (color?) to the score.
+                        table.add_row(vec![
+                            TableCell::from(id).align(TableAlign::Right),
+                            TableCell::from(name),
+                            TableCell::from(score),
+                            TableCell::from(link),
+                        ]);
+                    }
+                    _ => {
+                        table.add_row(vec![
+                            TableCell::from(id).align(TableAlign::Right),
+                            TableCell::from(name),
+                            TableCell::styled(styled_task_status(status)),
+                            TableCell::from(link),
+                        ]);
+                    }
+                }
             }
         }
     }

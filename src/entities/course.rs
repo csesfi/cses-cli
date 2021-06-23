@@ -17,7 +17,7 @@ pub struct CourseSection {
 pub enum CourseItem<'a> {
     Text {
         name: &'a str,
-        id: u64,
+        id: String,
         link: &'a str,
     },
     Link {
@@ -26,9 +26,10 @@ pub enum CourseItem<'a> {
     },
     Task {
         name: &'a str,
-        id: u64,
+        id: String,
         link: &'a str,
-        status: CourseTaskStatus,
+        status: Option<CourseTaskStatus>,
+        score: Option<u64>,
     },
 }
 
@@ -40,6 +41,7 @@ pub struct CourseItemRaw {
     id: Option<String>,
     link: String,
     status: Option<CourseTaskStatus>,
+    score: Option<u64>,
 }
 
 #[derive(Debug, Deserialize, Copy, Clone)]
@@ -70,8 +72,7 @@ impl CourseItemRaw {
                 id: self
                     .id
                     .clone()
-                    .ok_or_else(|| anyhow!("Could not get ID"))?
-                    .parse()?,
+                    .ok_or_else(|| anyhow!("Could not get ID"))?,
                 link: &self.link,
             },
             CourseItemType::Link => CourseItem::Link {
@@ -83,10 +84,10 @@ impl CourseItemRaw {
                 id: self
                     .id
                     .clone()
-                    .ok_or_else(|| anyhow!("Could not get ID"))?
-                    .parse()?,
+                    .ok_or_else(|| anyhow!("Could not get ID"))?,
                 link: &self.link,
-                status: self.status.ok_or_else(|| anyhow!("Could not get status"))?,
+                status: self.status,
+                score: self.score,
             },
         })
     }
