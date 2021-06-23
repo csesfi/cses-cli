@@ -1,6 +1,6 @@
 mod escape;
 use crate::entities::{
-    CourseContent, CourseList, Language, Scope, SubmissionInfo, SubmissionList, TemplateResponse,
+    ScopeContent, CourseList, Language, Scope, SubmissionInfo, SubmissionList, TemplateResponse,
     UserOutline,
 };
 use escape::Escape;
@@ -75,7 +75,7 @@ pub trait CsesApi {
         task_id: &str,
     ) -> ApiResult<SubmissionList>;
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
-    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<CourseContent>;
+    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<ScopeContent>;
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
@@ -187,15 +187,15 @@ impl CsesApi for CsesHttpApi {
         }
     }
 
-    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<CourseContent> {
+    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<ScopeContent> {
         let mut request = minreq::get(format_url(&self.url, scope, "list"));
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
         let response = request.send()?;
         check_error(&response)?;
-        let course_content: CourseContent = json::from_str(response.as_str()?)?;
-        Ok(course_content)
+        let scope_content: ScopeContent = json::from_str(response.as_str()?)?;
+        Ok(scope_content)
     }
 
     fn get_template<'a>(

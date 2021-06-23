@@ -1,5 +1,3 @@
-mod course;
-pub use course::*;
 mod scope;
 pub use scope::*;
 
@@ -94,7 +92,7 @@ pub struct SubmissionListingInfo {
     pub code_time: Option<u64>,
     pub size: Option<u64>,
     #[serde(rename = "outcome_status")]
-    pub result: Option<CourseTaskStatus>,
+    pub result: Option<TaskStatus>,
     #[serde(rename = "outcome_score")]
     pub score: Option<u64>,
 }

@@ -1,5 +1,5 @@
 use crate::{
-    entities::{CourseItem, CourseItemRaw, Scope},
+    entities::{ScopeItem, ScopeItemRaw, Scope},
     service,
     ui::{
         table::{Table, TableAlign, TableCell},
@@ -29,32 +29,35 @@ pub fn list_courses(ui: &mut Ui<impl RP>) -> Result<()> {
 }
 
 pub fn list_content(ui: &mut Ui<impl RP>, scope: &Scope) -> Result<()> {
-    let course = service::course_content(&mut ui.res, scope)?;
+    let scope_content = service::scope_content(&mut ui.res, scope)?;
 
-    if course.sections.is_empty() {
-        return Ok(writeln!(ui.term, "No course content!")?);
+    if scope_content.sections.is_empty() {
+        return Ok(writeln!(ui.term, "{}", match scope {
+            Scope::Course(_) => "No course content!",
+            Scope::Contest(_) => "No contest content!",
+        })?);
     }
 
-    for section in course.sections {
+    for section in scope_content.sections {
         writeln!(ui.term, "\n{}", style(&section.header).bold())?;
         if let Some(text) = &section.text {
             writeln!(ui.term, "\n{}", text)?;
         }
 
-        let table = create_course_item_table(&section.list)?;
+        let table = create_item_table(&section.list)?;
         write!(ui.term, "\n{}", table)?;
     }
     writeln!(ui.term)?;
     Ok(())
 }
 
-pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
+pub fn create_item_table(list: &[ScopeItemRaw]) -> Result<Table> {
     let mut table = Table::new(vec![4, 30, 0, 0]);
 
-    for course_item_raw in list {
-        let course_item_as_enum = course_item_raw.as_enum()?;
-        match course_item_as_enum {
-            CourseItem::Text { id, name, link } => {
+    for scope_item_raw in list {
+        let scope_item_as_enum = scope_item_raw.as_enum()?;
+        match scope_item_as_enum {
+            ScopeItem::Text { id, name, link } => {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
@@ -62,7 +65,7 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                     TableCell::from(link),
                 ]);
             }
-            CourseItem::Link { name, link } => {
+            ScopeItem::Link { name, link } => {
                 table.add_row(vec![
                     TableCell::from(""),
                     TableCell::from(name),
@@ -70,7 +73,7 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                     TableCell::from(link),
                 ]);
             }
-            CourseItem::Task {
+            ScopeItem::Task {
                 name,
                 id,
                 link,

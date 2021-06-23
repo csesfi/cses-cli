@@ -1,7 +1,7 @@
 mod courses;
 mod login;
 mod template;
-pub use courses::{course_content, courses};
+pub use courses::{scope_content, courses};
 pub use login::{login, login_is_valid, login_status, logout, Login};
 pub use template::{file_exists, get_template, save_response};
 
