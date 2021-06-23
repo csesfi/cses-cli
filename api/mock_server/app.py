@@ -202,7 +202,7 @@ def contests_get_template(token_info, contest_id, task=None, language=None,
 
 def common_get_test_case_list(token_info, scope_id, task):
     if task == 404:
-        return ({"message": "Test cases for a courses task not found", "code": "client_error"}, 404)
+        return ({"message": "Test cases not found", "code": "client_error"}, 404)
 
     return (constants.TEST_CASE_LIST, 200)
 
