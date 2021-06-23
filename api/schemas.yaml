@@ -653,3 +653,28 @@ ContestSubmissionList:
               Code size in chars.
           outcome_score:
             $ref: "schemas.yaml#/OutcomeScore"
+
+TaskStatement:
+      additionalProperties: false
+      required:
+        - name
+        - text
+      type: object
+
+      properties:
+        name:
+          type: string
+          description: >
+            The name of the task.
+        time_limit:
+          type: integer
+          description: >
+            The task's time limit in milliseconds.
+        memory_limit:
+          type: integer
+          description: >
+            The task's memory limit in megabytes.
+        text:
+          type: string
+          description: >
+            The task statement given in an unspecified raw format.
