@@ -160,3 +160,12 @@ SuccessfulCodeTemplateGet:
             type: string
             description: >
               Filename of the template.
+
+
+SuccessfulTaskStatementGet:
+  description: >
+    The task statement was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/TaskStatement"
