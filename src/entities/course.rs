@@ -69,10 +69,7 @@ impl CourseItemRaw {
         Ok(match &self.object_type {
             CourseItemType::Text => CourseItem::Text {
                 name: &self.name,
-                id: self
-                    .id
-                    .clone()
-                    .ok_or_else(|| anyhow!("Could not get ID"))?,
+                id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,
                 link: &self.link,
             },
             CourseItemType::Link => CourseItem::Link {
@@ -81,10 +78,7 @@ impl CourseItemRaw {
             },
             CourseItemType::Task => CourseItem::Task {
                 name: &self.name,
-                id: self
-                    .id
-                    .clone()
-                    .ok_or_else(|| anyhow!("Could not get ID"))?,
+                id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,
                 link: &self.link,
                 status: self.status,
                 score: self.score,
