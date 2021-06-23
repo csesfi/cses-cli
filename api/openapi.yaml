@@ -364,7 +364,7 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#/SuccesfulTaskStatementGet"
+          $ref: "responses.yaml#/SuccessfulTaskStatementGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":
@@ -389,7 +389,7 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#/SuccesfulTaskStatementGet"
+          $ref: "responses.yaml#/SuccessfulTaskStatementGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":

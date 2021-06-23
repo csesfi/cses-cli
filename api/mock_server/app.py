@@ -95,12 +95,12 @@ def common_submissions_post(token_info, scope_id, task):
 
 
 def courses_submissions_post(token_info, course_id,
-                             task=constants.DEFAULT_TASK):
+                             task=constants.DEFAULT_COURSE_TASK):
     return common_submissions_post(token_info, course_id, task)
 
 
 def contests_submissions_post(token_info, contest_id,
-                              task=constants.DEFAULT_TASK):
+                              task=constants.DEFAULT_COURSE_TASK):
     return common_submissions_post(token_info, contest_id, task)
 
 
@@ -181,7 +181,7 @@ def get_contest_content(token_info, contest_id):
     return ({"message": "Contest not found",
              "code": "client_error"}, 404)
 
-        
+
 def get_course_task_statement(token_info, course_id, task_id):
     if course_id != "teku":
         return ({"message": "Course not found",
