@@ -1,7 +1,7 @@
 mod escape;
 use crate::entities::{
-    CourseContent, CourseList, Language, Scope, SubmissionInfo, SubmissionList, TemplateResponse,
-    UserOutline,
+    CourseContent, CourseList, Language, Scope, SubmissionInfo, SubmissionList, TaskStatement,
+    TemplateResponse, UserOutline,
 };
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
@@ -84,6 +84,12 @@ pub trait CsesApi {
         language: Option<&'a str>,
         file: Option<&'a str>,
     ) -> ApiResult<TemplateResponse>;
+    fn get_task_statement<'a>(
+        &self,
+        token: Option<&'a str>,
+        scope: &Scope,
+        task_id: &str,
+    ) -> ApiResult<TaskStatement>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -218,6 +224,22 @@ impl CsesApi for CsesHttpApi {
         }
         if let Some(file_name) = file_name {
             request = request.with_param("filename", file_name);
+        }
+        let response = request.send()?;
+        check_error(&response)?;
+        Ok(json::from_str(response.as_str()?)?)
+    }
+
+    fn get_task_statement<'a>(
+        &self,
+        token: Option<&'a str>,
+        scope: &Scope,
+        task_id: &str,
+    ) -> ApiResult<TaskStatement> {
+        let mut request =
+            minreq::get(format_url(&self.url, scope, "statement")).with_param("task", task_id);
+        if let Some(token) = token {
+            request = request.with_header("X-Auth-Token", token);
         }
         let response = request.send()?;
         check_error(&response)?;

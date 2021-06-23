@@ -1,5 +1,6 @@
 mod courses;
 mod login;
+mod statement;
 mod template;
 pub use courses::{course_content, courses};
 pub use login::{login, login_is_valid, login_status, logout, Login};

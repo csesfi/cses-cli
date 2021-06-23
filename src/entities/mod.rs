@@ -103,3 +103,11 @@ pub struct SubmissionListingInfo {
 pub struct SubmissionList {
     pub submissions: Vec<SubmissionListingInfo>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct TaskStatement {
+    pub name: String,
+    pub time_limit: Option<u64>,
+    pub memory_limit: Option<u64>,
+    pub text: String,
+}
