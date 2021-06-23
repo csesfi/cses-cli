@@ -74,36 +74,35 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                 status,
                 score,
             } => {
-                match score {
-                    Some(score) => {
-                        // FIXME: Add styling (color?) to the score.
-                        table.add_row(vec![
-                            TableCell::from(id).align(TableAlign::Right),
-                            TableCell::from(name),
-                            TableCell::from(score),
-                            TableCell::from(link),
-                        ]);
-                    }
-                    _ => {
-                        table.add_row(vec![
-                            TableCell::from(id).align(TableAlign::Right),
-                            TableCell::from(name),
-                            TableCell::styled(styled_task_status(status)),
-                            TableCell::from(link),
-                        ]);
-                    }
-                }
+                table.add_row(vec![
+                    TableCell::from(id).align(TableAlign::Right),
+                    TableCell::from(name),
+                    TableCell::styled(styled_task_status_or_score(status, score)),
+                    TableCell::from(link),
+                ]);
             }
         }
     }
     Ok(table)
 }
 
-pub fn styled_task_status(status: Option<CourseTaskStatus>) -> StyledObject<&'static str> {
+pub fn styled_task_status_or_score(
+    status: Option<CourseTaskStatus>,
+    score: Option<u64>,
+) -> StyledObject<String> {
+    if let Some(points) = score {
+        return match points {
+            points if points >= 100 => style(points.to_string()).black().on_green(),
+            points if points > 60 => style(points.to_string()).green(),
+            points if points > 10 => style(points.to_string()).yellow(),
+            _ => style(points.to_string()).red(),
+        };
+    }
+
     match status {
-        Some(CourseTaskStatus::Pass) => style("+").green(),
-        Some(CourseTaskStatus::Fail) => style("X").red(),
-        Some(CourseTaskStatus::None) => style("-").dim(),
-        None => style("-").dim(),
+        Some(CourseTaskStatus::Pass) => style("+".to_string()).green(),
+        Some(CourseTaskStatus::Fail) => style("X".to_string()).red(),
+        Some(CourseTaskStatus::None) => style("-".to_string()).dim(),
+        None => style("-".to_string()).dim(),
     }
 }
