@@ -653,3 +653,27 @@ ContestSubmissionList:
               Code size in chars.
           outcome_score:
             $ref: "schemas.yaml#/OutcomeScore"
+
+TestCaseList:
+  additionalProperties: false
+  required:
+    - test_cases
+  type: object
+  properties:
+    test_cases:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required:
+          - input
+          - output
+        properties:
+          input:
+            type: string
+            format: byte
+            description: Test input encoded as base64.
+          output:
+            type: string
+            format: byte
+            description: Expected output encoded as base64.
