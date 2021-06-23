@@ -6,7 +6,7 @@ use console::Style;
 use std::io::Write;
 
 use super::table::*;
-use super::util::{format_code_time, result_with_color};
+use super::util::{format_code_time, format_test_groups, result_with_color};
 use super::Ui;
 use crate::entities::SubmissionInfo;
 
@@ -103,11 +103,12 @@ fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
 fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref tests) = submission_info.tests {
         ui.term.write_line("\nTest results\n")?;
-        let mut table = Table::new(vec![0, "OUTPUT LIMIT EXCEEDED".len(), 0]);
+        let mut table = Table::new(vec![0, "OUTPUT LIMIT EXCEEDED".len(), 0, 0]);
         table.add_row(vec![
             TableCell::from("#").align(TableAlign::Right),
             TableCell::from("verdict").align(TableAlign::Center),
             "time".into(),
+            "groups".into(),
         ]);
         table.add_separator();
         for test in tests {
@@ -115,6 +116,7 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
                 TableCell::from(test.number).align(TableAlign::Right),
                 TableCell::styled(result_with_color(&test.verdict)),
                 format_code_time(test.time).into(),
+                format_test_groups(&test.groups).into(),
             ]);
         }
         write!(ui.term, "{}", table)?;
