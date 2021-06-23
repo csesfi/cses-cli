@@ -43,7 +43,7 @@ pub struct SubmissionInfo {
 
 #[derive(Debug, Deserialize)]
 pub struct SubtaskInfo {
-    pub number: u64,
+    pub group: u64,
     pub verdict: String,
     pub score: u64,
 }
@@ -53,7 +53,7 @@ pub struct SubmissionTestInfo {
     pub number: u64,
     pub verdict: String,
     pub time: Option<u64>,
-    pub group: Option<u64>,
+    pub groups: Option<Vec<u64>>,
 }
 
 #[derive(Debug, Deserialize)]
