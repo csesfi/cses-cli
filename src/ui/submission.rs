@@ -31,6 +31,7 @@ pub fn print_submission_info(
         print_status(ui, &submission_info)?;
     }
     print_test_report(ui, &submission_info)?;
+    print_test_feedback(ui, &submission_info)?;
     print_test_results(ui, &submission_info)?;
     print_final_result(ui, &submission_info)?;
     Ok(())
@@ -100,6 +101,29 @@ fn progress_bar(width: u64, progress_fraction: f64) -> Result<String> {
     }
     Ok(format!("[{:w$}]", s, w = width as usize))
 }
+
+fn print_test_feedback(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
+    if let Some(ref feedback) = submission_info.feedback {
+        ui.term.write_line("\nFeedback\n")?;
+        let mut table = Table::new(vec![0, "OUTPUT LIMIT EXCEEDED".len(), 0]);
+        table.add_row(vec![
+            TableCell::from("#").align(TableAlign::Right),
+            TableCell::from("verdict").align(TableAlign::Center),
+            "score".into(),
+        ]);
+        table.add_separator();
+        for group in feedback {
+            table.add_row(vec![
+                TableCell::from(group.group).align(TableAlign::Right),
+                TableCell::styled(result_with_color(&group.verdict)),
+                TableCell::from(group.score),
+            ])
+        }
+        write!(ui.term, "{}", table)?;
+    }
+    Ok(())
+}
+
 fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     if let Some(ref tests) = submission_info.tests {
         ui.term.write_line("\nTest results\n")?;

@@ -1,11 +1,14 @@
 use crate::{
-    entities::{CourseItem, CourseItemRaw, CourseTaskStatus, Scope},
+    entities::{CourseItem, CourseItemRaw, Scope},
     service,
-    ui::table::{Table, TableAlign, TableCell},
+    ui::{
+        table::{Table, TableAlign, TableCell},
+        util::styled_task_status_or_score,
+    },
     RP,
 };
 use anyhow::Result;
-use console::{style, StyledObject};
+use console::style;
 use std::io::Write;
 
 use super::Ui;
@@ -84,25 +87,4 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
         }
     }
     Ok(table)
-}
-
-pub fn styled_task_status_or_score(
-    status: Option<CourseTaskStatus>,
-    score: Option<u64>,
-) -> StyledObject<String> {
-    if let Some(points) = score {
-        return match points {
-            points if points >= 100 => style(points.to_string()).black().on_green(),
-            points if points > 60 => style(points.to_string()).green(),
-            points if points > 10 => style(points.to_string()).yellow(),
-            _ => style(points.to_string()).red(),
-        };
-    }
-
-    match status {
-        Some(CourseTaskStatus::Pass) => style("+".to_string()).green(),
-        Some(CourseTaskStatus::Fail) => style("X".to_string()).red(),
-        Some(CourseTaskStatus::None) => style("-".to_string()).dim(),
-        None => style("-".to_string()).dim(),
-    }
 }

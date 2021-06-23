@@ -4,9 +4,8 @@ use crate::RP;
 use anyhow::Result;
 use std::io::Write;
 
-use super::courses::styled_task_status_or_score;
 use super::table::*;
-use super::util::format_code_time;
+use super::util::{format_code_time, styled_task_status_or_score};
 use super::Ui;
 
 pub fn list(ui: &mut Ui<impl RP>, scope: &Scope, task_id: &str) -> Result<()> {
