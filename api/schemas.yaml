@@ -671,7 +671,7 @@ TaskStatement:
           description: >
             The task's time limit.
         memory_limit:
-          type: interger
+          type: integer
           description: >
             The task's memory limit.
         text:
