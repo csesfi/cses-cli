@@ -1,5 +1,5 @@
 use crate::{
-    entities::{ScopeContent, CourseInfo, Scope},
+    entities::{CourseInfo, Scope, ScopeContent},
     CsesApi, Resources, Storage, RP,
 };
 use anyhow::Result;

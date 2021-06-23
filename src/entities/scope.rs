@@ -1,6 +1,6 @@
-use std::{fmt, num::ParseIntError, str::FromStr};
 use anyhow::anyhow;
 use miniserde::Deserialize;
+use std::{fmt, num::ParseIntError, str::FromStr};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Scope {
@@ -28,7 +28,6 @@ impl fmt::Display for Scope {
         Ok(())
     }
 }
-
 
 #[derive(Debug, Deserialize)]
 pub struct ScopeContent {
@@ -115,7 +114,6 @@ impl ScopeItemRaw {
         })
     }
 }
-
 
 #[cfg(test)]
 mod tests {

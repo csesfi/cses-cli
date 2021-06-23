@@ -1,5 +1,5 @@
 use crate::{
-    entities::{ScopeItem, ScopeItemRaw, Scope},
+    entities::{Scope, ScopeItem, ScopeItemRaw},
     service,
     ui::{
         table::{Table, TableAlign, TableCell},
@@ -32,10 +32,14 @@ pub fn list_content(ui: &mut Ui<impl RP>, scope: &Scope) -> Result<()> {
     let scope_content = service::scope_content(&mut ui.res, scope)?;
 
     if scope_content.sections.is_empty() {
-        return Ok(writeln!(ui.term, "{}", match scope {
-            Scope::Course(_) => "No course content!",
-            Scope::Contest(_) => "No contest content!",
-        })?);
+        return Ok(writeln!(
+            ui.term,
+            "{}",
+            match scope {
+                Scope::Course(_) => "No course content!",
+                Scope::Contest(_) => "No contest content!",
+            }
+        )?);
     }
 
     for section in scope_content.sections {

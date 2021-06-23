@@ -1,6 +1,6 @@
 mod escape;
 use crate::entities::{
-    ScopeContent, CourseList, Language, Scope, SubmissionInfo, SubmissionList, TemplateResponse,
+    CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TemplateResponse,
     UserOutline,
 };
 use escape::Escape;

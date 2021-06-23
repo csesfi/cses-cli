@@ -1,7 +1,7 @@
 mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
 use crate::entities::{
-    ScopeContent, CourseList, Scope, SubmissionInfo, SubmissionList, TemplateResponse, UserOutline,
+    CourseList, Scope, ScopeContent, SubmissionInfo, SubmissionList, TemplateResponse, UserOutline,
 };
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
