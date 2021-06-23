@@ -669,11 +669,11 @@ TaskStatement:
         time_limit:
           type: integer
           description: >
-            The task's time limit.
+            The task's time limit in milliseconds.
         memory_limit:
           type: integer
           description: >
-            The task's memory limit.
+            The task's memory limit in megabytes.
         text:
           type: string
           description: >
