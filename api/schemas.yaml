@@ -285,6 +285,10 @@ ContestSubmissionInfo:
       description: >
         An optional property describing the progress of the testing phase.
       $ref: "schemas.yaml#/TestProgress"
+    result:
+      type: string
+      description: >
+        Verdict of the submission, e.g. "ACCEPTED".
     score:
       type: integer
       description: >
