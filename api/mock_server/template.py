@@ -41,5 +41,9 @@ TEMPLATES = {
     Template(False, "cses", None, None, "rust3.rs"): {
         "template_source": _to_b64("rust3"),
         "filename": "rust3.rs"
+    },
+    Template(True, 101, None, None, None): {
+        "template_source": _to_b64("code1"),
+        "filename": "code1"
     }
 }

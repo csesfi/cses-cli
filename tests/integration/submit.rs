@@ -396,3 +396,17 @@ fn cannot_read_a_file_that_is_too_large() {
         .stdout(regex_match(r"(?i)limit"))
         .stderr(predicate::str::is_empty());
 }
+
+#[distributed_slice(TESTS)]
+fn contest_submission_shows_feedback() {
+    log_in();
+    load_file("main.cpp");
+
+    command()
+        .args(&[
+            "submit", "-c", "101", "-t", "A", "-l", "C++", "-o", "C++17", "main.cpp",
+        ])
+        .assert()
+        .stdout(regex_match(r"(?i)feedback"))
+        .stdout(regex_match(r"(?i)accepted.*20"));
+}

@@ -7,7 +7,7 @@ except IndexError:
     pass
 
 
-def __file_details(filename: str, new_name: str = None) -> str:
+def __file_details(filename: str, new_name: str = None) -> dict[str, str]:
     return {
         "filename": new_name if new_name is not None else filename,
         "content": open(f"../../tests/files/{filename}").read()
@@ -67,6 +67,10 @@ SUMMA_TASK = {
     "id": "123",
     "name": "Summa",
 }
+SUMMA_TASK_CONTEST = {
+    "id": "A",
+    "name": "Summa",
+}
 
 # Non pending submission
 OLD_SUBMISSION_COURSE = {
@@ -111,6 +115,33 @@ SUBMISSION_LIST_COURSE = {
     ]
 }
 
+SUBMISSION_LIST_CONTEST = {
+    "submissions": [
+        {
+            "id": 1234567,
+            "time": "2017-07-21T17:32:28Z",
+            "language": {
+                "name": "CPython",
+                "option": None
+            },
+            "code_time": 500,
+            "size": 1000,
+            "outcome_score": 75
+        },
+        {
+            "id": 7654321,
+            "time": "2020-07-21T17:32:28Z",
+            "language": {
+                "name": "C++",
+                 "option": "C++17"
+            },
+            "code_time": None,
+            "size": 200,
+            "outcome_score": 0
+        }
+    ]
+}
+
 SUBMISSION_LIST_COURSE_WITH_MISSING_FIELDS = {
     "submissions": [
         {
@@ -150,6 +181,7 @@ CPP_PROGRESS_BASE = {
     "status": "PENDING",
     "pending": True,
 }
+CPP_PROGRESS_BASE_CONTEST = {"task": SUMMA_TASK_CONTEST} | CPP_PROGRESS_BASE
 
 # Compiler messages
 COMPILER_ERROR = """input/code.cpp:1:1: error: 'use' does not name \
@@ -217,6 +249,22 @@ TASK_2_COURSE_WITH_STATUS = {
     "id": "1094",
     "link": "https://cses.fi/alon/task/1094",
     "status": "fail"
+}
+
+TASK_1_CONTEST = {
+    "objectType": "task",
+    "name": "Summa",
+    "id": "A",
+    "link": "https://cses.fi/101/task/A",
+    "score": 100
+}
+
+TASK_2_CONTEST = {
+    "objectType": "task",
+    "name": "Solmu",
+    "id": "B",
+    "link": "https://cses.fi/101/task/B",
+    "score": 12
 }
 # Courses
 VISIBLE_COURSES = [

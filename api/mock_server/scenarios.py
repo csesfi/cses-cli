@@ -1,5 +1,5 @@
 from submission import SubmissionScenario, submission_progress, \
-    SubmissionInfo, test_result, test_progress
+    SubmissionInfo, test_result, test_progress, group_feedback
 import constants
 
 SCENARIOS = [
@@ -231,5 +231,28 @@ Error Message:
 SyntaxError: unexpeted EOF while parsing (todo.py, line 3)"""
             },
         ])
-    )
+    ),
+    SubmissionScenario(
+        SubmissionInfo(scope_id=101, task_id="A",
+                       submission_json=constants.CPP_CODE),
+        submission_progress([
+            constants.CPP_PROGRESS_BASE_CONTEST,
+            {
+                "status": "TESTING",
+            },
+            {
+                "status": "READY",
+                "pending": False,
+                "result": "WRONG ANSWER",
+                "feedback": [
+                    group_feedback(),
+                    group_feedback(2, "WRONG ANSWER", 0)
+                ],
+                "tests": [
+                    test_result(groups=[1, 2]),
+                    test_result(2, "WRONG ANSWER", 800, groups=[2])
+                ]
+            }
+        ])
+    ),
 ]
