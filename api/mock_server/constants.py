@@ -182,7 +182,7 @@ CPP_PROGRESS_BASE = {
     "status": "PENDING",
     "pending": True,
 }
-CPP_PROGRESS_BASE_CONTEST = {**{"task": SUMMA_TASK_CONTEST}, **CPP_PROGRESS_BASE}
+CPP_PROGRESS_BASE_CONTEST = {**CPP_PROGRESS_BASE, "task": SUMMA_TASK_CONTEST}
 
 # Compiler messages
 COMPILER_ERROR = """input/code.cpp:1:1: error: 'use' does not name \
