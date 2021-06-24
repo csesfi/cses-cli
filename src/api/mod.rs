@@ -239,7 +239,7 @@ impl CsesApi for CsesHttpApi {
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
-        let response = request.send()?;
+        let response = request.trace_send(self.trace)?;
         check_error(&response)?;
         Ok(json::from_str(response.as_str()?)?)
     }
