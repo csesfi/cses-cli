@@ -33,6 +33,7 @@ mod login;
 mod submission;
 mod submit;
 mod template;
+mod statement;
 
 use common::TESTS;
 
