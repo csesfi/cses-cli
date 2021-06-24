@@ -23,6 +23,7 @@ COMMANDS:
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
         and will be used by the server to select a suitable code template.
+    view [-c] (-t)          View the statement of a task.
 
 OPTIONS:
     -c (<course-id>|<contest-id>), --course <course-id>, --contest <contest-id>
@@ -574,6 +575,36 @@ mod tests {
         assert!(matches!(
             command,
             Command::Submit(Some(Scope::Course(_)), _)
+        ));
+    }
+
+    #[test]
+    fn view_fails_without_task_id() {
+        let pargs = to_pargs(&["view", "-c", "125"]);
+        assert!(matches!(Command::parse_command(pargs), Err(_)));
+    }
+
+    #[test]
+    fn view_works_with_short_option() {
+        let pargs = to_pargs(&["view", "-c", "123", "-t", "C"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::View(Some(Scope::Contest(contest_id)), task_id)
+            if contest_id == 123 && task_id == "C"
+        ));
+    }
+
+    #[test]
+    fn view_works_with_long_option() {
+        let pargs = to_pargs(&["view", "-c", "alon", "--task", "42"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::View(Some(Scope::Course(course_id)), task_id)
+            if course_id == "alon" && task_id == "42"
         ));
     }
 }

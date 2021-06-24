@@ -14,8 +14,11 @@ def __file_details(filename: str, new_name: str = None) -> str:
     }
 
 
-# Task number
-DEFAULT_TASK = "34"
+# Course task id
+DEFAULT_COURSE_TASK = "34"
+
+# Contest task id
+DEFAULT_CONTEST_TASK = "B"
 
 # Submitter
 UOLEVI = {
@@ -237,3 +240,15 @@ ALL_COURSES = VISIBLE_COURSES + [
         "description": "If you can see this, you're logged in."
     }
 ]
+
+TEST_TASK = {
+    "name": "Test task",
+    "time_limit": 1000,
+    "memory_limit": 512,
+    "text": "Solve this problem."
+}
+
+TEST_TASK_WITHOUT_TIME_AND_MEMORY_LIMIT = {
+    "name": "Test task",
+    "text": "Solve this problem."
+}

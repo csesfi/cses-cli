@@ -345,6 +345,56 @@ paths:
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
+  /courses/{course_id}/statement:
+    get:
+      operationId: app.get_course_task_statement
+
+      summary: Retrieve a task statement related to a task in a course.
+
+      tags:
+        - courses
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/TaskId"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulTaskStatementGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
+  /contests/{contest_id}/statement:
+    get:
+      operationId: app.get_contest_task_statement
+
+      summary: Retrieve a task statement related to a task in a contest.
+
+      tags:
+        - contests
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/TaskId"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulTaskStatementGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
   /courses/{course_id}/templates:
     get:
       operationId: app.courses_get_template
