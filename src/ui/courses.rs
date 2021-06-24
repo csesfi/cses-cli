@@ -87,7 +87,8 @@ pub fn create_item_table(list: &[ScopeItemRaw]) -> Result<Table> {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
-                    TableCell::styled(styled_task_status_or_score(status, score)),
+                    TableCell::styled(styled_task_status_or_score(status, score))
+                        .align(TableAlign::Center),
                     TableCell::from(link),
                 ]);
             }
