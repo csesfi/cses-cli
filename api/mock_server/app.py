@@ -195,7 +195,7 @@ def get_course_task_statement(token_info, course_id, task):
 
 
 def get_contest_task_statement(token_info, contest_id, task):
-    if contest_id != "teki":
+    if contest_id != 123:
         return ({"message": "Contest not found",
                  "code": "client_error"}, 404)
 
