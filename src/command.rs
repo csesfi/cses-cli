@@ -199,9 +199,7 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         ),
         "view" => Command::View(
             parse_scope(&mut pargs)?,
-            pargs
-                .value_from_str(["-t", "--task"])
-                .context("Failed parsing task ID")?,
+            parse_required_task_id(&mut pargs)?,
         ),
         "template" => Command::Template(parse_scope(&mut pargs)?, Template::parse(&mut pargs)?),
         "examples" => Command::Examples(parse_scope(&mut pargs)?, Examples::parse(&mut pargs)?),
