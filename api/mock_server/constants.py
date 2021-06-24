@@ -208,20 +208,20 @@ INFO_HEADER = ""
 
 # Course content fetch
 INSTRUCTIONS_TEXT = {
-    "objectType": "text",
+    "item_type": "text",
     "name": "Instructions",
     "id": "7582",
     "link": "https://cses.fi/alon/text/2434",
 }
 
 EXTERNAL_WEBSITE_LINK = {
-    "objectType": "link",
+    "item_type": "link",
     "name": "External website",
     "link": "https://alon.mooc.fi/materiaali",
 }
 
 TASK_1_COURSE = {
-    "objectType": "task",
+    "item_type": "task",
     "name": "Wierd algorithm",
     "id": "1068",
     "link": "https://cses.fi/alon/task/1068",
@@ -229,7 +229,7 @@ TASK_1_COURSE = {
 }
 
 TASK_2_COURSE = {
-    "objectType": "task",
+    "item_type": "task",
     "name": "Increasing array",
     "id": "1094",
     "link": "https://cses.fi/alon/task/1094",
@@ -237,7 +237,7 @@ TASK_2_COURSE = {
 }
 
 TASK_1_COURSE_WITH_STATUS = {
-    "objectType": "task",
+    "item_type": "task",
     "name": "Wierd algorithm",
     "id": "1068",
     "link": "https://cses.fi/alon/task/1068",
@@ -245,7 +245,7 @@ TASK_1_COURSE_WITH_STATUS = {
 }
 
 TASK_2_COURSE_WITH_STATUS = {
-    "objectType": "task",
+    "item_type": "task",
     "name": "Increasing array",
     "id": "1094",
     "link": "https://cses.fi/alon/task/1094",
@@ -253,7 +253,7 @@ TASK_2_COURSE_WITH_STATUS = {
 }
 
 TASK_1_CONTEST = {
-    "objectType": "task",
+    "item_type": "task",
     "name": "Summa",
     "id": "A",
     "link": "https://cses.fi/101/task/A",
@@ -261,7 +261,7 @@ TASK_1_CONTEST = {
 }
 
 TASK_2_CONTEST = {
-    "objectType": "task",
+    "item_type": "task",
     "name": "Solmu",
     "id": "B",
     "link": "https://cses.fi/101/task/B",

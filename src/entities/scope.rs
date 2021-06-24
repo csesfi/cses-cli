@@ -63,8 +63,7 @@ pub enum ScopeItem<'a> {
 
 #[derive(Debug, Deserialize)]
 pub struct ScopeItemRaw {
-    #[serde(rename = "objectType")]
-    object_type: ScopeItemType,
+    item_type: ScopeItemType,
     name: String,
     id: Option<String>,
     link: String,
@@ -94,7 +93,7 @@ pub enum ScopeItemType {
 
 impl ScopeItemRaw {
     pub fn as_enum(&self) -> anyhow::Result<ScopeItem<'_>> {
-        Ok(match &self.object_type {
+        Ok(match &self.item_type {
             ScopeItemType::Text => ScopeItem::Text {
                 name: &self.name,
                 id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,

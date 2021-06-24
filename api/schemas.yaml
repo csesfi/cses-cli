@@ -417,7 +417,7 @@ CourseContent:
                 - $ref: 'schemas.yaml#/Link'
                 - $ref: 'schemas.yaml#/CourseTask'
               discriminator:
-                propertyName: objectType
+                propertyName: item_type
                 mapping:
                   text: 'schemas.yaml#/Text'
                   link: 'schemas.yaml#/Link'
@@ -457,7 +457,7 @@ ContestContent:
                 - $ref: 'schemas.yaml#/Link'
                 - $ref: 'schemas.yaml#/ContestTask'
               discriminator:
-                propertyName: objectType
+                propertyName: item_type
                 mapping:
                   text: 'schemas.yaml#/Text'
                   link: 'schemas.yaml#/Link'
@@ -466,14 +466,14 @@ ContestContent:
 Text:
   additionalProperties: false
   required:
-    - objectType
+    - item_type
     - name
     - id
     - link
   type: object
 
   properties:
-    objectType:
+    item_type:
       type: string
     name:
       type: string
@@ -491,13 +491,13 @@ Text:
 Link:
   additionalProperties: false
   required:
-    - objectType
+    - item_type
     - name
     - link
   type: object
 
   properties:
-    objectType:
+    item_type:
       type: string
     name:
       type: string
@@ -511,7 +511,7 @@ Link:
 CourseTask:
   additionalProperties: false
   required:
-    - objectType
+    - item_type
     - name
     - id
     - link
@@ -519,7 +519,7 @@ CourseTask:
   type: object
 
   properties:
-    objectType:
+    item_type:
       type: string
     name:
       type: string
@@ -537,7 +537,7 @@ CourseTask:
 ContestTask:
   additionalProperties: false
   required:
-    - objectType
+    - item_type
     - name
     - id
     - link
@@ -545,7 +545,7 @@ ContestTask:
   type: object
 
   properties:
-    objectType:
+    item_type:
       type: string
     name:
       type: string
