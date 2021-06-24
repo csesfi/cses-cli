@@ -1,5 +1,6 @@
 import sys
 from template import _to_b64
+from typing import Dict
 
 INTEGRATION = False
 try:
@@ -8,15 +9,18 @@ except IndexError:
     pass
 
 
-def __file_details(filename: str, new_name: str = None) -> str:
+def __file_details(filename: str, new_name: str = None) -> Dict[str, str]:
     return {
         "filename": new_name if new_name is not None else filename,
         "content": open(f"../../tests/files/{filename}").read()
     }
 
 
-# Task number
-DEFAULT_TASK = "34"
+# Course task id
+DEFAULT_COURSE_TASK = "34"
+
+# Contest task id
+DEFAULT_CONTEST_TASK = "B"
 
 # Submitter
 UOLEVI = {
@@ -65,6 +69,10 @@ SUMMA_TASK = {
     "id": "123",
     "name": "Summa",
 }
+SUMMA_TASK_CONTEST = {
+    "id": "A",
+    "name": "Summa",
+}
 
 # Non pending submission
 OLD_SUBMISSION_COURSE = {
@@ -109,6 +117,33 @@ SUBMISSION_LIST_COURSE = {
     ]
 }
 
+SUBMISSION_LIST_CONTEST = {
+    "submissions": [
+        {
+            "id": 1234567,
+            "time": "2017-07-21T17:32:28Z",
+            "language": {
+                "name": "CPython",
+                "option": None
+            },
+            "code_time": 500,
+            "size": 1000,
+            "outcome_score": 75
+        },
+        {
+            "id": 7654321,
+            "time": "2020-07-21T17:32:28Z",
+            "language": {
+                "name": "C++",
+                 "option": "C++17"
+            },
+            "code_time": None,
+            "size": 200,
+            "outcome_score": 0
+        }
+    ]
+}
+
 SUBMISSION_LIST_COURSE_WITH_MISSING_FIELDS = {
     "submissions": [
         {
@@ -148,6 +183,7 @@ CPP_PROGRESS_BASE = {
     "status": "PENDING",
     "pending": True,
 }
+CPP_PROGRESS_BASE_CONTEST = {**CPP_PROGRESS_BASE, "task": SUMMA_TASK_CONTEST}
 
 # Compiler messages
 COMPILER_ERROR = """input/code.cpp:1:1: error: 'use' does not name \
@@ -216,6 +252,22 @@ TASK_2_COURSE_WITH_STATUS = {
     "link": "https://cses.fi/alon/task/1094",
     "status": "fail"
 }
+
+TASK_1_CONTEST = {
+    "objectType": "task",
+    "name": "Summa",
+    "id": "A",
+    "link": "https://cses.fi/101/task/A",
+    "score": 100
+}
+
+TASK_2_CONTEST = {
+    "objectType": "task",
+    "name": "Solmu",
+    "id": "B",
+    "link": "https://cses.fi/101/task/B",
+    "score": 12
+}
 # Courses
 VISIBLE_COURSES = [
     {
@@ -238,7 +290,6 @@ ALL_COURSES = VISIBLE_COURSES + [
         "description": "If you can see this, you're logged in."
     }
 ]
-
 TEST_CASE_LIST = {
     "test_cases": [
         {
@@ -254,4 +305,15 @@ TEST_CASE_LIST = {
             "output": _to_b64("tsetnoc"),
         }
     ]
+}
+TEST_TASK = {
+    "name": "Test task",
+    "time_limit": 1000,
+    "memory_limit": 512,
+    "text": "Solve this problem."
+}
+
+TEST_TASK_WITHOUT_TIME_AND_MEMORY_LIMIT = {
+    "name": "Test task",
+    "text": "Solve this problem."
 }

@@ -169,3 +169,10 @@ SuccessfulTestCaseListGet:
       schema:
         $ref: "schemas.yaml#/TestCaseList"
 
+SuccessfulTaskStatementGet:
+  description: >
+    The task statement was retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/TaskStatement"

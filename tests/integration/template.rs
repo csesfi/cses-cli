@@ -73,3 +73,15 @@ fn non_existent_template_fails() {
         .failure()
         .stdout(contains(r"Failed querying code template"));
 }
+
+#[distributed_slice(TESTS)]
+fn can_fetch_contest_template() {
+    log_in();
+    command()
+        .args(&["template", "-c", "101"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"successfully.*\./code1"));
+    let content = std::fs::read_to_string("./code1").unwrap();
+    assert_eq!(content, "code1");
+}

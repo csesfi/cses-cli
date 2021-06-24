@@ -10,10 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install swagger-cli
+      run: sudo npm --global install swagger-cli
+    - name: Bundle OpenAPI definition
+      run: swagger-cli bundle api/openapi.yaml > openapi.json
     - uses: Legion2/swagger-ui-action@v1
       with:
         output: swagger-ui
-        spec-file: api/openapi.yaml
+        spec-file: openapi.json
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:

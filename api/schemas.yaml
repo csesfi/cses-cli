@@ -285,6 +285,10 @@ ContestSubmissionInfo:
       description: >
         An optional property describing the progress of the testing phase.
       $ref: "schemas.yaml#/TestProgress"
+    result:
+      type: string
+      description: >
+        Verdict of the submission, e.g. "ACCEPTED".
     score:
       type: integer
       description: >
@@ -677,3 +681,28 @@ TestCaseList:
             type: string
             format: byte
             description: Expected output encoded as base64.
+
+TaskStatement:
+      additionalProperties: false
+      required:
+        - name
+        - text
+      type: object
+
+      properties:
+        name:
+          type: string
+          description: >
+            The name of the task.
+        time_limit:
+          type: integer
+          description: >
+            The task's time limit in milliseconds.
+        memory_limit:
+          type: integer
+          description: >
+            The task's memory limit in megabytes.
+        text:
+          type: string
+          description: >
+            The task statement given in an unspecified raw format.

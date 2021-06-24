@@ -1,5 +1,5 @@
 use crate::{
-    entities::{CourseContent, CourseInfo},
+    entities::{CourseInfo, Scope, ScopeContent},
     CsesApi, Resources, Storage, RP,
 };
 use anyhow::Result;
@@ -10,8 +10,8 @@ pub fn courses(res: &mut Resources<impl RP>) -> Result<Vec<CourseInfo>> {
     Ok(courses)
 }
 
-pub fn course_content(res: &mut Resources<impl RP>, course_id: &str) -> Result<CourseContent> {
+pub fn scope_content(res: &mut Resources<impl RP>, scope: &Scope) -> Result<ScopeContent> {
     let token = res.storage.get().get_token();
-    let course_content = res.api.get_course_content(token, course_id)?;
-    Ok(course_content)
+    let scope_content = res.api.get_content(token, scope)?;
+    Ok(scope_content)
 }

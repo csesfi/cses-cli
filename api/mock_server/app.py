@@ -82,7 +82,7 @@ def common_submissions_post(token_info, scope_id, task):
     submission_id = STATE.add_submission(new_submission)
     submission_info = STATE.get_initial_submission_info(submission_id)
     if submission_info is None:
-        if task == constants.DEFAULT_TASK:
+        if task == constants.DEFAULT_COURSE_TASK:
             return ({"message": "Failed to deduce the task for the submission",
                      "code": "task_deduction_error"}, 400)
         if details["language"]["name"] is None:
@@ -95,12 +95,12 @@ def common_submissions_post(token_info, scope_id, task):
 
 
 def courses_submissions_post(token_info, course_id,
-                             task=constants.DEFAULT_TASK):
+                             task=constants.DEFAULT_COURSE_TASK):
     return common_submissions_post(token_info, course_id, task)
 
 
 def contests_submissions_post(token_info, contest_id,
-                              task=constants.DEFAULT_TASK):
+                              task=constants.DEFAULT_COURSE_TASK):
     return common_submissions_post(token_info, contest_id, task)
 
 
@@ -140,7 +140,9 @@ def courses_get_submission_list(token_info, course_id, task):
 
 
 def contests_get_submission_list(token_info, contest_id, task):
-    return (constants.EMPTY_SUBMISSION_LIST, 200)
+    if task == "404":
+        return (constants.EMPTY_SUBMISSION_LIST, 200)
+    return (constants.SUBMISSION_LIST_CONTEST, 200)
 
 
 def get_courses(token_info):
@@ -178,8 +180,50 @@ def get_course_content(token_info, course_id):
 
 
 def get_contest_content(token_info, contest_id):
-    return ({"message": "Contest not found",
-             "code": "client_error"}, 404)
+    if contest_id != 1:
+        return ({"message": "Contest not found",
+                 "code": "client_error"}, 404)
+    return ({"sections": [
+        {
+            "header": "Info",
+            "text": "This is the course's general info section",
+            "list": [
+                constants.INSTRUCTIONS_TEXT,
+                constants.EXTERNAL_WEBSITE_LINK
+            ]
+        },
+        {
+            "header": "Tasks",
+            "list": [
+                constants.TASK_1_CONTEST,
+                constants.TASK_2_CONTEST,
+            ]
+        },
+    ]}, 200)
+
+
+def get_course_task_statement(token_info, course_id, task_id):
+    if course_id != "teku":
+        return ({"message": "Course not found",
+                 "code": "client_error"}, 404)
+
+    if task_id != constants.DEFAULT_COURSE_TASK:
+        return ({"message": "Task not found",
+                 "code": "client_error"}, 404)
+
+    return (constants.TEST_TASK_WITHOUT_TIME_AND_MEMORY_LIMIT, 200)
+
+
+def get_contest_task_statement(token_info, contest_id, task_id):
+    if contest_id != "teki":
+        return ({"message": "Contest not found",
+                 "code": "client_error"}, 404)
+
+    if task_id != constants.DEFAULT_CONTEST_TASK:
+        return ({"message": "Task not found",
+                 "code": "client_error"}, 404)
+
+    return (constants.TEST_TASK, 200)
 
 
 def common_get_template(token_info, scope_id, task, language, filename):

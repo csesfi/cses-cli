@@ -23,6 +23,7 @@ COMMANDS:
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
         and will be used by the server to select a suitable code template.
+    view [-c] (-t)          View the statement of a task.
 
 OPTIONS:
     -c (<course-id>|<contest-id>), --course <course-id>, --contest <contest-id>
@@ -64,8 +65,9 @@ pub enum Command {
     List(Option<Scope>),
     Submit(Option<Scope>, Submit),
     Template(Option<Scope>, Template),
-    Submissions(Option<Scope>, u64),
+    Submissions(Option<Scope>, String),
     Submission(Option<Scope>, u64),
+    View(Option<Scope>, String),
 }
 #[derive(Debug)]
 pub struct Submit {
@@ -174,6 +176,12 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
             pargs
                 .free_from_str()
                 .context("Failed parsing submission ID")?,
+        ),
+        "view" => Command::View(
+            parse_scope(&mut pargs)?,
+            pargs
+                .value_from_str(["-t", "--task"])
+                .context("Failed parsing task ID")?,
         ),
         _ => return Err(anyhow!("Invalid command")),
     };
@@ -491,7 +499,11 @@ mod tests {
         let pargs = to_pargs(&["submissions", "-t", "140"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        assert!(matches!(command, Command::Submissions(None, 140)));
+        assert!(matches!(
+            command,
+            Command::Submissions(None, task)
+            if task == "140"
+        ));
     }
 
     #[test]
@@ -501,8 +513,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submissions(Some(Scope::Course(course)), 140)
-            if course == "alon"
+            Command::Submissions(Some(Scope::Course(course)), task)
+            if course == "alon" && task == "140"
         ));
     }
 
@@ -563,6 +575,36 @@ mod tests {
         assert!(matches!(
             command,
             Command::Submit(Some(Scope::Course(_)), _)
+        ));
+    }
+
+    #[test]
+    fn view_fails_without_task_id() {
+        let pargs = to_pargs(&["view", "-c", "125"]);
+        assert!(matches!(Command::parse_command(pargs), Err(_)));
+    }
+
+    #[test]
+    fn view_works_with_short_option() {
+        let pargs = to_pargs(&["view", "-c", "123", "-t", "C"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::View(Some(Scope::Contest(contest_id)), task_id)
+            if contest_id == 123 && task_id == "C"
+        ));
+    }
+
+    #[test]
+    fn view_works_with_long_option() {
+        let pargs = to_pargs(&["view", "-c", "alon", "--task", "42"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::View(Some(Scope::Course(course_id)), task_id)
+            if course_id == "alon" && task_id == "42"
         ));
     }
 }
