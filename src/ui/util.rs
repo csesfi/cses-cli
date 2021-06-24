@@ -46,7 +46,6 @@ pub fn styled_task_status_or_score(
     match status {
         Some(TaskStatus::Pass) => style("+".to_string()).bold().green(),
         Some(TaskStatus::Fail) => style("X".to_string()).bold().red(),
-        Some(TaskStatus::None) => style("-".to_string()).bold().dim(),
-        None => style("-".to_string()).dim(),
+        Some(TaskStatus::None) | None => style("-".to_string()).bold().dim(),
     }
 }
