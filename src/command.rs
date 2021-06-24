@@ -8,22 +8,25 @@ USAGE:
     cses-cli <command> [OPTIONS]
 
 COMMANDS:
-    help                    Display this help message.
-    login                   Log in to cses.fi.
-    logout                  Invalidate the current login session.
-    status                  Display the login status.
-    courses                 Display a list of courses.
-    list [-c]               Display the contents of a course or contest.
-    submit [-ctlo] <file>   Submit a file to cses.fi.
+    help                        Display this help message.
+    login                       Log in to cses.fi.
+    logout                      Invalidate the current login session.
+    status                      Display the login status.
+    courses                     Display a list of courses.
+    list [-c]                   Display the contents of a course or contest.
+    submit [-ctlo] <file>       Submit a file to cses.fi.
         Task ID, language, and the language option may be automatically deduced
         by the server, in which case they do not need to be supplied as options.
-    submissions [-c] (-t)   List previous submissions to a task.
-    submission [-c] <id>    Show details about the submission with given ID.
-    template [-cftl]        Download and save a code template from cses.fi
+    submissions [-c] (-t)       List previous submissions to a task.
+    submission [-c] <id>        Show details about the submission with given ID.
+    template [-cftl]            Download and save a code template from cses.fi.
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
         and will be used by the server to select a suitable code template.
-    view [-c] (-t)          View the statement of a task.
+    view [-c] (-t)              View the statement of a task.
+    examples [-c] (-t) [<dir>]  Download example inputs and outputs for a task.
+        The files are saved in the current directory unless specified otherwise.
+        They are named 1.in, 1.out, 2.in, 2.out, and so on.
 
 OPTIONS:
     -c (<course-id>|<contest-id>), --course <course-id>, --contest <contest-id>
@@ -64,10 +67,11 @@ pub enum Command {
     Courses,
     List(Option<Scope>),
     Submit(Option<Scope>, Submit),
-    Template(Option<Scope>, Template),
     Submissions(Option<Scope>, String),
     Submission(Option<Scope>, u64),
     View(Option<Scope>, String),
+    Template(Option<Scope>, Template),
+    Examples(Option<Scope>, Examples),
 }
 #[derive(Debug)]
 pub struct Submit {
@@ -81,6 +85,12 @@ pub struct Template {
     pub language: Option<String>,
     pub file_name: Option<String>,
 }
+#[derive(Debug)]
+pub struct Examples {
+    pub task: String,
+    pub dir_name: Option<String>,
+}
+
 fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
     Ok(if let Some(scope) = pargs.opt_value_from_str("-c")? {
         Some(scope)
@@ -100,6 +110,11 @@ fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
 }
 fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-t", "--task"])?)
+}
+fn parse_required_task_id(pargs: &mut pico_args::Arguments) -> Result<String> {
+    Ok(pargs
+        .value_from_str(["-t", "--task"])
+        .context("Failed parsing task ID")?)
 }
 fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-l", "--language"])?)
@@ -134,6 +149,14 @@ impl Template {
         })
     }
 }
+impl Examples {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Examples> {
+        Ok(Examples {
+            task: parse_required_task_id(pargs)?,
+            dir_name: pargs.opt_free_from_str()?,
+        })
+    }
+}
 impl Command {
     pub fn from_command_line() -> Result<Command> {
         let pargs = pico_args::Arguments::from_env();
@@ -164,12 +187,9 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         "courses" => Command::Courses,
         "list" => Command::List(parse_scope(&mut pargs)?),
         "submit" => Command::Submit(parse_scope(&mut pargs)?, Submit::parse(&mut pargs)?),
-        "template" => Command::Template(parse_scope(&mut pargs)?, Template::parse(&mut pargs)?),
         "submissions" => Command::Submissions(
             parse_scope(&mut pargs)?,
-            pargs
-                .value_from_str(["-t", "--task"])
-                .context("Failed parsing task ID")?,
+            parse_required_task_id(&mut pargs)?,
         ),
         "submission" => Command::Submission(
             parse_scope(&mut pargs)?,
@@ -183,6 +203,8 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
                 .value_from_str(["-t", "--task"])
                 .context("Failed parsing task ID")?,
         ),
+        "template" => Command::Template(parse_scope(&mut pargs)?, Template::parse(&mut pargs)?),
+        "examples" => Command::Examples(parse_scope(&mut pargs)?, Examples::parse(&mut pargs)?),
         _ => return Err(anyhow!("Invalid command")),
     };
 
@@ -597,6 +619,21 @@ mod tests {
     }
 
     #[test]
+    fn examples_works_without_directory() {
+        let pargs = to_pargs(&["examples", "-t", "Q"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Examples(None, Examples {
+                task,
+                dir_name: None,
+            })
+            if task == "Q"
+        ));
+    }
+
+    #[test]
     fn view_works_with_long_option() {
         let pargs = to_pargs(&["view", "-c", "alon", "--task", "42"]);
         let command = Command::parse_command(pargs).unwrap();
@@ -606,5 +643,26 @@ mod tests {
             Command::View(Some(Scope::Course(course_id)), task_id)
             if course_id == "alon" && task_id == "42"
         ));
+    }
+
+    #[test]
+    fn examples_works_with_directory() {
+        let pargs = to_pargs(&["examples", "../elsewhere", "--task", "502"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Examples(None, Examples {
+                task,
+                dir_name: Some(dir_name),
+            })
+            if task == "502" && dir_name == "../elsewhere"
+        ));
+    }
+
+    #[test]
+    fn examples_fails_without_task_id() {
+        let pargs = to_pargs(&["examples", "-c", "course", "../elsewhere"]);
+        assert!(Command::parse_command(pargs).is_err());
     }
 }
