@@ -66,6 +66,7 @@ pub enum Command {
     Template(Option<Scope>, Template),
     Submissions(Option<Scope>, String),
     Submission(Option<Scope>, u64),
+    View(Option<Scope>, String),
 }
 #[derive(Debug)]
 pub struct Submit {
@@ -174,6 +175,12 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
             pargs
                 .free_from_str()
                 .context("Failed parsing submission ID")?,
+        ),
+        "view" => Command::View(
+            parse_scope(&mut pargs)?,
+            pargs
+                .value_from_str(["-t", "--task"])
+                .context("Failed parsing task ID")?,
         ),
         _ => return Err(anyhow!("Invalid command")),
     };

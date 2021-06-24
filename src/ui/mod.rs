@@ -5,6 +5,7 @@ mod submissions;
 mod table;
 mod template;
 mod util;
+mod statement;
 
 use anyhow::{anyhow, Context, Error, Result};
 use console::{Style, Term};
@@ -75,6 +76,11 @@ impl<R: ResourcesProvider> Ui<R> {
                 let submission_info =
                     service::submission_info(&mut self.res, &scope, submission_id, false)?;
                 submission::print_submission_info(self, &scope, submission_info, false)?;
+            }
+            Command::View(scope, task_id) => {
+                let scope = service::select_scope(&mut self.res, scope)?;
+                let task_statement = service::get_task_statement(&mut self.res, &scope, &task_id)?;
+                statement::print_statement(self, &task_statement)?;
             }
             _ => {
                 return Err(anyhow!("Command not yet implemented"));
