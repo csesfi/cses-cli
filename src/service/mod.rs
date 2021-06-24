@@ -1,12 +1,12 @@
 mod courses;
 mod login;
 mod template;
-pub use courses::{course_content, courses};
+pub use courses::{courses, scope_content};
 pub use login::{login, login_is_valid, login_status, logout, Login};
-pub use template::{create_template_parameters, file_exists, get_template, save_response};
+pub use template::{file_exists, get_template, save_response};
 
 pub mod submit;
-pub use submit::{create_submit_parameters, submission_info, submission_list, submit};
+pub use submit::{submission_info, submission_list, submit};
 
 mod scope;
 pub use scope::select_scope;

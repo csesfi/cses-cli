@@ -1,3 +1,5 @@
+use anyhow::anyhow;
+use miniserde::Deserialize;
 use std::{fmt, num::ParseIntError, str::FromStr};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -24,6 +26,92 @@ impl fmt::Display for Scope {
             Scope::Contest(id) => write!(f, "{}", id)?,
         }
         Ok(())
+    }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ScopeContent {
+    pub sections: Vec<ScopeSection>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ScopeSection {
+    pub header: String,
+    pub text: Option<String>,
+    pub list: Vec<ScopeItemRaw>,
+}
+
+#[derive(Debug)]
+pub enum ScopeItem<'a> {
+    Text {
+        name: &'a str,
+        id: String,
+        link: &'a str,
+    },
+    Link {
+        name: &'a str,
+        link: &'a str,
+    },
+    Task {
+        name: &'a str,
+        id: String,
+        link: &'a str,
+        status: Option<TaskStatus>,
+        score: Option<u64>,
+    },
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ScopeItemRaw {
+    #[serde(rename = "objectType")]
+    object_type: ScopeItemType,
+    name: String,
+    id: Option<String>,
+    link: String,
+    status: Option<TaskStatus>,
+    score: Option<u64>,
+}
+
+#[derive(Debug, Deserialize, Copy, Clone)]
+pub enum TaskStatus {
+    #[serde(rename = "pass")]
+    Pass,
+    #[serde(rename = "fail")]
+    Fail,
+    #[serde(rename = "none")]
+    None,
+}
+
+#[derive(Debug, Deserialize)]
+pub enum ScopeItemType {
+    #[serde(rename = "text")]
+    Text,
+    #[serde(rename = "link")]
+    Link,
+    #[serde(rename = "task")]
+    Task,
+}
+
+impl ScopeItemRaw {
+    pub fn as_enum(&self) -> anyhow::Result<ScopeItem<'_>> {
+        Ok(match &self.object_type {
+            ScopeItemType::Text => ScopeItem::Text {
+                name: &self.name,
+                id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,
+                link: &self.link,
+            },
+            ScopeItemType::Link => ScopeItem::Link {
+                name: &self.name,
+                link: &self.link,
+            },
+            ScopeItemType::Task => ScopeItem::Task {
+                name: &self.name,
+                id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,
+                link: &self.link,
+                status: self.status,
+                score: self.score,
+            },
+        })
     }
 }
 

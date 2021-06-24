@@ -1,5 +1,3 @@
-mod course;
-pub use course::*;
 mod scope;
 pub use scope::*;
 
@@ -35,9 +33,18 @@ pub struct SubmissionInfo {
     pub pending: bool,
     pub test_progress: Option<TestProgress>,
     pub result: Option<String>,
+    pub score: Option<u64>,
+    pub feedback: Option<Vec<SubtaskInfo>>,
     pub tests: Option<Vec<SubmissionTestInfo>>,
     pub compiler: Option<String>,
     pub test_report: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubtaskInfo {
+    pub group: u64,
+    pub verdict: String,
+    pub score: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -45,6 +52,7 @@ pub struct SubmissionTestInfo {
     pub number: u64,
     pub verdict: String,
     pub time: Option<u64>,
+    pub groups: Option<Vec<u64>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -57,22 +65,6 @@ pub struct TestProgress {
 pub struct TaskOutline {
     pub id: String,
     pub name: String,
-}
-
-#[derive(Debug)]
-pub struct SubmitParameters {
-    pub course: String,
-    pub file: String,
-    pub task: Option<String>,
-    pub language: Language,
-}
-
-#[derive(Debug)]
-pub struct TemplateParameters {
-    pub course: String,
-    pub task: Option<String>,
-    pub language: Option<String>,
-    pub file: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -100,7 +92,9 @@ pub struct SubmissionListingInfo {
     pub code_time: Option<u64>,
     pub size: Option<u64>,
     #[serde(rename = "outcome_status")]
-    pub result: CourseTaskStatus,
+    pub result: Option<TaskStatus>,
+    #[serde(rename = "outcome_score")]
+    pub score: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]

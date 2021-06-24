@@ -1,7 +1,7 @@
 mod escape;
 mod trace_send;
 use crate::entities::{
-    CourseContent, CourseList, Language, SubmissionInfo, SubmissionList, TemplateResponse,
+    CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TemplateResponse,
     UserOutline,
 };
 use escape::Escape;
@@ -45,43 +45,39 @@ pub enum ApiError {
 
 pub type ApiResult<T> = Result<T, ApiError>;
 
+#[allow(clippy::needless_lifetimes)]
 #[cfg_attr(test, automock)]
 pub trait CsesApi {
     fn login(&self) -> ApiResult<LoginResponse>;
     fn login_status(&self, token: &str) -> ApiResult<UserOutline>;
     fn logout(&self, token: &str) -> ApiResult<()>;
-    fn submit_task(
+    fn submit_task<'a>(
         &self,
         token: &str,
-        course_id: &str,
-        task_id: Option<u64>,
+        scope: &Scope,
+        task_id: Option<&'a str>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo>;
     fn get_submit(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo>;
     fn get_submit_list(
         &self,
         token: &str,
-        course_id: &str,
-        task_id: u64,
+        scope: &Scope,
+        task_id: &str,
     ) -> ApiResult<SubmissionList>;
-    #[allow(clippy::needless_lifetimes)]
     fn get_courses<'a>(&self, token: Option<&'a str>) -> ApiResult<CourseList>;
-    fn get_course_content<'a>(
-        &self,
-        token: Option<&'a str>,
-        course_id: &str,
-    ) -> ApiResult<CourseContent>;
+    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<ScopeContent>;
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
-        course_id: &str,
-        task_id: Option<u64>,
+        scope: &Scope,
+        task_id: Option<&'a str>,
         language: Option<&'a str>,
         file: Option<&'a str>,
     ) -> ApiResult<TemplateResponse>;
@@ -114,21 +110,17 @@ impl CsesApi for CsesHttpApi {
     fn submit_task(
         &self,
         token: &str,
-        course_id: &str,
-        task_id: Option<u64>,
+        scope: &Scope,
+        task_id: Option<&str>,
         submission: &CodeSubmit,
     ) -> ApiResult<SubmissionInfo> {
-        let mut request = minreq::post(format!(
-            "{}/courses/{}/submissions",
-            self.url,
-            Escape(course_id)
-        ))
-        .with_body(json::to_string(submission))
-        .with_header("X-Auth-Token", token)
-        .with_header("Content-Type", "application/json");
+        let mut request = minreq::post(format_url(&self.url, scope, "submissions"))
+            .with_body(json::to_string(submission))
+            .with_header("X-Auth-Token", token)
+            .with_header("Content-Type", "application/json");
 
         if let Some(task_id) = task_id {
-            request = request.with_param("task", task_id.to_string());
+            request = request.with_param("task", task_id);
         }
 
         let response = request.trace_send(self.trace)?;
@@ -140,16 +132,15 @@ impl CsesApi for CsesHttpApi {
     fn get_submit(
         &self,
         token: &str,
-        course_id: &str,
+        scope: &Scope,
         submission_id: u64,
         poll: bool,
     ) -> ApiResult<SubmissionInfo> {
         let poll = if poll { "true" } else { "false" };
-        let response = minreq::get(format!(
-            "{}/courses/{}/submissions/{}",
-            self.url,
-            Escape(course_id),
-            submission_id
+        let response = minreq::get(format_url(
+            &self.url,
+            scope,
+            &format!("submissions/{}", submission_id),
         ))
         .with_header("X-Auth-Token", token)
         .with_param("poll", poll)
@@ -162,17 +153,13 @@ impl CsesApi for CsesHttpApi {
     fn get_submit_list(
         &self,
         token: &str,
-        course_id: &str,
-        task_id: u64,
+        scope: &Scope,
+        task_id: &str,
     ) -> ApiResult<SubmissionList> {
-        let response = minreq::get(format!(
-            "{}/courses/{}/submissions",
-            self.url,
-            Escape(course_id)
-        ))
-        .with_header("X-Auth-Token", token)
-        .with_param("task", task_id.to_string())
-        .trace_send(self.trace)?;
+        let response = minreq::get(format_url(&self.url, scope, "submissions"))
+            .with_header("X-Auth-Token", token)
+            .with_param("task", task_id)
+            .trace_send(self.trace)?;
         check_error(&response)?;
         let response_body: SubmissionList = json::from_str(response.as_str()?)?;
         Ok(response_body)
@@ -198,39 +185,31 @@ impl CsesApi for CsesHttpApi {
         }
     }
 
-    fn get_course_content<'a>(
-        &self,
-        token: Option<&'a str>,
-        course_id: &str,
-    ) -> ApiResult<CourseContent> {
-        let mut request = minreq::get(format!("{}/courses/{}/list", self.url, course_id));
+    fn get_content<'a>(&self, token: Option<&'a str>, scope: &Scope) -> ApiResult<ScopeContent> {
+        let mut request = minreq::get(format_url(&self.url, scope, "list"));
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
         let response = request.trace_send(self.trace)?;
         check_error(&response)?;
-        let course_content: CourseContent = json::from_str(response.as_str()?)?;
-        Ok(course_content)
+        let scope_content: ScopeContent = json::from_str(response.as_str()?)?;
+        Ok(scope_content)
     }
 
     fn get_template<'a>(
         &self,
         token: Option<&'a str>,
-        course_id: &str,
-        task_id: Option<u64>,
+        scope: &Scope,
+        task_id: Option<&'a str>,
         language: Option<&'a str>,
         file_name: Option<&'a str>,
     ) -> ApiResult<TemplateResponse> {
-        let mut request = minreq::get(format!(
-            "{}/courses/{}/templates",
-            self.url,
-            Escape(course_id)
-        ));
+        let mut request = minreq::get(format_url(&self.url, scope, "templates"));
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
         if let Some(task_id) = task_id {
-            request = request.with_param("task", task_id.to_string());
+            request = request.with_param("task", task_id);
         }
         if let Some(language) = language {
             request = request.with_param("language", language);
@@ -262,6 +241,17 @@ fn check_error(response: &Response) -> ApiResult<()> {
 
 fn successful_response(response: &Response) -> bool {
     (200..300).contains(&response.status_code)
+}
+
+fn format_url(base_url: &str, scope: &Scope, path: &str) -> String {
+    match scope {
+        Scope::Course(course_id) => {
+            format!("{}/courses/{}/{}", base_url, Escape(course_id), path)
+        }
+        Scope::Contest(contest_id) => {
+            format!("{}/contests/{}/{}", base_url, contest_id, path)
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]

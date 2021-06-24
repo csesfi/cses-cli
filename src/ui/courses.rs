@@ -1,11 +1,14 @@
 use crate::{
-    entities::{CourseItem, CourseItemRaw, CourseTaskStatus},
+    entities::{Scope, ScopeItem, ScopeItemRaw},
     service,
-    ui::table::{Table, TableAlign, TableCell},
+    ui::{
+        table::{Table, TableAlign, TableCell},
+        util::styled_task_status_or_score,
+    },
     RP,
 };
 use anyhow::Result;
-use console::{style, StyledObject};
+use console::style;
 use std::io::Write;
 
 use super::Ui;
@@ -25,33 +28,40 @@ pub fn list_courses(ui: &mut Ui<impl RP>) -> Result<()> {
     Ok(())
 }
 
-pub fn list_course_content(ui: &mut Ui<impl RP>, course_id: &str) -> Result<()> {
-    let course = service::course_content(&mut ui.res, course_id)?;
+pub fn list_content(ui: &mut Ui<impl RP>, scope: &Scope) -> Result<()> {
+    let scope_content = service::scope_content(&mut ui.res, scope)?;
 
-    if course.sections.is_empty() {
-        return Ok(writeln!(ui.term, "No course content!")?);
+    if scope_content.sections.is_empty() {
+        return Ok(writeln!(
+            ui.term,
+            "{}",
+            match scope {
+                Scope::Course(_) => "No course content!",
+                Scope::Contest(_) => "No contest content!",
+            }
+        )?);
     }
 
-    for section in course.sections {
+    for section in scope_content.sections {
         writeln!(ui.term, "\n{}", style(&section.header).bold())?;
         if let Some(text) = &section.text {
             writeln!(ui.term, "\n{}", text)?;
         }
 
-        let table = create_course_item_table(&section.list)?;
+        let table = create_item_table(&section.list)?;
         write!(ui.term, "\n{}", table)?;
     }
     writeln!(ui.term)?;
     Ok(())
 }
 
-pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
+pub fn create_item_table(list: &[ScopeItemRaw]) -> Result<Table> {
     let mut table = Table::new(vec![4, 30, 0, 0]);
 
-    for course_item_raw in list {
-        let course_item_as_enum = course_item_raw.as_enum()?;
-        match course_item_as_enum {
-            CourseItem::Text { id, name, link } => {
+    for scope_item_raw in list {
+        let scope_item_as_enum = scope_item_raw.as_enum()?;
+        match scope_item_as_enum {
+            ScopeItem::Text { id, name, link } => {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
@@ -59,7 +69,7 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                     TableCell::from(link),
                 ]);
             }
-            CourseItem::Link { name, link } => {
+            ScopeItem::Link { name, link } => {
                 table.add_row(vec![
                     TableCell::from(""),
                     TableCell::from(name),
@@ -67,28 +77,22 @@ pub fn create_course_item_table(list: &[CourseItemRaw]) -> Result<Table> {
                     TableCell::from(link),
                 ]);
             }
-            CourseItem::Task {
+            ScopeItem::Task {
                 name,
                 id,
                 link,
                 status,
+                score,
             } => {
                 table.add_row(vec![
                     TableCell::from(id).align(TableAlign::Right),
                     TableCell::from(name),
-                    TableCell::styled(styled_task_status(status)),
+                    TableCell::styled(styled_task_status_or_score(status, score))
+                        .align(TableAlign::Center),
                     TableCell::from(link),
                 ]);
             }
         }
     }
     Ok(table)
-}
-
-pub fn styled_task_status(status: CourseTaskStatus) -> StyledObject<&'static str> {
-    match status {
-        CourseTaskStatus::Pass => style("+").green(),
-        CourseTaskStatus::Fail => style("X").red(),
-        CourseTaskStatus::None => style("-").dim(),
-    }
 }

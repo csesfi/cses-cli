@@ -1,34 +1,21 @@
 use crate::command;
-use crate::entities::{TemplateParameters, TemplateResponse};
+use crate::entities::{Scope, TemplateResponse};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
-pub fn create_template_parameters(
-    _res: &mut Resources<impl RP>,
-    course_id: String,
-    parameters: command::Template,
-) -> Result<TemplateParameters> {
-    Ok(TemplateParameters {
-        course: course_id,
-        file: parameters.file_name,
-        task: parameters.task,
-        language: parameters.language,
-    })
-}
-
 pub fn get_template(
     res: &mut Resources<impl RP>,
-    parameters: &TemplateParameters,
+    scope: &Scope,
+    parameters: command::Template,
 ) -> Result<TemplateResponse> {
     (|| -> Result<_> {
         let token = res.storage.get().get_token();
         Ok(res.api.get_template(
             token,
-            &parameters.course,
-            // FIXME
-            parameters.task.as_deref().map(|t| t.parse().unwrap()),
+            scope,
+            parameters.task.as_deref(),
             parameters.language.as_deref(),
-            parameters.file.as_deref(),
+            parameters.file_name.as_deref(),
         )?)
     })()
     .context("Failed querying code template from the server")
