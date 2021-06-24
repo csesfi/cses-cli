@@ -1,0 +1,1639 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CSES API",
+    "description": "API describing the communication between CSES CLI and cses.fi",
+    "version": "0.0.1",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE"
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaseError": {
+        "additionalProperties": false,
+        "required": [
+          "message",
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "message": {
+            "description": "Human-readable error message from the server.",
+            "type": "string"
+          },
+          "code": {
+            "description": "Machine-readable error code from the server.",
+            "type": "string",
+            "enum": [
+              "invalid_api_key",
+              "pending_api_key",
+              "server_error",
+              "client_error",
+              "task_deduction_error",
+              "language_deduction_error"
+            ]
+          }
+        }
+      },
+      "InvalidApiKeyError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "invalid_api_key"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "PendingApiKeyError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "pending_api_key"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "ClientError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "client_error"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "TaskDeductionError": {
+        "description": "The server failed to find a matching task for the submission.\n",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "task_deduction_error"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "LanguageDeductionError": {
+        "description": "The server failed to deduce the language of the submission.\n",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "language_deduction_error"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "ServerError": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseError"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "server_error"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "Language": {
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "option"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the language, e.g. \"C++\", \"Haskell\", \"Python2\".\n"
+          },
+          "option": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional language version specifier, e.g. \"CPython\" or \"PyPy\".\n"
+          }
+        }
+      },
+      "TestProgress": {
+        "additionalProperties": false,
+        "required": [
+          "finished_tests",
+          "total_tests"
+        ],
+        "type": "object",
+        "description": "An optional property describing the progress of the testing phase.\n",
+        "properties": {
+          "finished_tests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The number of finished tests.\n"
+          },
+          "total_tests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The total number of tests.\n"
+          }
+        }
+      },
+      "TaskId": {
+        "type": "string",
+        "description": "Task ID.\n"
+      },
+      "TaskOutline": {
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/TaskId"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the task.\n"
+          }
+        }
+      },
+      "UserOutline": {
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID.\n"
+          },
+          "username": {
+            "type": "string",
+            "description": "Raw username or nickname.\n"
+          },
+          "displayname": {
+            "type": "string",
+            "description": "Optional display name. A more descriptive name for external accounts.\n"
+          }
+        }
+      },
+      "CourseSubmissionInfo": {
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "task",
+          "sender",
+          "time",
+          "language",
+          "status",
+          "pending"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of the submission.\n"
+          },
+          "task": {
+            "$ref": "#/components/schemas/TaskOutline"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/UserOutline"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Submission time in ISO 8601 format. (Timezone format has not been decided upon)\n"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the submission, e.g. \"PENDING\" or \"READY\".\n"
+          },
+          "pending": {
+            "type": "boolean",
+            "description": "Whether the submission is still being graded, and the information may change soon.\n"
+          },
+          "test_progress": {
+            "description": "> An optional property describing the progress of the testing phase.\n",
+            "$ref": "#/components/schemas/TestProgress"
+          },
+          "result": {
+            "type": "string",
+            "description": "Verdict of the submission, e.g. \"ACCEPTED\".\n"
+          },
+          "test_report": {
+            "type": "string",
+            "description": "An optional description of the tests for when more specific information of the tests is not shown to the user. Used at least on the TiRa course.\n"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "number",
+                "verdict",
+                "time"
+              ],
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "description": "Test case number, starting from 1."
+                },
+                "verdict": {
+                  "type": "string",
+                  "description": "Verdict of the test, e.g. \"WRONG ANSWER\".\n"
+                },
+                "time": {
+                  "type": "integer",
+                  "nullable": true,
+                  "description": "Run time of the test in milliseconds."
+                }
+              }
+            }
+          },
+          "compiler": {
+            "type": "string",
+            "description": "The compiler report in case of COMPILE ERROR or just some warnings from the compiler.\n"
+          }
+        }
+      },
+      "ContestSubmissionInfo": {
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "task",
+          "sender",
+          "time",
+          "language",
+          "status",
+          "pending"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of the submission.\n"
+          },
+          "task": {
+            "$ref": "#/components/schemas/TaskOutline"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/UserOutline"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Submission time in ISO 8601 format. (Timezone format has not been decided upon)\n"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the submission, e.g. \"PENDING\" or \"READY\".\n"
+          },
+          "pending": {
+            "type": "boolean",
+            "description": "Whether the submission is still being graded, and the information may change soon.\n"
+          },
+          "test_progress": {
+            "description": "An optional property describing the progress of the testing phase.\n",
+            "$ref": "#/components/schemas/TestProgress"
+          },
+          "score": {
+            "type": "integer",
+            "description": "Result of the submission. The number of points.\n"
+          },
+          "test_report": {
+            "type": "string",
+            "description": "An optional description of the tests for when more specific information of the tests is not shown to the user. Used at least on the TiRa course.\n"
+          },
+          "feedback": {
+            "type": "array",
+            "description": "Feedback for the different test groups.\n",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "group",
+                "verdict",
+                "score"
+              ],
+              "properties": {
+                "group": {
+                  "type": "integer",
+                  "description": "Test group ID."
+                },
+                "verdict": {
+                  "type": "string",
+                  "description": "Verdict of the test group, e.g. \"WRONG ANSWER\"."
+                },
+                "score": {
+                  "type": "integer",
+                  "description": "The number of points for the test group."
+                }
+              }
+            }
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "number",
+                "verdict",
+                "time",
+                "groups"
+              ],
+              "properties": {
+                "number": {
+                  "type": "integer",
+                  "description": "Test case number, starting from 1."
+                },
+                "verdict": {
+                  "type": "string",
+                  "description": "Verdict of the test, e.g. \"WRONG ANSWER\".\n"
+                },
+                "time": {
+                  "type": "integer",
+                  "nullable": true,
+                  "description": "Run time of the test in milliseconds."
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "description": "The IDs of groups which the test belongs to."
+                  }
+                }
+              }
+            }
+          },
+          "compiler": {
+            "type": "string",
+            "description": "The compiler report in case of COMPILE ERROR or just some warnings from the compiler.\n"
+          }
+        }
+      },
+      "CourseList": {
+        "additionalProperties": false,
+        "required": [
+          "courses"
+        ],
+        "type": "object",
+        "properties": {
+          "courses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "description"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Course ID.\n"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the course.\n"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The course's description.\n"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CourseContent": {
+        "additionalProperties": false,
+        "required": [
+          "sections"
+        ],
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "header",
+                "list"
+              ],
+              "properties": {
+                "header": {
+                  "type": "string",
+                  "description": "A header describing a section.\n"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "An optional text below the header.\n"
+                },
+                "list": {
+                  "type": "array",
+                  "description": "A list containing texts, links and tasks.\n",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/Text"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Link"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CourseTask"
+                      }
+                    ],
+                    "discriminator": {
+                      "propertyName": "objectType",
+                      "mapping": {
+                        "text": "schemas.yaml#/Text",
+                        "link": "schemas.yaml#/Link",
+                        "task": "schemas.yaml#/CourseTask"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContestContent": {
+        "additionalProperties": false,
+        "required": [
+          "sections"
+        ],
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "header",
+                "list"
+              ],
+              "properties": {
+                "header": {
+                  "type": "string",
+                  "description": "A header describing a section.\n"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "An optional text below the header.\n"
+                },
+                "list": {
+                  "type": "array",
+                  "description": "A list containing texts, links and tasks.\n",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/Text"
+                      },
+                      {
+                        "$ref": "#/components/schemas/Link"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ContestTask"
+                      }
+                    ],
+                    "discriminator": {
+                      "propertyName": "objectType",
+                      "mapping": {
+                        "text": "schemas.yaml#/Text",
+                        "link": "schemas.yaml#/Link",
+                        "task": "schemas.yaml#/ContestTask"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Text": {
+        "additionalProperties": false,
+        "required": [
+          "objectType",
+          "name",
+          "id",
+          "link"
+        ],
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the text.\n"
+          },
+          "id": {
+            "type": "string",
+            "description": "The text's ID.\n"
+          },
+          "link": {
+            "type": "string",
+            "description": "A link to the text.\n"
+          }
+        }
+      },
+      "Link": {
+        "additionalProperties": false,
+        "required": [
+          "objectType",
+          "name",
+          "link"
+        ],
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the link.\n"
+          },
+          "link": {
+            "type": "string",
+            "description": "A link to another web page.\n"
+          }
+        }
+      },
+      "CourseTask": {
+        "additionalProperties": false,
+        "required": [
+          "objectType",
+          "name",
+          "id",
+          "link",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the task.\n"
+          },
+          "id": {
+            "$ref": "#/components/schemas/TaskId"
+          },
+          "link": {
+            "type": "string",
+            "description": "A link to the task's info page.\n"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OutcomeStatus"
+          }
+        }
+      },
+      "ContestTask": {
+        "additionalProperties": false,
+        "required": [
+          "objectType",
+          "name",
+          "id",
+          "link",
+          "score"
+        ],
+        "type": "object",
+        "properties": {
+          "objectType": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the task.\n"
+          },
+          "id": {
+            "$ref": "#/components/schemas/TaskId"
+          },
+          "link": {
+            "type": "string",
+            "description": "A link to the task's info page.\n"
+          },
+          "score": {
+            "$ref": "#/components/schemas/OutcomeScore"
+          }
+        }
+      },
+      "OutcomeStatus": {
+        "type": "string",
+        "enum": [
+          "none",
+          "pass",
+          "fail"
+        ],
+        "description": "Outcome of a task or submission. Value is one of \"none\", \"pass\" or \"fail\". Used with courses.\n"
+      },
+      "OutcomeScore": {
+        "type": "integer",
+        "nullable": true,
+        "description": "Outcome of a task or submission. The number of points. Used with contests.\n"
+      },
+      "CourseSubmissionList": {
+        "additionalProperties": false,
+        "required": [
+          "submissions"
+        ],
+        "type": "object",
+        "properties": {
+          "submissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "time",
+                "language",
+                "outcome_status"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "ID of the submission.\n"
+                },
+                "time": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Submission time in ISO 8601 format. (Timezone format has not been decided upon)\n"
+                },
+                "language": {
+                  "$ref": "#/components/schemas/Language"
+                },
+                "code_time": {
+                  "type": "integer",
+                  "nullable": true,
+                  "description": "Run time of the code in milliseconds.\n"
+                },
+                "size": {
+                  "type": "integer",
+                  "description": "Code size in chars.\n"
+                },
+                "outcome_status": {
+                  "$ref": "#/components/schemas/OutcomeStatus"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContestSubmissionList": {
+        "additionalProperties": false,
+        "required": [
+          "submissions"
+        ],
+        "type": "object",
+        "properties": {
+          "submissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "time",
+                "language",
+                "outcome_score"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "ID of the submission.\n"
+                },
+                "time": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Submission time in ISO 8601 format. (Timezone format has not been decided upon)\n"
+                },
+                "language": {
+                  "$ref": "#/components/schemas/Language"
+                },
+                "code_time": {
+                  "type": "integer",
+                  "nullable": true,
+                  "description": "Run time of the code in milliseconds.\n"
+                },
+                "size": {
+                  "type": "integer",
+                  "description": "Code size in chars.\n"
+                },
+                "outcome_score": {
+                  "$ref": "#/components/schemas/OutcomeScore"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TaskStatement": {
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the task.\n"
+          },
+          "time_limit": {
+            "type": "integer",
+            "description": "The task's time limit in milliseconds.\n"
+          },
+          "memory_limit": {
+            "type": "integer",
+            "description": "The task's memory limit in megabytes.\n"
+          },
+          "text": {
+            "type": "string",
+            "description": "The task statement given in an unspecified raw format.\n"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Auth-Token",
+        "x-apikeyInfoFunc": "app.apikey_auth"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "operationId": "app.login_post",
+        "summary": "Start login flow",
+        "description": "Request a new API token and authentication URL corresponding to it. In order to complete the flow, the end user should be instructed to visit the URL and log in.\n",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Request successful. X-Auth-Token and authentication URL are returned as JSON.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "X-Auth-Token",
+                    "authentication_url"
+                  ],
+                  "properties": {
+                    "X-Auth-Token": {
+                      "description": "API token that can be used to authorize the user.",
+                      "type": "string"
+                    },
+                    "authentication_url": {
+                      "description": "URL the user should visit to log in.",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      },
+      "get": {
+        "operationId": "app.login_get",
+        "summary": "Get login status",
+        "description": "Request information about a given X-Auth-Token. The response is successful if the API token is valid, a `PendingApiKeyError` when the token has not yet been authenticated, and an `InvalidApiKeyError` otherwise.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login is valid. User information given in response.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOutline"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API key pending authentication or invalid. Only given by `GET /login`.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/InvalidApiKeyError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PendingApiKeyError"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "General error response from the server.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientError"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "An example error message",
+                    "value": {
+                      "message": "Too many requests",
+                      "code": "client_error"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5XX": {
+            "description": "General server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "operationId": "app.logout_post",
+        "summary": "Deauthorizes the given authorization token.",
+        "description": "Deauthorizes the valid authentication token. Returns if the deauthorization was successful or not.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Api token deauthorized successfully."
+          },
+          "401": {
+            "description": "Invalid api key error response from the server.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidApiKeyError"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses/{course_id}/submissions": {
+      "post": {
+        "operationId": "app.courses_submissions_post",
+        "summary": "Make new course submission.",
+        "tags": [
+          "courses"
+        ],
+        "description": "Submit code file encoded as base64.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/parameters/1"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "language",
+                  "filename",
+                  "content"
+                ],
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "language": {
+                    "$ref": "#/components/schemas/Language"
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "Original name of the file."
+                  },
+                  "content": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "Content of the file encoded as base64."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Submission was sent successfully. The new submission ID is included in the response.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseSubmissionInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Either a general client error or a specialized error if server failed to deduce missing parts of the submission.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TaskDeductionError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/LanguageDeductionError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ClientError"
+                    }
+                  ]
+                },
+                "examples": {
+                  "task_error_example": {
+                    "summary": "An example task deduction error",
+                    "value": {
+                      "message": "Couldn't find a task for the submitted file. For this course, the filename should be e.g. `hello_world.cpp` for the task Hello World.\n",
+                      "code": "task_deduction_error"
+                    }
+                  },
+                  "language_error_example": {
+                    "summary": "An example language deduction error message",
+                    "value": {
+                      "message": "The filename extension `.asdf` doesn't specify any available language.\n",
+                      "code": "language_deduction_error"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      },
+      "get": {
+        "operationId": "app.courses_get_submission_list",
+        "summary": "Retrieve information about submissions on a course task.",
+        "tags": [
+          "courses"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Info about a submissions were retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseSubmissionList"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/contests/{contest_id}/submissions": {
+      "post": {
+        "operationId": "app.contests_submissions_post",
+        "summary": "Make new contest submission.",
+        "tags": [
+          "contests"
+        ],
+        "description": "Submit code file encoded as base64.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/parameters/1"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1submissions/post/requestBody"
+        },
+        "responses": {
+          "200": {
+            "description": "Submission was sent successfully. The new submission ID is included in the response.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContestSubmissionInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1submissions/post/responses/400"
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      },
+      "get": {
+        "operationId": "app.contests_get_submission_list",
+        "summary": "Retrieve information about submissions on a contests task.",
+        "tags": [
+          "contests"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Info about a submissions were retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContestSubmissionList"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses/{course_id}/submissions/{submission_id}": {
+      "get": {
+        "operationId": "app.courses_get_submission",
+        "summary": "Retrieve information about a course submission.",
+        "tags": [
+          "courses"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
+          },
+          {
+            "in": "path",
+            "name": "submission_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Submission ID."
+          },
+          {
+            "in": "query",
+            "name": "poll",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Whether or not to use long polling. If set to `true` and the submission is still pending, the server will wait up to some amount of time, before responding with a result. If grading of this submission completes during this time, the response is sent immediately.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Info about a submission was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseSubmissionInfo"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/contests/{contest_id}/submissions/{submission_id}": {
+      "get": {
+        "operationId": "app.contests_get_submission",
+        "summary": "Retrieve information about a contest submission.",
+        "tags": [
+          "contests"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1submissions~1%7Bsubmission_id%7D/get/parameters/1"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1submissions~1%7Bsubmission_id%7D/get/parameters/2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Info about a submission was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContestSubmissionInfo"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses": {
+      "get": {
+        "operationId": "app.get_courses",
+        "summary": "Retrieve information about the available courses.",
+        "tags": [
+          "courses"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "description": "Info about available courses was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseList"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses/{course_id}/list": {
+      "get": {
+        "operationId": "app.get_course_content",
+        "summary": "Retrieve the listed information related to a course.",
+        "tags": [
+          "courses"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "course_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Alphanumeric identifier of the course. Same as in course URLs.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The listed information was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseContent"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/contests/{contest_id}/list": {
+      "get": {
+        "operationId": "app.get_contest_content",
+        "summary": "Retrieve the listed information related to a contest.",
+        "tags": [
+          "contests"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contest_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric identifier of the course. Same as in contest URLs.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The listed information was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContestContent"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses/{course_id}/statement": {
+      "get": {
+        "operationId": "app.get_course_task_statement",
+        "summary": "Retrieve a task statement related to a task in a course.",
+        "tags": [
+          "courses"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
+          },
+          {
+            "in": "query",
+            "name": "task",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Task ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The task statement was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskStatement"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/contests/{contest_id}/statement": {
+      "get": {
+        "operationId": "app.get_contest_task_statement",
+        "summary": "Retrieve a task statement related to a task in a contest.",
+        "tags": [
+          "contests"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/responses/200"
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses/{course_id}/templates": {
+      "get": {
+        "operationId": "app.courses_get_template",
+        "summary": "Retrieve a code template.",
+        "tags": [
+          "courses"
+        ],
+        "description": "Requests a code template matching the given parameters. The server decides whether some code template matches the given parameters or not.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
+          },
+          {
+            "in": "query",
+            "name": "task",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Task ID. If not provided the server  tries to deduce it from the file name.\n"
+          },
+          {
+            "in": "query",
+            "name": "filename",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Template filename."
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Name of the programming language.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The code template was retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "required": [
+                    "template_source",
+                    "filename"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "template_source": {
+                      "type": "string",
+                      "description": "Source code of the template.\n"
+                    },
+                    "filename": {
+                      "type": "string",
+                      "description": "Filename of the template.\n"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/contests/{contest_id}/templates": {
+      "get": {
+        "operationId": "app.contests_get_template",
+        "summary": "Retrieve a code template.",
+        "tags": [
+          "contests"
+        ],
+        "description": "Requests a code template matching the given parameters. The server decides whether some code template matches the given parameters or not.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/parameters/1"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/parameters/2"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/parameters/3"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/responses/200"
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    }
+  }
+}
+
