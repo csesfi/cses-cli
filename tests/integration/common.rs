@@ -12,6 +12,7 @@ pub static TESTS: [fn()] = [..];
 pub fn command() -> Command {
     let mut command = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     command.env("CSES_CLI_TEST", "true");
+    command.env("CSES_API_URL", "http://127.0.0.1:4011");
     command
 }
 
