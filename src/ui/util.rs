@@ -40,12 +40,14 @@ pub fn styled_task_status_or_score(
             points if points > 60 => style(points.to_string()).green(),
             points if points > 10 => style(points.to_string()).yellow(),
             _ => style(points.to_string()).red(),
-        };
+        }
+        .bold();
     }
 
     match status {
-        Some(TaskStatus::Pass) => style("+".to_string()).bold().green(),
-        Some(TaskStatus::Fail) => style("X".to_string()).bold().red(),
-        Some(TaskStatus::None) | None => style("-".to_string()).bold().dim(),
+        Some(TaskStatus::Pass) => style("+".to_string()).green(),
+        Some(TaskStatus::Fail) => style("X".to_string()).red(),
+        Some(TaskStatus::None) | None => style("-".to_string()).dim(),
     }
+    .bold()
 }
