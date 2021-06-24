@@ -1,4 +1,5 @@
 import sys
+from typing import Dict
 
 INTEGRATION = False
 try:
@@ -7,7 +8,7 @@ except IndexError:
     pass
 
 
-def __file_details(filename: str, new_name: str = None) -> dict[str, str]:
+def __file_details(filename: str, new_name: str = None) -> Dict[str, str]:
     return {
         "filename": new_name if new_name is not None else filename,
         "content": open(f"../../tests/files/{filename}").read()
@@ -181,7 +182,7 @@ CPP_PROGRESS_BASE = {
     "status": "PENDING",
     "pending": True,
 }
-CPP_PROGRESS_BASE_CONTEST = {"task": SUMMA_TASK_CONTEST} | CPP_PROGRESS_BASE
+CPP_PROGRESS_BASE_CONTEST = {**{"task": SUMMA_TASK_CONTEST}, **CPP_PROGRESS_BASE}
 
 # Compiler messages
 COMPILER_ERROR = """input/code.cpp:1:1: error: 'use' does not name \

@@ -1,3 +1,6 @@
+from typing import List
+
+
 class SubmissionInfo:
     """A class for representing data sent to server at new submission."""
 
@@ -30,7 +33,7 @@ def test_progress(finished_tests: int, total_tests: int) -> dict:
 
 
 def test_result(number: int = 1, verdict: str = "ACCEPTED", time: int = 120,
-                groups: list[int] = None) -> dict:
+                groups: List[int] = None) -> dict:
     return {
         "number": number,
         "verdict": verdict,
