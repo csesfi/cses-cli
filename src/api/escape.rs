@@ -16,6 +16,12 @@ impl<'a> fmt::Display for Escape<'a> {
     }
 }
 
+impl<'a> Into<String> for Escape<'a> {
+    fn into(self) -> String {
+        self.to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
