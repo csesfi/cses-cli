@@ -30,10 +30,10 @@ mod common;
 mod courses;
 mod help;
 mod login;
+mod statement;
 mod submission;
 mod submit;
 mod template;
-mod statement;
 
 use common::TESTS;
 
