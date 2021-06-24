@@ -112,9 +112,9 @@ fn parse_task_id(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-t", "--task"])?)
 }
 fn parse_required_task_id(pargs: &mut pico_args::Arguments) -> Result<String> {
-    Ok(pargs
+    pargs
         .value_from_str(["-t", "--task"])
-        .context("Failed parsing task ID")?)
+        .context("Failed parsing task ID")
 }
 fn parse_language_name(pargs: &mut pico_args::Arguments) -> Result<Option<String>> {
     Ok(pargs.opt_value_from_str(["-l", "--language"])?)
