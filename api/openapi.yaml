@@ -9,6 +9,8 @@ info:
     url: https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE
 
 components:
+  schemas:
+    $ref: "schemas.yaml"
   securitySchemes:
     apiKeyAuth: # could be any name
       type: apiKey
