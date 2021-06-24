@@ -358,6 +358,10 @@
             "description": "An optional property describing the progress of the testing phase.\n",
             "$ref": "#/components/schemas/TestProgress"
           },
+          "result": {
+            "type": "string",
+            "description": "Verdict of the submission, e.g. \"ACCEPTED\".\n"
+          },
           "score": {
             "type": "integer",
             "description": "Result of the submission. The number of points.\n"
