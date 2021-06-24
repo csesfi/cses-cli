@@ -54,7 +54,7 @@ fn test_view_remembers_course() {
         .stdout(contains("Test task"));
 }
 #[distributed_slice(TESTS)]
-fn test_no_course_found() {
+fn test_api_error_printed() {
     command()
         .args(&["view", "-c", "nonexistent_course", "--task", "B"])
         .assert()
@@ -62,12 +62,12 @@ fn test_no_course_found() {
         .stdout(contains("Course not found"));
 }
 #[distributed_slice(TESTS)]
-fn test_task_not_found() {
+fn test_task_service_error_context_printed() {
     command()
         .args(&["view", "-c", "teku", "--task", "123123"])
         .assert()
         .failure()
-        .stdout(contains("Task not found"));
+        .stdout(contains("Failed querying task statement from the server"));
 }
 #[distributed_slice(TESTS)]
 fn test_task_with_time_limit_and_memory_limit_printed_correctly() {
