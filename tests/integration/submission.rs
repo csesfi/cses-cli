@@ -65,3 +65,23 @@ fn old_submission_can_be_viewed() {
         .stdout(regex_match(r"(?i)Result"))
         .stderr(predicate::str::is_empty());
 }
+
+#[distributed_slice(TESTS)]
+fn contest_submission_list_shows_points() {
+    log_in();
+    command()
+        .args(&["submissions", "-c", "101", "-t", "1"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)cpython.*75"));
+}
+
+#[distributed_slice(TESTS)]
+fn old_contest_submission_can_be_viewed() {
+    log_in();
+    command()
+        .args(&["submission", "--contest", "101", "1"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)result"));
+}

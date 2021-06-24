@@ -2,7 +2,7 @@ mod courses;
 mod login;
 mod statement;
 mod template;
-pub use courses::{course_content, courses};
+pub use courses::{courses, scope_content};
 pub use login::{login, login_is_valid, login_status, logout, Login};
 pub use statement::get_task_statement;
 pub use template::{file_exists, get_template, save_response};

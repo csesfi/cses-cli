@@ -145,7 +145,7 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
             TableCell::from("#").align(TableAlign::Right),
             TableCell::from("verdict").align(TableAlign::Center),
             "time".into(),
-            "groups".into(),
+            TableCell::from("groups").allow_hiding(),
         ]);
         table.add_separator();
         for test in tests {
@@ -153,7 +153,7 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
                 TableCell::from(test.number).align(TableAlign::Right),
                 TableCell::styled(result_with_color(&test.verdict)),
                 format_code_time(test.time).into(),
-                format_test_groups(&test.groups).into(),
+                TableCell::optional(format_test_groups(&test.groups)),
             ]);
         }
         write!(ui.term, "{}", table)?;
