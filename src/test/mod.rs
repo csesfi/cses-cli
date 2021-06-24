@@ -70,9 +70,9 @@ impl CsesApi for FakeCsesApi {
     fn get_content<'a>(&self, _token: Option<&'a str>, _scope: &Scope) -> ApiResult<ScopeContent> {
         todo!()
     }
-    fn get_test_case_list(
+    fn get_test_case_list<'a>(
         &self,
-        _token: &str,
+        _token: Option<&'a str>,
         _scope: &Scope,
         _task_id: &str,
     ) -> ApiResult<TestCaseList> {

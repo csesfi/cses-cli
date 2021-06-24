@@ -1,6 +1,5 @@
-use super::require_login;
 use crate::entities::{Scope, TestCase};
-use crate::{CsesApi, Filesystem, Resources, RP};
+use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
 pub fn get_test_cases(res: &mut Resources<impl RP>, scope: &Scope, task_id: &str) -> Result<()> {
@@ -15,9 +14,8 @@ fn fetch_test_cases(
     task_id: &str,
 ) -> Result<Vec<TestCase>> {
     (|| -> Result<_> {
-        let response = res
-            .api
-            .get_test_case_list(require_login(res)?, &scope, task_id)?;
+        let token = res.storage.get().get_token();
+        let response = res.api.get_test_case_list(token, &scope, task_id)?;
         Ok(response.test_cases)
     })()
     .context("Failed querying test cases from the server.")
