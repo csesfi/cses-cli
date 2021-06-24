@@ -16,9 +16,9 @@ impl<'a> fmt::Display for Escape<'a> {
     }
 }
 
-impl<'a> Into<String> for Escape<'a> {
-    fn into(self) -> String {
-        self.to_string()
+impl<'a> From<Escape<'a>> for String {
+    fn from(escape: Escape<'a>) -> Self {
+        escape.to_string()
     }
 }
 
