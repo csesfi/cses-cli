@@ -23,7 +23,7 @@ COMMANDS:
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
         and will be used by the server to select a suitable code template.
-    view [-c] (-t)          View task statement.
+    view [-c] (-t)          View the statement of a task.
 
 OPTIONS:
     -c (<course-id>|<contest-id>), --course <course-id>, --contest <contest-id>
