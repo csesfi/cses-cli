@@ -25,8 +25,8 @@ COMMANDS:
         and will be used by the server to select a suitable code template.
     view [-c] (-t)              View the statement of a task.
     examples [-c] (-t) [<dir>]  Download example inputs and outputs for a task.
-        The files are saved in the current directory unless specified otherwise.
-        They are named 1.in, 1.out, 2.in, 2.out, and so on.
+        The files will be saved in the current directory unless specified
+        otherwise. They will be named 1.in, 1.out, 2.in, 2.out, and so on.
 
 OPTIONS:
     -c (<course-id>|<contest-id>), --course <course-id>, --contest <contest-id>
