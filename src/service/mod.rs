@@ -1,9 +1,11 @@
 mod courses;
 mod login;
 mod template;
+mod test_case;
 pub use courses::{courses, scope_content};
 pub use login::{login, login_is_valid, login_status, logout, Login};
 pub use template::{file_exists, get_template, save_response};
+pub use test_case::{fetch_test_cases, save_test_cases, test_cases_exist};
 
 pub mod submit;
 pub use submit::{submission_info, submission_list, submit};

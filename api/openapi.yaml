@@ -460,3 +460,63 @@ paths:
           $ref: "responses.yaml#/ClientError"
         "5XX":
           $ref: "responses.yaml#/ServerError"
+
+  /courses/{course_id}/test-cases:
+    get:
+      operationId: app.course_get_test_case_list
+
+      summary: Retrieve example test cases.
+
+      tags:
+        - courses
+
+      description: >
+        Requests example test cases for a task on a course.
+        Order of the test cases should be the same as on the 
+        task statement.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/TaskId"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulTestCaseListGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
+  /contest/{contest_id}/test-cases:
+    get:
+      operationId: app.contest_get_test_case_list
+
+      summary: Retrieve example test cases.
+
+      tags:
+        - contests
+
+      description: >
+        Requests example test cases for a task on a contest.
+        Order of the test cases should be the same as on the 
+        task statement.
+
+      security:
+        - apiKeyAuth: []
+        - {}
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/TaskId"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#/SuccessfulTestCaseListGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
