@@ -49,5 +49,6 @@ pub fn test_cases_exist(res: &Resources<impl RP>, dir_name: Option<&str>) -> boo
         path.push_str(d);
         path.push('/');
     }
-    res.filesystem.file_exists(&path)
+    res.filesystem.file_exists(&format!("{}1.in", path))
+        && res.filesystem.file_exists(&format!("{}1.out", path))
 }
