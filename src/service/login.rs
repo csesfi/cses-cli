@@ -34,22 +34,17 @@ pub fn logout(res: &mut Resources<impl RP>) -> Result<()> {
     .context("Failed to log out")
 }
 
-/// Checks if a session is active, disregarding whether it is still valid
-pub fn login_exists(res: &Resources<impl RP>) -> bool {
-    res.storage.get().get_token().is_some()
-}
-
 pub fn login_status(res: &Resources<impl RP>) -> Result<LoginStatus> {
-    if !login_exists(res) {
-        return Ok(LoginStatus::Missing);
+    if let Some(token) = res.storage.get().get_token() {
+        let user = match res.api.login_status(token) {
+            Err(ApiError::PendingApiKeyError) => return Ok(LoginStatus::Pending),
+            Err(ApiError::ApiKeyError) => return Ok(LoginStatus::Invalid),
+            val => val?,
+        };
+        let name = user.name().to_owned();
+        return Ok(LoginStatus::Valid(name));
     }
-    let user = match res.api.login_status(res.storage.get().get_token().unwrap()) {
-        Err(ApiError::PendingApiKeyError) => return Ok(LoginStatus::Pending),
-        Err(ApiError::ApiKeyError) => return Ok(LoginStatus::Invalid),
-        val => val?,
-    };
-    let name = user.name().to_owned();
-    Ok(LoginStatus::Valid(name))
+    Ok(LoginStatus::Missing)
 }
 
 pub fn login_is_valid(res: &Resources<impl RP>) -> Result<bool> {
