@@ -91,3 +91,17 @@ fn test_task_without_time_limit_and_memory_limit_printed_correctly() {
         .stdout(regex_match("(?i)memory limit\n").not())
         .stdout(contains("Solve this problem.\n"));
 }
+#[distributed_slice(TESTS)]
+fn test_task_escaped_properly() {
+    command()
+        .args(&[
+            "view",
+            "-c",
+            "teku",
+            "--task",
+            "34&extra_nonexistent_param=123",
+        ])
+        .assert()
+        .failure()
+        .stdout(contains("Task not found"));
+}
