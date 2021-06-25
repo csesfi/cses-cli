@@ -67,7 +67,9 @@ fn test_task_service_error_context_printed() {
         .args(&["view", "-c", "teku", "--task", "123123"])
         .assert()
         .failure()
-        .stdout(contains("Failed querying task statement from the server"));
+        .stdout(regex_match(
+            "(?i)failed querying task statement from the server",
+        ));
 }
 #[distributed_slice(TESTS)]
 fn test_task_with_time_limit_and_memory_limit_printed_correctly() {
@@ -75,10 +77,10 @@ fn test_task_with_time_limit_and_memory_limit_printed_correctly() {
         .args(&["view", "-c", "123", "--task", "B"])
         .assert()
         .success()
-        .stdout(contains("Test task\n"))
-        .stdout(contains("Time limit: 1.00 s\n"))
-        .stdout(contains("Memory limit: 512 MB\n"))
-        .stdout(contains("Solve this problem.\n"));
+        .stdout(regex_match("Test task"))
+        .stdout(regex_match("(?i)time limit.*1.00 s"))
+        .stdout(regex_match("(?i)memory limit.*512 MB"))
+        .stdout(contains("Solve this problem."));
 }
 #[distributed_slice(TESTS)]
 fn test_task_without_time_limit_and_memory_limit_printed_correctly() {
@@ -86,10 +88,10 @@ fn test_task_without_time_limit_and_memory_limit_printed_correctly() {
         .args(&["view", "-c", "teku", "--task", "34"])
         .assert()
         .success()
-        .stdout(contains("Test task\n"))
-        .stdout(regex_match("(?i)time limit\n").not())
-        .stdout(regex_match("(?i)memory limit\n").not())
-        .stdout(contains("Solve this problem.\n"));
+        .stdout(contains("Test task"))
+        .stdout(regex_match("(?i)time limit").not())
+        .stdout(regex_match("(?i)memory limit").not())
+        .stdout(contains("Solve this problem."));
 }
 #[distributed_slice(TESTS)]
 fn test_task_escaped_properly() {
