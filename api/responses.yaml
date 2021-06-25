@@ -162,6 +162,13 @@ SuccessfulCodeTemplateGet:
             description: >
               Filename of the template.
 
+SuccessfulTestCaseListGet:
+  description: >
+    Test cases were retrieved successfully.
+  content:
+    application/json:
+      schema:
+        $ref: "schemas.yaml#/TestCaseList"
 
 SuccessfulTaskStatementGet:
   description: >

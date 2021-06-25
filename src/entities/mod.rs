@@ -109,3 +109,14 @@ pub struct TaskStatement {
     pub memory_limit: Option<u64>,
     pub text: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct TestCase {
+    pub input: String,
+    pub output: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TestCaseList {
+    pub test_cases: Vec<TestCase>,
+}

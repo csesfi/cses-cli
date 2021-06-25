@@ -2,7 +2,7 @@ mod escape;
 mod trace_send;
 use crate::entities::{
     CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
-    TemplateResponse, UserOutline,
+    TemplateResponse, TestCaseList, UserOutline,
 };
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
@@ -87,6 +87,12 @@ pub trait CsesApi {
         scope: &Scope,
         task_id: &str,
     ) -> ApiResult<TaskStatement>;
+    fn get_test_case_list<'a>(
+        &self,
+        token: Option<&'a str>,
+        scope: &Scope,
+        task_id: &str,
+    ) -> ApiResult<TestCaseList>;
 }
 
 impl CsesApi for CsesHttpApi {
@@ -242,6 +248,23 @@ impl CsesApi for CsesHttpApi {
         let response = request.trace_send(self.trace)?;
         check_error(&response)?;
         Ok(json::from_str(response.as_str()?)?)
+    }
+
+    fn get_test_case_list<'a>(
+        &self,
+        token: Option<&'a str>,
+        scope: &Scope,
+        task_id: &str,
+    ) -> ApiResult<TestCaseList> {
+        let mut request =
+            minreq::get(format_url(&self.url, scope, "test-cases")).with_param("task", task_id);
+        if let Some(token) = token {
+            request = request.with_header("X-Auth-Token", token);
+        }
+        let response = request.trace_send(self.trace)?;
+        check_error(&response)?;
+        let response_body: TestCaseList = json::from_str(response.as_str()?)?;
+        Ok(response_body)
     }
 }
 

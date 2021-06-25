@@ -2,7 +2,7 @@ mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
 use crate::entities::{
     CourseList, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
-    TemplateResponse, UserOutline,
+    TemplateResponse, TestCaseList, UserOutline,
 };
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
@@ -77,6 +77,15 @@ impl CsesApi for FakeCsesApi {
         _scope: &Scope,
         _task_id: &str,
     ) -> ApiResult<TaskStatement> {
+        todo!()
+    }
+
+    fn get_test_case_list<'a>(
+        &self,
+        _token: Option<&'a str>,
+        _scope: &Scope,
+        _task_id: &str,
+    ) -> ApiResult<TestCaseList> {
         todo!()
     }
 }
