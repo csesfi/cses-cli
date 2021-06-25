@@ -1,6 +1,6 @@
 import sys
-from template import _to_b64
 from typing import Dict
+from template import _to_b64
 
 INTEGRATION = False
 try:

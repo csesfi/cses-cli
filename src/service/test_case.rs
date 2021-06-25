@@ -2,13 +2,7 @@ use crate::entities::{Scope, TestCase};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
-pub fn get_test_cases(res: &mut Resources<impl RP>, scope: &Scope, task_id: &str) -> Result<()> {
-    let test_cases = fetch_test_cases(res, scope, task_id)?;
-    save_test_cases(res, test_cases)?;
-    Ok(())
-}
-
-fn fetch_test_cases(
+pub fn fetch_test_cases(
     res: &mut Resources<impl RP>,
     scope: &Scope,
     task_id: &str,
@@ -21,18 +15,39 @@ fn fetch_test_cases(
     .context("Failed querying test cases from the server.")
 }
 
-fn save_test_cases(res: &mut Resources<impl RP>, test_cases: Vec<TestCase>) -> Result<()> {
-    let mut case_num = 0;
-    for case in test_cases.iter() {
-        case_num += 1;
-        res.filesystem.write_file(
-            &res.filesystem.decode_base64(&case.input)?,
-            &format!("input{}", case_num),
-        )?;
-        res.filesystem.write_file(
-            &res.filesystem.decode_base64(&case.output)?,
-            &format!("output{}", case_num),
-        )?;
+pub fn save_test_cases(
+    res: &mut Resources<impl RP>,
+    test_cases: Vec<TestCase>,
+    dir_name: Option<&str>,
+) -> Result<()> {
+    (|| -> Result<_> {
+        let mut path = String::from("./");
+        if let Some(d) = dir_name {
+            path.push_str(d);
+            path.push('/');
+        }
+        let mut case_num = 0;
+        for case in test_cases.iter() {
+            case_num += 1;
+            res.filesystem.write_file(
+                &res.filesystem.decode_base64(&case.input)?,
+                &format!("{}{}.in", path, case_num),
+            )?;
+            res.filesystem.write_file(
+                &res.filesystem.decode_base64(&case.output)?,
+                &format!("{}{}.out", path, case_num),
+            )?;
+        }
+        Ok(())
+    })()
+    .context("Failed saving test cases.")
+}
+
+pub fn test_cases_exist(res: &Resources<impl RP>, dir_name: Option<&str>) -> bool {
+    let mut path = String::from("./");
+    if let Some(d) = dir_name {
+        path.push_str(d);
+        path.push('/');
     }
-    Ok(())
+    res.filesystem.file_exists(&path)
 }
