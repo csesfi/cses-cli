@@ -54,7 +54,11 @@ impl FileStorage {
             filename = PathBuf::from("filestorage.json");
         } else {
             filename = create_path()?;
-            fs::create_dir_all(filename.parent().unwrap())?;
+            if let Some(parent_path) = filename.parent() {
+                fs::create_dir_all(parent_path)?;
+            } else {    // This should never happen
+                anyhow::bail!("Could not read parent path.");
+            }
         }
         if !filename.exists() {
             return Ok(FileStorage {
