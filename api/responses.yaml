@@ -154,8 +154,9 @@ SuccessfulCodeTemplateGet:
         properties:
           template_source:
             type: string
+            format: byte
             description: >
-              Source code of the template.
+              Source code of the template encoded in base64.
           filename:
             type: string
             description: >
