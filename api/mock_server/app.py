@@ -202,24 +202,24 @@ def get_contest_content(token_info, contest_id):
     ]}, 200)
 
 
-def get_course_task_statement(token_info, course_id, task_id):
+def get_course_task_statement(token_info, course_id, task):
     if course_id != "teku":
         return ({"message": "Course not found",
                  "code": "client_error"}, 404)
 
-    if task_id != constants.DEFAULT_COURSE_TASK:
+    if task != constants.DEFAULT_COURSE_TASK:
         return ({"message": "Task not found",
                  "code": "client_error"}, 404)
 
     return (constants.TEST_TASK_WITHOUT_TIME_AND_MEMORY_LIMIT, 200)
 
 
-def get_contest_task_statement(token_info, contest_id, task_id):
-    if contest_id != "teki":
+def get_contest_task_statement(token_info, contest_id, task):
+    if contest_id != 123:
         return ({"message": "Contest not found",
                  "code": "client_error"}, 404)
 
-    if task_id != constants.DEFAULT_CONTEST_TASK:
+    if task != constants.DEFAULT_CONTEST_TASK:
         return ({"message": "Task not found",
                  "code": "client_error"}, 404)
 

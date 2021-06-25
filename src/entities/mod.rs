@@ -103,6 +103,14 @@ pub struct SubmissionList {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct TaskStatement {
+    pub name: String,
+    pub time_limit: Option<u64>,
+    pub memory_limit: Option<u64>,
+    pub text: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct TestCase {
     pub input: String,
     pub output: String,
