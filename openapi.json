@@ -802,6 +802,38 @@
           }
         }
       },
+      "TestCaseList": {
+        "additionalProperties": false,
+        "required": [
+          "test_cases"
+        ],
+        "type": "object",
+        "properties": {
+          "test_cases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input",
+                "output"
+              ],
+              "properties": {
+                "input": {
+                  "type": "string",
+                  "format": "byte",
+                  "description": "Test input encoded as base64."
+                },
+                "output": {
+                  "type": "string",
+                  "format": "byte",
+                  "description": "Expected output encoded as base64."
+                }
+              }
+            }
+          }
+        }
+      },
       "TaskStatement": {
         "additionalProperties": false,
         "required": [
@@ -1629,6 +1661,83 @@
         "responses": {
           "200": {
             "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1templates/get/responses/200"
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/courses/{course_id}/test-cases": {
+      "get": {
+        "operationId": "app.course_get_test_case_list",
+        "summary": "Retrieve example test cases.",
+        "tags": [
+          "courses"
+        ],
+        "description": "Requests example test cases for a task on a course. Order of the test cases should be the same as on the  task statement.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test cases were retrieved successfully.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestCaseList"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/paths/~1login/get/responses/4XX"
+          },
+          "5XX": {
+            "$ref": "#/paths/~1login/get/responses/5XX"
+          }
+        }
+      }
+    },
+    "/contest/{contest_id}/test-cases": {
+      "get": {
+        "operationId": "app.contest_get_test_case_list",
+        "summary": "Retrieve example test cases.",
+        "tags": [
+          "contests"
+        ],
+        "description": "Requests example test cases for a task on a contest. Order of the test cases should be the same as on the  task statement.\n",
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1test-cases/get/responses/200"
           },
           "4XX": {
             "$ref": "#/paths/~1login/get/responses/4XX"
