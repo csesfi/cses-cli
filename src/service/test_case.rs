@@ -21,21 +21,17 @@ pub fn save_test_cases(
     dir_name: Option<&str>,
 ) -> Result<()> {
     (|| -> Result<_> {
-        let mut path = String::from("./");
-        if let Some(d) = dir_name {
-            path.push_str(d);
-            path.push('/');
-        }
+        let path = make_path(dir_name);
         let mut case_num = 0;
         for case in test_cases.iter() {
             case_num += 1;
             res.filesystem.write_file(
                 &res.filesystem.decode_base64(&case.input)?,
-                &format!("{}{}.in", path, case_num),
+                &format_path(&path, case_num, "in"),
             )?;
             res.filesystem.write_file(
                 &res.filesystem.decode_base64(&case.output)?,
-                &format!("{}{}.out", path, case_num),
+                &format_path(&path, case_num, "out"),
             )?;
         }
         Ok(())
@@ -44,11 +40,23 @@ pub fn save_test_cases(
 }
 
 pub fn test_cases_exist(res: &Resources<impl RP>, dir_name: Option<&str>) -> bool {
+    let path = make_path(dir_name);
+    let case_num = 1;
+    res.filesystem
+        .file_exists(&format_path(&path, case_num, "in"))
+        && res
+            .filesystem
+            .file_exists(&format_path(&path, case_num, "out"))
+}
+
+fn make_path(dir_name: Option<&str>) -> String {
     let mut path = String::from("./");
     if let Some(d) = dir_name {
         path.push_str(d);
         path.push('/');
     }
-    res.filesystem.file_exists(&format!("{}1.in", path))
-        && res.filesystem.file_exists(&format!("{}1.out", path))
+    path
+}
+fn format_path(path: &str, case_num: u64, end: &str) -> String {
+    format!("{}{}.{}", path, case_num, end)
 }
