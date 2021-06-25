@@ -1,6 +1,6 @@
 use anyhow::{anyhow, bail, Context, Result};
 
-use crate::entities::{Language, Scope};
+use crate::entities::{Language, Scope, Submission};
 
 pub static HELP_STR: &str = r#"CSES CLI
 
@@ -18,7 +18,10 @@ COMMANDS:
         Task ID, language, and the language option may be automatically deduced
         by the server, in which case they do not need to be supplied as options.
     submissions [-c] (-t)       List previous submissions to a task.
-    submission [-c] <id>        Show details about the submission with given ID.
+    submission ([-c] <id> | [-c] [-s] <n:th latest submission>)
+                                Show details about the submission with given ID
+        or specify the n:th latest submission you want to view starting from the 
+        latest submission.
     template [-cftl]            Download and save a code template from cses.fi.
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
@@ -68,7 +71,7 @@ pub enum Command {
     List(Option<Scope>),
     Submit(Option<Scope>, Submit),
     Submissions(Option<Scope>, String),
-    Submission(Option<Scope>, u64),
+    Submission(Option<Scope>, Submission),
     View(Option<Scope>, String),
     Template(Option<Scope>, Template),
     Examples(Option<Scope>, Examples),
@@ -89,6 +92,27 @@ pub struct Template {
 pub struct Examples {
     pub task: String,
     pub dir_name: Option<String>,
+}
+
+#[derive(Debug)]
+pub enum Submission {
+    Id(u64),
+    NthLast(u64),
+}
+impl Submission {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Submission> {
+        let nth_last: Option<u64> = pargs.opt_value_from_str(["-n", "--nth"])?;
+        let submission_id: Option<u64> = pargs.opt_free_from_str()?;
+        Ok(if nth_last.is_some() && submission_id.is_some() {
+            bail!("Submission ID shouldn't be provided when -n or --nth is used");
+        } else if let Some(submission_id) = submission_id {
+           Submission::Id(submission_id)
+        } else if let Some(n) = nth_last {
+            Submission::NthLast(n)
+        } else {
+            Submission::NthLast(1)
+        })
+    }
 }
 
 fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
@@ -193,9 +217,7 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         ),
         "submission" => Command::Submission(
             parse_scope(&mut pargs)?,
-            pargs
-                .free_from_str()
-                .context("Failed parsing submission ID")?,
+            Submission::parse(&mut pargs)?,
         ),
         "view" => Command::View(
             parse_scope(&mut pargs)?,
@@ -550,7 +572,7 @@ mod tests {
         let pargs = to_pargs(&["submission", "1512"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        assert!(matches!(command, Command::Submission(None, 1512)));
+        assert!(matches!(command, Command::Submission(None, None, Some(1512))));
     }
 
     #[test]

@@ -70,7 +70,7 @@ impl<R: ResourcesProvider> Ui<R> {
                 let scope = service::select_scope(&mut self.res, scope)?;
                 submissions::list(self, &scope, &task_id)?;
             }
-            Command::Submission(scope, submission_id) => {
+            Command::Submission(scope, submission_id, _nth_submission) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
                 let submission_info =
                     service::submission_info(&mut self.res, &scope, submission_id, false)?;
