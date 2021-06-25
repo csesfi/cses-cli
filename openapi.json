@@ -1577,7 +1577,8 @@
                   "properties": {
                     "template_source": {
                       "type": "string",
-                      "description": "Source code of the template.\n"
+                      "format": "byte",
+                      "description": "Source code of the template encoded in base64.\n"
                     },
                     "filename": {
                       "type": "string",
