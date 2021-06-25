@@ -117,7 +117,10 @@ impl Display for Table {
             Some(pos) => pos,
             None => return Ok(()),
         };
-        let last_shown = show.iter().rposition(|show| *show).unwrap();
+        let last_shown = match show.iter().rposition(|show| *show) {
+            Some(last_shown) => last_shown,
+            None => return Err(std::fmt::Error),
+        };
         let total_width = width
             .iter()
             .zip(show.iter())
