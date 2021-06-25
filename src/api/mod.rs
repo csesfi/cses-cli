@@ -120,7 +120,7 @@ impl CsesApi for CsesHttpApi {
             .with_header("Content-Type", "application/json");
 
         if let Some(task_id) = task_id {
-            request = request.with_param("task", task_id);
+            request = request.with_param("task", Escape(task_id));
         }
 
         let response = request.trace_send(self.trace)?;
@@ -158,7 +158,7 @@ impl CsesApi for CsesHttpApi {
     ) -> ApiResult<SubmissionList> {
         let response = minreq::get(format_url(&self.url, scope, "submissions"))
             .with_header("X-Auth-Token", token)
-            .with_param("task", task_id)
+            .with_param("task", Escape(task_id))
             .trace_send(self.trace)?;
         check_error(&response)?;
         let response_body: SubmissionList = json::from_str(response.as_str()?)?;
@@ -209,13 +209,13 @@ impl CsesApi for CsesHttpApi {
             request = request.with_header("X-Auth-Token", token);
         }
         if let Some(task_id) = task_id {
-            request = request.with_param("task", task_id);
+            request = request.with_param("task", Escape(task_id));
         }
         if let Some(language) = language {
-            request = request.with_param("language", language);
+            request = request.with_param("language", Escape(language));
         }
         if let Some(file_name) = file_name {
-            request = request.with_param("filename", file_name);
+            request = request.with_param("filename", Escape(file_name));
         }
         let response = request.trace_send(self.trace)?;
         check_error(&response)?;
