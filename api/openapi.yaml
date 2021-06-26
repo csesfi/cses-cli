@@ -278,6 +278,54 @@ paths:
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
+  /courses/{course_id}/submissions/latest:
+    get:
+      operationId: app.courses_get_latest_submission
+
+      summary: Retrieve information about one of the latest submissions.
+
+      tags:
+        - courses
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "parameters.yaml#/CourseId"
+        - $ref: "parameters.yaml#/LatestN"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#SuccessfulCourseSubmissionInfoGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
+  /contests/{contest_id}/submissions/latest:
+    get:
+      operationId: app.contests_get_latest_submission
+
+      summary: Retrieve information about one of the latest submissions.
+
+      tags:
+        - contests
+
+      security:
+        - apiKeyAuth: []
+
+      parameters:
+        - $ref: "parameters.yaml#/ContestId"
+        - $ref: "parameters.yaml#/LatestN"
+
+      responses:
+        "200":
+          $ref: "responses.yaml#SuccessfulContestSubmissionInfoGet"
+        "4XX":
+          $ref: "responses.yaml#/ClientError"
+        "5XX":
+          $ref: "responses.yaml#/ServerError"
+
   /courses:
     get:
       operationId: app.get_courses

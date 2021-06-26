@@ -24,6 +24,16 @@ TaskId:
   required: true
   description: Task ID.
 
+LatestN:
+  in: query
+  name: n
+  schema:
+    type: integer
+  required: false
+  description: >
+    Order based index for the submission where the latest is 0,
+    the second latest is 1, and so on. Defaults to 0.
+
 OptionalTaskId:
   in: query
   name: task

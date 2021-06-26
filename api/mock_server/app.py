@@ -128,6 +128,22 @@ def contests_get_submission(token_info, contest_id, submission_id, poll=False):
     return common_get_submission(token_info, contest_id, submission_id, poll)
 
 
+def courses_get_latest_submission(token_info: dict, course_id: str,
+                                  latest_n: int = 0):
+    if latest_n != 0:
+        return ({"message": "Submission not found",
+                 "code": "client_error"}, 404)
+    return common_get_submission(token_info, course_id, 1, False)
+
+
+def contests_get_latest_submission(token_info: dict, contest_id: str,
+                                   latest_n: int = 0):
+    if latest_n != 0:
+        return ({"message": "Submission not found",
+                 "code": "client_error"}, 404)
+    return common_get_submission(token_info, contest_id, 1, False)
+
+
 def courses_get_submission_list(token_info, course_id, task):
     print(f"token_info: {token_info}")
     print(f"course_id: {course_id}")
