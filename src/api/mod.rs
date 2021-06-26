@@ -256,8 +256,8 @@ impl CsesApi for CsesHttpApi {
         scope: &Scope,
         task_id: &str,
     ) -> ApiResult<TestCaseList> {
-        let mut request =
-            minreq::get(format_url(&self.url, scope, "examples")).with_param("task", task_id);
+        let mut request = minreq::get(format_url(&self.url, scope, "examples"))
+            .with_param("task", Escape(task_id));
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
