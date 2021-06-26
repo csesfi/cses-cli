@@ -23,6 +23,7 @@ impl Default for ConcreteFilesystem {
 pub trait Filesystem {
     fn get_file(&self, path: &str) -> Result<Vec<u8>>;
     fn file_exists(&self, path: &str) -> bool;
+    fn create_dir_all(&self, path: &str) -> Result<()>;
     fn write_file(&self, filecontent: &[u8], path: &str) -> Result<()>;
     fn get_file_name(&self, path: &str) -> Result<String>;
     fn encode_base64(&self, filecontent: &[u8]) -> String;
@@ -47,6 +48,10 @@ impl Filesystem for ConcreteFilesystem {
 
     fn file_exists(&self, path: &str) -> bool {
         Path::new(path).exists()
+    }
+
+    fn create_dir_all(&self, path: &str) -> Result<()> {
+        fs::create_dir_all(path).context(format!("Failed creating directory {}", path))
     }
 
     fn write_file(&self, filecontent: &[u8], path: &str) -> Result<()> {
@@ -75,7 +80,7 @@ impl Filesystem for ConcreteFilesystem {
 mod tests {
     use super::*;
     use std::env::temp_dir;
-    use std::fs::remove_file;
+    use std::fs::{remove_dir, remove_file};
     use std::io::Write;
 
     #[test]
@@ -123,6 +128,39 @@ mod tests {
         filesystem.write_file(&content, path).unwrap();
         assert_eq!(filesystem.get_file(path).unwrap(), content);
         remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn can_create_directory() {
+        let mut path = temp_dir();
+        path.push("SCkxm");
+        path.push("RgnDf");
+        let path_2 = path.to_str().unwrap();
+        let filesystem = ConcreteFilesystem::default();
+
+        let result = filesystem.create_dir_all(path_2);
+        let result_2 = filesystem.create_dir_all(path_2);
+        let is_dir = path.is_dir();
+        remove_dir(&path).unwrap();
+        remove_dir(&path.parent().unwrap()).unwrap();
+        assert!(matches!(result, Ok(_)));
+        assert!(matches!(result_2, Ok(_)));
+        assert!(is_dir);
+    }
+
+    #[test]
+    fn cannot_create_directory_on_file() {
+        let mut path = temp_dir();
+        path.push("SCkwaefaxm");
+        let path = path.to_str().unwrap();
+        let filesystem = ConcreteFilesystem::default();
+
+        let content = vec![b'a', b'b', b'c'];
+        filesystem.write_file(&content, path).unwrap();
+
+        let result = filesystem.create_dir_all(path);
+        remove_file(&path).unwrap();
+        assert!(matches!(result, Err(_)));
     }
 
     #[test]

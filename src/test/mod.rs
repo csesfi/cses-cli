@@ -138,6 +138,10 @@ impl Filesystem for FakeFilesystem {
         todo!();
     }
 
+    fn create_dir_all(&self, _path: &str) -> Result<()> {
+        todo!();
+    }
+
     fn write_file(&self, _filecontent: &[u8], _path: &str) -> Result<()> {
         todo!();
     }
