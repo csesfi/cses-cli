@@ -491,7 +491,7 @@ paths:
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
-  /contest/{contest_id}/examples:
+  /contests/{contest_id}/examples:
     get:
       operationId: app.contest_get_examples
 

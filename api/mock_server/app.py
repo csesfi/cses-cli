@@ -245,7 +245,7 @@ def contests_get_template(token_info, contest_id, task=None, language=None,
     return common_get_template(token_info, contest_id, task, language, filename)
 
 def common_get_examples(token_info, scope_id, task):
-    if task != 404:
+    if task != "404":
         return (constants.TEST_CASE_LIST, 200)
 
     return ({"message": "Test cases not found", "code": "client_error"}, 404)
