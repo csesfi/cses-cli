@@ -80,7 +80,7 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_test_case_list<'a>(
+    fn get_examples<'a>(
         &self,
         _token: Option<&'a str>,
         _scope: &Scope,

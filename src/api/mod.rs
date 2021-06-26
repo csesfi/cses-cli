@@ -87,7 +87,7 @@ pub trait CsesApi {
         scope: &Scope,
         task_id: &str,
     ) -> ApiResult<TaskStatement>;
-    fn get_test_case_list<'a>(
+    fn get_examples<'a>(
         &self,
         token: Option<&'a str>,
         scope: &Scope,
@@ -250,14 +250,14 @@ impl CsesApi for CsesHttpApi {
         Ok(json::from_str(response.as_str()?)?)
     }
 
-    fn get_test_case_list<'a>(
+    fn get_examples<'a>(
         &self,
         token: Option<&'a str>,
         scope: &Scope,
         task_id: &str,
     ) -> ApiResult<TestCaseList> {
         let mut request =
-            minreq::get(format_url(&self.url, scope, "test-cases")).with_param("task", task_id);
+            minreq::get(format_url(&self.url, scope, "examples")).with_param("task", task_id);
         if let Some(token) = token {
             request = request.with_header("X-Auth-Token", token);
         }
