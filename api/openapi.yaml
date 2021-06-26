@@ -296,7 +296,7 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#SuccessfulCourseSubmissionInfoGet"
+          $ref: "responses.yaml#/SuccessfulCourseSubmissionInfoGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":
@@ -320,7 +320,7 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#SuccessfulContestSubmissionInfoGet"
+          $ref: "responses.yaml#/SuccessfulContestSubmissionInfoGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":
