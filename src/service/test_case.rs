@@ -3,7 +3,7 @@ use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
 
 pub fn fetch_examples(
-    res: &mut Resources<impl RP>,
+    res: &Resources<impl RP>,
     scope: &Scope,
     task_id: &str,
 ) -> Result<Vec<TestCase>> {
@@ -16,7 +16,7 @@ pub fn fetch_examples(
 }
 
 pub fn save_test_cases(
-    res: &mut Resources<impl RP>,
+    res: &Resources<impl RP>,
     test_cases: Vec<TestCase>,
     dir_name: Option<&str>,
 ) -> Result<()> {
@@ -47,6 +47,12 @@ pub fn test_cases_exist(res: &Resources<impl RP>, dir_name: Option<&str>) -> boo
         && res
             .filesystem
             .file_exists(&format_path(&path, case_num, "out"))
+}
+
+pub fn create_dir_all(res: &Resources<impl RP>, dir_name: Option<&str>) -> Result<()> {
+    res.filesystem
+        .create_dir_all(&make_path(dir_name))
+        .context("Failed creating directory for the test cases")
 }
 
 fn make_path(dir_name: Option<&str>) -> String {
