@@ -33,9 +33,8 @@ pub fn styled_task_status_or_score(
 ) -> StyledObject<String> {
     if let Some(points) = score {
         return match points {
-            points if points >= 100 => style(points.to_string()).black().on_green(),
-            points if points > 60 => style(points.to_string()).green(),
-            points if points > 10 => style(points.to_string()).yellow(),
+            points if points >= 100 => style(points.to_string()).green(),
+            points if points > 0 => style(points.to_string()).yellow(),
             _ => style(points.to_string()).red(),
         }
         .bold();
