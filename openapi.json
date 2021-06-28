@@ -1140,7 +1140,7 @@
             "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1225,7 +1225,7 @@
             "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1485,13 +1485,7 @@
             "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
           },
           {
-            "in": "query",
-            "name": "task",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Task ID."
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1532,7 +1526,7 @@
             "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1671,9 +1665,9 @@
         }
       }
     },
-    "/courses/{course_id}/test-cases": {
+    "/courses/{course_id}/examples": {
       "get": {
-        "operationId": "app.course_get_test_case_list",
+        "operationId": "app.course_get_examples",
         "summary": "Retrieve example test cases.",
         "tags": [
           "courses"
@@ -1690,12 +1684,18 @@
             "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+            "in": "query",
+            "name": "task",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Task ID."
           }
         ],
         "responses": {
           "200": {
-            "description": "Test cases were retrieved successfully.\n",
+            "description": "Example test cases were retrieved successfully.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -1713,9 +1713,9 @@
         }
       }
     },
-    "/contest/{contest_id}/test-cases": {
+    "/contests/{contest_id}/examples": {
       "get": {
-        "operationId": "app.contest_get_test_case_list",
+        "operationId": "app.contest_get_examples",
         "summary": "Retrieve example test cases.",
         "tags": [
           "contests"
@@ -1732,12 +1732,12 @@
             "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1statement/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1test-cases/get/responses/200"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/responses/200"
           },
           "4XX": {
             "$ref": "#/paths/~1login/get/responses/4XX"
