@@ -16,10 +16,12 @@ pub fn get_examples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Exampl
         }
     }
     service::create_dir_all(&ui.res, params.dir_name.as_deref())?;
+    let amount = test_cases.len();
     service::save_test_cases(&ui.res, test_cases, params.dir_name.as_deref())?;
     Ok(writeln!(
         ui.term,
-        "Example test cases successfully saved to the {}",
+        "{} example test cases successfully saved to the {}",
+        amount,
         format_dir_name(params.dir_name.as_deref())
     )?)
 }
