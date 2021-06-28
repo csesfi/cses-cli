@@ -155,8 +155,8 @@ mod tests {
         let path = path.to_str().unwrap();
         let filesystem = ConcreteFilesystem::default();
 
-        let content = vec![b'a', b'b', b'c'];
-        filesystem.write_file(&content, path).unwrap();
+        let content = b"abc";
+        filesystem.write_file(content, path).unwrap();
 
         let result = filesystem.create_dir_all(path);
         remove_file(&path).unwrap();
