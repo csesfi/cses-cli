@@ -7,7 +7,7 @@ pub fn get_examples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Exampl
     let test_cases = service::fetch_examples(&ui.res, scope, &params.task)?;
     if service::test_cases_exist(&ui.res, params.dir_name.as_deref()) {
         let overwrite_message = format!(
-            "Test cases already present in the {}\n\
+            "Test case files already present in the {}\n\
             Do you want to overwrite them? (yes/No)? ",
             format_dir_name(params.dir_name.as_deref())
         );

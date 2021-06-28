@@ -44,7 +44,7 @@ pub fn test_cases_exist(res: &Resources<impl RP>, dir_name: Option<&str>) -> boo
     let case_num = 1;
     res.filesystem
         .file_exists(&format_path(&path, case_num, "in"))
-        && res
+        || res
             .filesystem
             .file_exists(&format_path(&path, case_num, "out"))
 }
