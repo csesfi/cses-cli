@@ -461,9 +461,9 @@ paths:
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
-  /courses/{course_id}/test-cases:
+  /courses/{course_id}/examples:
     get:
-      operationId: app.course_get_test_case_list
+      operationId: app.course_get_examples
 
       summary: Retrieve example test cases.
 
@@ -485,15 +485,15 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#/SuccessfulTestCaseListGet"
+          $ref: "responses.yaml#/SuccessfulExamplesGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
-  /contest/{contest_id}/test-cases:
+  /contests/{contest_id}/examples:
     get:
-      operationId: app.contest_get_test_case_list
+      operationId: app.contest_get_examples
 
       summary: Retrieve example test cases.
 
@@ -515,7 +515,7 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#/SuccessfulTestCaseListGet"
+          $ref: "responses.yaml#/SuccessfulExamplesGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":

@@ -162,9 +162,9 @@ SuccessfulCodeTemplateGet:
             description: >
               Filename of the template.
 
-SuccessfulTestCaseListGet:
+SuccessfulExamplesGet:
   description: >
-    Test cases were retrieved successfully.
+    Example test cases were retrieved successfully.
   content:
     application/json:
       schema:

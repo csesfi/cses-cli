@@ -80,7 +80,7 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_test_case_list<'a>(
+    fn get_examples<'a>(
         &self,
         _token: Option<&'a str>,
         _scope: &Scope,
@@ -135,6 +135,10 @@ impl Filesystem for FakeFilesystem {
     }
 
     fn file_exists(&self, _path: &str) -> bool {
+        todo!();
+    }
+
+    fn create_dir_all(&self, _path: &str) -> Result<()> {
         todo!();
     }
 
