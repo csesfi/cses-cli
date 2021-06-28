@@ -1,6 +1,6 @@
 use anyhow::{anyhow, bail, Context, Result};
 
-use crate::entities::{Language, Scope, Submission};
+use crate::entities::{Language, Scope};
 
 pub static HELP_STR: &str = r#"CSES CLI
 
@@ -18,10 +18,9 @@ COMMANDS:
         Task ID, language, and the language option may be automatically deduced
         by the server, in which case they do not need to be supplied as options.
     submissions [-c] (-t)       List previous submissions to a task.
-    submission ([-c] <id> | [-c] [-s] <n:th latest submission>)
-                                Show details about the submission with given ID
-        or specify the n:th latest submission you want to view starting from the 
-        latest submission.
+    submission [-c] (<id> | (-t) [<n>])
+        Show details about the submission with given ID or specify a task and 
+        your nth latest submission to it (default 1).
     template [-cftl]            Download and save a code template from cses.fi.
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
@@ -97,20 +96,17 @@ pub struct Examples {
 #[derive(Debug)]
 pub enum Submission {
     Id(u64),
-    NthLast(u64),
+    NthLast(String, u64),
 }
 impl Submission {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submission> {
-        let nth_last: Option<u64> = pargs.opt_value_from_str(["-n", "--nth"])?;
+        let task: Option<String> = pargs.opt_value_from_str(["-t", "--task"])?;
         let submission_id: Option<u64> = pargs.opt_free_from_str()?;
-        Ok(if nth_last.is_some() && submission_id.is_some() {
-            bail!("Submission ID shouldn't be provided when -n or --nth is used");
-        } else if let Some(submission_id) = submission_id {
-           Submission::Id(submission_id)
-        } else if let Some(n) = nth_last {
-            Submission::NthLast(n)
+
+        Ok(if let Some(task) = task {
+            Submission::NthLast(task, submission_id.unwrap_or(1))
         } else {
-            Submission::NthLast(1)
+            Submission::Id(submission_id.ok_or_else(|| anyhow!("Submission ID not specified"))?)
         })
     }
 }
@@ -215,10 +211,9 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
             parse_scope(&mut pargs)?,
             parse_required_task_id(&mut pargs)?,
         ),
-        "submission" => Command::Submission(
-            parse_scope(&mut pargs)?,
-            Submission::parse(&mut pargs)?,
-        ),
+        "submission" => {
+            Command::Submission(parse_scope(&mut pargs)?, Submission::parse(&mut pargs)?)
+        }
         "view" => Command::View(
             parse_scope(&mut pargs)?,
             parse_required_task_id(&mut pargs)?,
@@ -572,7 +567,43 @@ mod tests {
         let pargs = to_pargs(&["submission", "1512"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        assert!(matches!(command, Command::Submission(None, None, Some(1512))));
+        assert!(matches!(
+            command,
+            Command::Submission(None, Submission::Id(1512))
+        ));
+    }
+
+    #[test]
+    fn submission_without_task_id_gets_correct_enum() {
+        let pargs = to_pargs(&["submission", "-c", "alon", "5326"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submission(Some(Scope::Course(course)), Submission::Id(5326))
+            if course == "alon"));
+    }
+
+    #[test]
+    fn submission_with_task_id_gets_correct_enum() {
+        let pargs = to_pargs(&["submission", "-c", "alon", "-t", "1068", "3"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submission(Some(Scope::Course(course)), Submission::NthLast(task, 3))
+            if course == "alon" && task == "1068"));
+    }
+
+    #[test]
+    fn submission_without_nth_submission_gets_default_value() {
+        let pargs = to_pargs(&["submission", "-c", "alon", "-t", "1068"]);
+        let command = Command::parse_command(pargs).unwrap();
+
+        assert!(matches!(
+            command,
+            Command::Submission(Some(Scope::Course(course)), Submission::NthLast(task, 1))
+            if course == "alon" && task == "1068"));
     }
 
     #[test]
