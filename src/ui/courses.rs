@@ -45,18 +45,18 @@ pub fn list_content(ui: &mut Ui<impl RP>, scope: &Scope) -> Result<()> {
     for section in scope_content.sections {
         writeln!(ui.term, "\n{}", style(&section.header).bold())?;
         if let Some(text) = &section.text {
-            writeln!(ui.term, "\n{}", text)?;
+            writeln!(ui.term, "{}", text)?;
         }
 
         let table = create_item_table(&section.list)?;
-        write!(ui.term, "\n{}", table)?;
+        write!(ui.term, "{}", table)?;
     }
     writeln!(ui.term)?;
     Ok(())
 }
 
 pub fn create_item_table(list: &[ScopeItemRaw]) -> Result<Table> {
-    let mut table = Table::new(vec![4, 30, 0, 0]);
+    let mut table = Table::new(vec![0, 0, 0, 0]);
 
     for scope_item_raw in list {
         let scope_item_as_enum = scope_item_raw.as_enum()?;
