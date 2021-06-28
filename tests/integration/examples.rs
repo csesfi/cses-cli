@@ -55,8 +55,8 @@ fn the_user_is_asked_before_the_files_are_overwritten_on_custom_path() {
 
 #[distributed_slice(TESTS)]
 fn the_files_are_not_overwritten_if_the_user_doesnt_wants_to() {
-    File::create("1.in").unwrap().write_all(b"Hello").unwrap();
-    File::create("1.out").unwrap().write_all(b"olleH").unwrap();
+    create_file("1.in", b"Hello");
+    create_file("1.out", b"olleH");
 
     command()
         .args(&["examples", "-c", "teku", "-t", "1"])
@@ -73,8 +73,8 @@ fn the_files_are_not_overwritten_if_the_user_doesnt_wants_to() {
 
 #[distributed_slice(TESTS)]
 fn the_files_are_overwritten_if_the_user_wants_to() {
-    File::create("1.in").unwrap().write_all(b"Hello").unwrap();
-    File::create("1.out").unwrap().write_all(b"olleH").unwrap();
+    create_file("1.in", b"Hello");
+    create_file("1.out", b"olleH");
 
     command()
         .args(&["examples", "-c", "teku", "-t", "1"])
@@ -91,10 +91,9 @@ fn the_files_are_overwritten_if_the_user_wants_to() {
 
 #[distributed_slice(TESTS)]
 fn the_user_is_not_asked_for_files_that_will_not_be_overwritten() {
-    let mut file = File::create("4.in").unwrap();
-    file.write_all(b"Hello").unwrap();
-    let mut file = File::create("4.out").unwrap();
-    file.write_all(b"olleH").unwrap();
+    // NOTE: the current implementation only checks 1.in and 1.out
+    create_file("4.in", b"Hello");
+    create_file("4.out", b"olleH");
 
     command()
         .args(&["examples", "-c", "teku", "-t", "1"])
