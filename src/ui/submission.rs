@@ -144,7 +144,7 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
         table.add_row(vec![
             TableCell::from("#").align(TableAlign::Right),
             TableCell::from("verdict").align(TableAlign::Center),
-            "time".into(),
+            TableCell::from("time").align(TableAlign::Center),
             TableCell::from("groups").allow_hiding(),
         ]);
         table.add_separator();
