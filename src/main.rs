@@ -38,7 +38,7 @@ fn run() -> anyhow::Result<()> {
         Ok(val) => !val.is_empty(),
         Err(_) => false,
     };
-    let url = std::env::var("CSES_API_URL").unwrap_or_else(|_| "http://127.0.0.1:4010".to_owned());
+    let url = std::env::var("CSES_API_URL").unwrap_or_else(|_| "https://cses.fi/api/".to_owned());
 
     let command = Command::from_command_line()?;
     let api = CsesHttpApi::new(url, trace);
