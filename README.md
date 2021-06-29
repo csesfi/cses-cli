@@ -1,8 +1,8 @@
 # CSES CLI
 
-![GitHub Actions](https://github.com/H4m5t3r/cses-cli/actions/workflows/main.yml/badge.svg)
-![Test server](https://github.com/H4m5t3r/cses-cli/actions/workflows/server.yml/badge.svg)
-[![codecov](https://codecov.io/gh/H4m5t3r/cses-cli/branch/main/graph/badge.svg)](https://app.codecov.io/gh/H4m5t3r/cses-cli)
+![GitHub Actions](https://github.com/csesfi/cses-cli/actions/workflows/main.yml/badge.svg)
+![Test server](https://github.com/csesfi/cses-cli/actions/workflows/server.yml/badge.svg)
+[![codecov](https://codecov.io/gh/csesfi/cses-cli/branch/main/graph/badge.svg)](https://app.codecov.io/gh/H4m5t3r/cses-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
@@ -11,7 +11,7 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
 ## Application
 
-- [Releases](https://github.com/H4m5t3r/cses-cli/releases)
+- [Releases](https://github.com/csesfi/cses-cli/releases)
 
 ## Project documentation
 
@@ -26,12 +26,12 @@ University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
 
 ### Program description
 
-- [API](https://h4m5t3r.github.io/cses-cli/)
+- [API](https://csesfi.github.io/cses-cli/)
 
-- [Architecture](https://github.com/H4m5t3r/cses-cli/wiki/Architecture)
+- [Architecture](https://github.com/csesfi/cses-cli/wiki/Architecture)
 
 ### User info
 
-- [User manual](https://github.com/H4m5t3r/cses-cli/wiki/User-manual)
+- [User manual](https://github.com/csesfi/cses-cli/wiki/User-manual)
 
-- [Testing](https://github.com/H4m5t3r/cses-cli/wiki/Testing)
+- [Testing](https://github.com/csesfi/cses-cli/wiki/Testing)
