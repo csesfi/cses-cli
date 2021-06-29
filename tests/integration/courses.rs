@@ -86,7 +86,7 @@ fn task_status_is_none_when_not_logged_in() {
         .assert()
         .success()
         .stdout(regex_match(r"(?i)-"))
-        .stdout(regex_match(r"(?i)\+").not())
+        .stdout(regex_match(r"(?i)(pass|fail)").not())
         .stderr(predicate::str::is_empty());
 }
 
@@ -97,7 +97,7 @@ fn task_status_is_shown_when_logged_in() {
         .args(&["list", "-c", "teku"])
         .assert()
         .success()
-        .stdout(regex_match(r"(?i)\+"))
+        .stdout(regex_match(r"(?i)(pass|fail)"))
         .stderr(predicate::str::is_empty());
 }
 

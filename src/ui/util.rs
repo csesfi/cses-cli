@@ -16,6 +16,9 @@ pub fn format_code_time(time: Option<u64>) -> String {
         None => "--".to_owned(),
     }
 }
+pub fn format_code_size(size: Option<u64>) -> Option<String> {
+    size.map(|size| format!("{} ch.", size))
+}
 pub fn format_test_groups(groups: &Option<Vec<u64>>) -> Option<String> {
     groups.as_ref().map(|groups| {
         let mut text: String = groups
