@@ -71,7 +71,7 @@ pub fn create_item_table(list: &[ScopeItemRaw]) -> Result<Table> {
             }
             ScopeItem::Link { name, link } => {
                 table.add_row(vec![
-                    TableCell::from(""),
+                    TableCell::empty(),
                     TableCell::from(name),
                     TableCell::empty(),
                     TableCell::from(link),
