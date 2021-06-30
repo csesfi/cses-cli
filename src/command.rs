@@ -20,7 +20,7 @@ COMMANDS:
     submissions [-c] (-t)       List previous submissions to a task.
     submission [-c] (<id> | (-t) [<n>])
         Show details about the submission with given ID or specify a task and 
-        your nth latest submission to it (default 1).
+        your nth latest submission to it, starting from 0 (the default value).
     template [-cftl]            Download and save a code template from cses.fi.
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
@@ -104,7 +104,7 @@ impl Submission {
         let submission_id: Option<u64> = pargs.opt_free_from_str()?;
 
         Ok(if let Some(task) = task {
-            Submission::NthLast(task, submission_id.unwrap_or(1))
+            Submission::NthLast(task, submission_id.unwrap_or(0))
         } else {
             Submission::Id(submission_id.ok_or_else(|| anyhow!("Submission ID not specified"))?)
         })
@@ -602,7 +602,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(Some(Scope::Course(course)), Submission::NthLast(task, 1))
+            Command::Submission(Some(Scope::Course(course)), Submission::NthLast(task, 0))
             if course == "alon" && task == "1068"));
     }
 
