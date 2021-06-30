@@ -1,5 +1,6 @@
 import sys
 from typing import Dict
+from template import _to_b64
 
 INTEGRATION = False
 try:
@@ -289,7 +290,22 @@ ALL_COURSES = VISIBLE_COURSES + [
         "description": "If you can see this, you're logged in."
     }
 ]
-
+TEST_CASE_LIST = {
+    "test_cases": [
+        {
+            "input": _to_b64("123456789"),
+            "output": _to_b64("987654321"),
+        },
+        {
+            "input": _to_b64("course"),
+            "output": _to_b64("esruoc"),
+        },
+        {
+            "input": _to_b64("contest"),
+            "output": _to_b64("tsetnoc"),
+        }
+    ]
+}
 TEST_TASK = {
     "name": "Test task",
     "time_limit": 1000,

@@ -1,9 +1,11 @@
 mod courses;
 mod login;
+mod statement;
 mod submission;
 mod submissions;
 mod table;
 mod template;
+mod test_case;
 mod util;
 
 use anyhow::{anyhow, Context, Error, Result};
@@ -81,6 +83,15 @@ impl<R: ResourcesProvider> Ui<R> {
                 let submission_info =
                     service::nth_last_submission_info(&mut self.res, &scope, &task_id, nth_last)?;
                 submission::print_submission_info(self, &scope, submission_info, false)?;
+            }
+            Command::View(scope, task_id) => {
+                let scope = service::select_scope(&mut self.res, scope)?;
+                let task_statement = service::get_task_statement(&self.res, &scope, &task_id)?;
+                statement::print_statement(self, &task_statement)?;
+            }
+            Command::Examples(scope, examples) => {
+                let scope = service::select_scope(&mut self.res, scope)?;
+                test_case::get_examples(self, &scope, examples)?;
             }
             _ => {
                 return Err(anyhow!("Command not yet implemented"));

@@ -5,7 +5,7 @@ use anyhow::Result;
 use std::io::Write;
 
 use super::table::*;
-use super::util::{format_code_time, styled_task_status_or_score};
+use super::util::{format_code_size, format_code_time, styled_task_status_or_score};
 use super::Ui;
 
 pub fn list(ui: &mut Ui<impl RP>, scope: &Scope, task_id: &str) -> Result<()> {
@@ -36,7 +36,7 @@ pub fn list(ui: &mut Ui<impl RP>, scope: &Scope, task_id: &str) -> Result<()> {
             // TODO: hide this column in some cases? semantic difference between data not being in
             // JSON and it being null can't be distinguished with miniserde
             format_code_time(submission.code_time).into(),
-            TableCell::optional(submission.size),
+            TableCell::optional(format_code_size(submission.size)),
             TableCell::styled(styled_task_status_or_score(
                 submission.result,
                 submission.score,

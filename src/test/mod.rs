@@ -1,7 +1,8 @@
 mod submit;
 use crate::api::{CodeSubmit, LoginResponse};
 use crate::entities::{
-    CourseList, Scope, ScopeContent, SubmissionInfo, SubmissionList, TemplateResponse, UserOutline,
+    CourseList, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
+    TemplateResponse, TestCaseList, UserOutline,
 };
 use crate::storage::StorageData;
 use crate::{api::ApiResult, api::MockCsesApi};
@@ -69,6 +70,24 @@ impl CsesApi for FakeCsesApi {
     fn get_content<'a>(&self, _token: Option<&'a str>, _scope: &Scope) -> ApiResult<ScopeContent> {
         todo!()
     }
+
+    fn get_task_statement<'a>(
+        &self,
+        _token: Option<&'a str>,
+        _scope: &Scope,
+        _task_id: &str,
+    ) -> ApiResult<TaskStatement> {
+        todo!()
+    }
+
+    fn get_examples<'a>(
+        &self,
+        _token: Option<&'a str>,
+        _scope: &Scope,
+        _task_id: &str,
+    ) -> ApiResult<TestCaseList> {
+        todo!()
+    }
 }
 
 #[derive(Default, Debug)]
@@ -116,6 +135,10 @@ impl Filesystem for FakeFilesystem {
     }
 
     fn file_exists(&self, _path: &str) -> bool {
+        todo!();
+    }
+
+    fn create_dir_all(&self, _path: &str) -> Result<()> {
         todo!();
     }
 
