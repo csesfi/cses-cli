@@ -64,15 +64,16 @@ pub fn nth_last_submission_info(
 ) -> Result<SubmissionInfo> {
     (|| {
         let submissions = submission_list(res, scope, task_id)?;
-        let n_submissions = submissions.len();
-        let submission_id = (|| submissions.get(n_submissions.checked_sub(nth_last as usize)?))()
+        let idx = submissions
+            .len()
+            .checked_sub(1 + nth_last as usize)
             .ok_or_else(|| {
                 anyhow!(format!(
                     "The nth last submission doesn't exist for n = {}",
                     nth_last
                 ))
-            })?
-            .id;
+            })?;
+        let submission_id = submissions[idx].id;
         submission_info(res, scope, submission_id, false)
     })()
     .context("Failed fetching the nth submission")

@@ -99,7 +99,7 @@ fn nth_latest_default_prints_latest() {
 fn nth_latest_nth_argument_works() {
     log_in();
     command()
-        .args(&["submission", "-c", "101", "-t", "2", "2"])
+        .args(&["submission", "-c", "101", "-t", "2", "1"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)result"));
@@ -117,7 +117,7 @@ fn nth_latest_negative_n_causes_error() {
 fn nth_latest_n_outside_submissions_causes_error() {
     log_in();
     command()
-        .args(&["submission", "-c", "101", "-t", "2", "3"])
+        .args(&["submission", "-c", "101", "-t", "2", "2"])
         .assert()
         .failure()
         .stdout(regex_match(r"(?i)doesn't exist"));
