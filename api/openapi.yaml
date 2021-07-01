@@ -12,15 +12,11 @@ components:
   schemas:
     $ref: "schemas.yaml"
   securitySchemes:
-    apiKeyAuth: # could be any name
+    apiKeyAuth:
       type: apiKey
       in: header
       name: X-Auth-Token
       x-apikeyInfoFunc: app.apikey_auth
-
-
-security:
-  - apiKeyAuth: []
 
 paths:
   /login:
