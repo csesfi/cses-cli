@@ -56,25 +56,25 @@ pub fn submission_list(
     .context("Failed querying submissions from the server")
 }
 
-pub fn nth_last_submission_info(
+pub fn nth_latest_submission_info(
     res: &mut Resources<impl RP>,
     scope: &Scope,
     task_id: &str,
-    nth_last: u64,
+    n: u64,
 ) -> Result<SubmissionInfo> {
     (|| {
         let submissions = submission_list(res, scope, task_id)?;
         let idx = submissions
             .len()
-            .checked_sub(1 + nth_last as usize)
+            .checked_sub(1 + n as usize)
             .ok_or_else(|| {
                 anyhow!(format!(
-                    "The nth last submission doesn't exist for n = {}",
-                    nth_last
+                    "The nth latest submission doesn't exist for n = {}",
+                    n
                 ))
             })?;
         let submission_id = submissions[idx].id;
         submission_info(res, scope, submission_id, false)
     })()
-    .context("Failed fetching the nth submission")
+    .context("Failed fetching the nth latest submission")
 }

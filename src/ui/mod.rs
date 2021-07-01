@@ -78,10 +78,10 @@ impl<R: ResourcesProvider> Ui<R> {
                     service::submission_info(&mut self.res, &scope, submission_id, false)?;
                 submission::print_submission_info(self, &scope, submission_info, false)?;
             }
-            Command::Submission(scope, Submission::NthLast(task_id, nth_last)) => {
+            Command::Submission(scope, Submission::NthLatest(task_id, n)) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
                 let submission_info =
-                    service::nth_last_submission_info(&mut self.res, &scope, &task_id, nth_last)?;
+                    service::nth_latest_submission_info(&mut self.res, &scope, &task_id, n)?;
                 submission::print_submission_info(self, &scope, submission_info, false)?;
             }
             Command::View(scope, task_id) => {
