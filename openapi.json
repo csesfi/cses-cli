@@ -870,11 +870,6 @@
       }
     }
   },
-  "security": [
-    {
-      "apiKeyAuth": []
-    }
-  ],
   "paths": {
     "/login": {
       "post": {
