@@ -96,19 +96,7 @@ pub struct Examples {
 #[derive(Debug)]
 pub enum Submission {
     Id(u64),
-    NthLast(String, u64),
-}
-impl Submission {
-    fn parse(pargs: &mut pico_args::Arguments) -> Result<Submission> {
-        let task: Option<String> = pargs.opt_value_from_str(["-t", "--task"])?;
-        let submission_id: Option<u64> = pargs.opt_free_from_str()?;
-
-        Ok(if let Some(task) = task {
-            Submission::NthLast(task, submission_id.unwrap_or(0))
-        } else {
-            Submission::Id(submission_id.ok_or_else(|| anyhow!("Submission ID not specified"))?)
-        })
-    }
+    NthLatest(String, u64),
 }
 
 fn parse_scope(pargs: &mut pico_args::Arguments) -> Result<Option<Scope>> {
@@ -194,6 +182,18 @@ impl Command {
             .with_context(|| format!("Failed parsing command \"{}\"", command))?;
 
         Ok(result)
+    }
+}
+impl Submission {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Submission> {
+        let task: Option<String> = parse_task_id(pargs)?;
+        let submission_id: Option<u64> = pargs.opt_free_from_str()?;
+
+        Ok(if let Some(task) = task {
+            Submission::NthLatest(task, submission_id.unwrap_or(0))
+        } else {
+            Submission::Id(submission_id.ok_or_else(|| anyhow!("Submission ID not specified"))?)
+        })
     }
 }
 
@@ -591,7 +591,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(Some(Scope::Course(course)), Submission::NthLast(task, 3))
+            Command::Submission(Some(Scope::Course(course)), Submission::NthLatest(task, 3))
             if course == "alon" && task == "1068"));
     }
 
@@ -602,7 +602,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(Some(Scope::Course(course)), Submission::NthLast(task, 0))
+            Command::Submission(Some(Scope::Course(course)), Submission::NthLatest(task, 0))
             if course == "alon" && task == "1068"));
     }
 
