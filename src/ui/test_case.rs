@@ -5,12 +5,17 @@ use std::io::Write;
 
 pub fn get_examples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Examples) -> Result<()> {
     let test_cases = service::fetch_examples(&ui.res, scope, &params.task)?;
-    if service::test_cases_exist(&ui.res, params.dir_name.as_deref()) {
-        let overwrite_message = format!(
-            "Test case files already present in the {}\n\
-            Do you want to overwrite them? (yes/No)? ",
+    let existing_files =
+        service::test_cases_exist(&ui.res, test_cases.len() as u64, params.dir_name.as_deref());
+    if !existing_files.is_empty() {
+        let mut overwrite_message = format!(
+            "The following files are already present in the {}:\n",
             format_dir_name(params.dir_name.as_deref())
         );
+        for file in existing_files {
+            overwrite_message.push_str(format!("  {}\n", file).as_str());
+        }
+        overwrite_message.push_str("Do you want to overwrite them? (yes/No) ");
         if !prompt_yes_no(ui, &overwrite_message)? {
             return Ok(());
         }
