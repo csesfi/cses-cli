@@ -1135,7 +1135,7 @@
             "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1samples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1220,7 +1220,7 @@
             "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1samples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1480,7 +1480,7 @@
             "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1samples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1521,7 +1521,7 @@
             "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1samples/get/parameters/1"
           }
         ],
         "responses": {
@@ -1660,14 +1660,14 @@
         }
       }
     },
-    "/courses/{course_id}/examples": {
+    "/courses/{course_id}/samples": {
       "get": {
-        "operationId": "app.course_get_examples",
-        "summary": "Retrieve example test cases.",
+        "operationId": "app.course_get_samples",
+        "summary": "Retrieve sample test cases.",
         "tags": [
           "courses"
         ],
-        "description": "Requests example test cases for a task on a course. Order of the test cases should be the same as on the  task statement.\n",
+        "description": "Requests sample test cases for a task on a course. Order of the test cases should be the same as on the  task statement.\n",
         "security": [
           {
             "apiKeyAuth": []
@@ -1690,7 +1690,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Example test cases were retrieved successfully.\n",
+            "description": "Sample test cases were retrieved successfully.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -1708,14 +1708,14 @@
         }
       }
     },
-    "/contests/{contest_id}/examples": {
+    "/contests/{contest_id}/samples": {
       "get": {
-        "operationId": "app.contest_get_examples",
-        "summary": "Retrieve example test cases.",
+        "operationId": "app.contest_get_samples",
+        "summary": "Retrieve sample test cases.",
         "tags": [
           "contests"
         ],
-        "description": "Requests example test cases for a task on a contest. Order of the test cases should be the same as on the  task statement.\n",
+        "description": "Requests sample test cases for a task on a contest. Order of the test cases should be the same as on the  task statement.\n",
         "security": [
           {
             "apiKeyAuth": []
@@ -1727,12 +1727,12 @@
             "$ref": "#/paths/~1contests~1%7Bcontest_id%7D~1list/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/parameters/1"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1samples/get/parameters/1"
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1examples/get/responses/200"
+            "$ref": "#/paths/~1courses~1%7Bcourse_id%7D~1samples/get/responses/200"
           },
           "4XX": {
             "$ref": "#/paths/~1login/get/responses/4XX"
