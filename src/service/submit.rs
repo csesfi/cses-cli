@@ -3,7 +3,7 @@ use crate::api::CodeSubmit;
 use crate::command;
 use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo};
 use crate::{CsesApi, Filesystem, Resources, RP};
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 
 pub fn submit(
     res: &mut Resources<impl RP>,
@@ -54,4 +54,22 @@ pub fn submission_list(
         Ok(response.submissions)
     })()
     .context("Failed querying submissions from the server")
+}
+
+pub fn nth_latest_submission_info(
+    res: &mut Resources<impl RP>,
+    scope: &Scope,
+    task_id: &str,
+    n: u64,
+) -> Result<SubmissionInfo> {
+    (|| {
+        let submissions = submission_list(res, scope, task_id)?;
+        let idx = submissions
+            .len()
+            .checked_sub(1 + n as usize)
+            .ok_or_else(|| anyhow!("The nth latest submission doesn't exist for n = {}", n))?;
+        let submission_id = submissions[idx].id;
+        submission_info(res, scope, submission_id, false)
+    })()
+    .context("Failed fetching the nth latest submission")
 }

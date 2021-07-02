@@ -85,3 +85,40 @@ fn old_contest_submission_can_be_viewed() {
         .success()
         .stdout(regex_match(r"(?i)result"));
 }
+
+#[distributed_slice(TESTS)]
+fn nth_latest_default_prints_latest() {
+    log_in();
+    command()
+        .args(&["submission", "--course", "cses", "-t", "2"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)result"));
+}
+#[distributed_slice(TESTS)]
+fn nth_latest_nth_argument_works() {
+    log_in();
+    command()
+        .args(&["submission", "-c", "101", "-t", "2", "1"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"(?i)result"));
+}
+#[distributed_slice(TESTS)]
+fn nth_latest_negative_n_causes_error() {
+    log_in();
+    command()
+        .args(&["submission", "-c", "101", "-t", "404", "-1"])
+        .assert()
+        .failure()
+        .stdout(regex_match(r"(?i)invalid digit"));
+}
+#[distributed_slice(TESTS)]
+fn nth_latest_n_outside_submissions_causes_error() {
+    log_in();
+    command()
+        .args(&["submission", "-c", "101", "-t", "2", "2"])
+        .assert()
+        .failure()
+        .stdout(regex_match(r"(?i)doesn't exist"));
+}

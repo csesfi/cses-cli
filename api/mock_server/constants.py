@@ -120,7 +120,7 @@ SUBMISSION_LIST_COURSE = {
 SUBMISSION_LIST_CONTEST = {
     "submissions": [
         {
-            "id": 1234567,
+            "id": 1,
             "time": "2017-07-21T17:32:28Z",
             "language": {
                 "name": "CPython",
@@ -156,7 +156,7 @@ SUBMISSION_LIST_COURSE_WITH_MISSING_FIELDS = {
             "outcome_status": "pass"
         },
         {
-            "id": 7654321,
+            "id": 1,
             "time": "2020-07-21T17:32:28Z",
             "language": {
                 "name": "C++",

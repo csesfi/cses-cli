@@ -10,7 +10,7 @@ pub use template::{file_exists, get_template, save_response};
 pub use test_case::{create_dir_all, fetch_samples, save_test_cases, test_cases_exist};
 
 pub mod submit;
-pub use submit::{submission_info, submission_list, submit};
+pub use submit::{nth_latest_submission_info, submission_info, submission_list, submit};
 
 mod scope;
 pub use scope::select_scope;
