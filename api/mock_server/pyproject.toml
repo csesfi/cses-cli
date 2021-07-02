@@ -2,7 +2,13 @@
 name = "mock_server"
 version = "0.1.0"
 description = ""
-authors = ["Kalle Luopajärvi <kalle.luopajarvi@helsinki.fi>"]
+authors = [
+  "Antto Heikura <antto.heikura@helsinki.fi>",
+  "Valokoodari <joona.huuhtanen@helsinki.fi>",
+  "Kalle Luopajärvi <kalle.luopajarvi@helsinki.fi>",
+  "Roope Salmi <roope.j.salmi@helsinki.fi>",
+  "Anton Taleiko <anton.taleiko@gmail.com>",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"

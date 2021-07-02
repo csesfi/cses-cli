@@ -1,7 +1,13 @@
 [package]
 name = "cses-cli"
 version = "0.1.0"
-authors = ["Anton Taleiko <anton.taleiko@gmail.com>"]
+authors = [
+  "Antto Heikura <antto.heikura@helsinki.fi>",
+  "Valokoodari <joona.huuhtanen@helsinki.fi>",
+  "Kalle Luopajärvi <kalle.luopajarvi@helsinki.fi>",
+  "Roope Salmi <roope.j.salmi@helsinki.fi>",
+  "Anton Taleiko <anton.taleiko@gmail.com>",
+]
 edition = "2018"
 autotests = false
 
