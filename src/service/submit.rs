@@ -67,12 +67,7 @@ pub fn nth_latest_submission_info(
         let idx = submissions
             .len()
             .checked_sub(1 + n as usize)
-            .ok_or_else(|| {
-                anyhow!(
-                    "The nth latest submission doesn't exist for n = {}",
-                    n
-                )
-            })?;
+            .ok_or_else(|| anyhow!("The nth latest submission doesn't exist for n = {}", n))?;
         let submission_id = submissions[idx].id;
         submission_info(res, scope, submission_id, false)
     })()
