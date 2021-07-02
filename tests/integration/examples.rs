@@ -35,6 +35,7 @@ fn the_user_is_asked_before_the_files_are_overwritten_on_program_root() {
         .args(&["examples", "-c", "teku", "-t", "1"])
         .assert()
         .success()
+        .stdout(regex_match(r"(?i)1\.in[\s\S]+2\.out[\s\S]+3\.in"))
         .stdout(regex_match(r"(?i)yes/no"))
         .stderr(predicate::str::is_empty());
 }
@@ -61,6 +62,7 @@ fn the_files_are_not_overwritten_if_the_user_doesnt_wants_to() {
         .write_stdin("no\n")
         .assert()
         .success()
+        .stdout(regex_match(r"(?i)1\.in[\s\S]+1\.out"))
         .stdout(regex_match(r"(?i)yes/no"))
         .stderr(predicate::str::is_empty());
 
@@ -79,6 +81,7 @@ fn the_files_are_overwritten_if_the_user_wants_to() {
         .write_stdin("yes\n")
         .assert()
         .success()
+        .stdout(regex_match(r"(?i)1\.in[\s\S]+1\.out"))
         .stdout(regex_match(r"(?i)yes/no"))
         .stderr(predicate::str::is_empty());
 
@@ -95,6 +98,7 @@ fn files_for_other_test_cases_than_1_are_also_detected() {
         .args(&["examples", "-c", "teku", "-t", "1"])
         .assert()
         .success()
+        .stdout(regex_match(r"(?i)3\.out"))
         .stdout(regex_match(r"(?i)yes/no"))
         .stderr(predicate::str::is_empty());
 }
@@ -109,6 +113,7 @@ fn the_user_is_not_asked_for_files_that_will_not_be_overwritten() {
         .args(&["examples", "-c", "teku", "-t", "1"])
         .assert()
         .success()
+        .stdout(regex_match(r"(?i)4\.in|4\.out").not())
         .stdout(regex_match(r"(?i)yes/no").not())
         .stderr(predicate::str::is_empty());
 }
