@@ -47,13 +47,17 @@ pub fn test_cases_exist(
     let path = make_path(dir_name);
     let mut files_found = Vec::<String>::new();
     for case_num in 1..case_count + 1 {
-        let test_case_in = format_path(&path, case_num, "in");
-        let test_case_out = format_path(&path, case_num, "out");
-        if res.filesystem.file_exists(&test_case_in) {
-            files_found.push(test_case_in);
+        if res
+            .filesystem
+            .file_exists(&format_path(&path, case_num, "in"))
+        {
+            files_found.push(format!("{}.in", case_num));
         }
-        if res.filesystem.file_exists(&test_case_out) {
-            files_found.push(test_case_out);
+        if res
+            .filesystem
+            .file_exists(&format_path(&path, case_num, "out"))
+        {
+            files_found.push(format!("{}.out", case_num));
         }
     }
 
