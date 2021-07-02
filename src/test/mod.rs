@@ -80,7 +80,7 @@ impl CsesApi for FakeCsesApi {
         todo!()
     }
 
-    fn get_examples<'a>(
+    fn get_samples<'a>(
         &self,
         _token: Option<&'a str>,
         _scope: &Scope,

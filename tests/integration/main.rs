@@ -29,9 +29,9 @@
 mod common;
 mod contests;
 mod courses;
-mod examples;
 mod help;
 mod login;
+mod samples;
 mod statement;
 mod submission;
 mod submit;

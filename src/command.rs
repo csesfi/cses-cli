@@ -26,7 +26,7 @@ COMMANDS:
         specified by the server. File, task ID and language are optional
         and will be used by the server to select a suitable code template.
     view [-c] (-t)              View the statement of a task.
-    examples [-c] (-t) [<dir>]  Download example inputs and outputs for a task.
+    samples [-c] (-t) [<dir>]   Download sample inputs and outputs for a task.
         The files will be saved in the current directory unless specified
         otherwise. They will be named 1.in, 1.out, 2.in, 2.out, and so on.
 
@@ -73,7 +73,7 @@ pub enum Command {
     Submission(Option<Scope>, Submission),
     View(Option<Scope>, String),
     Template(Option<Scope>, Template),
-    Examples(Option<Scope>, Examples),
+    Samples(Option<Scope>, Samples),
 }
 #[derive(Debug)]
 pub struct Submit {
@@ -88,7 +88,7 @@ pub struct Template {
     pub file_name: Option<String>,
 }
 #[derive(Debug)]
-pub struct Examples {
+pub struct Samples {
     pub task: String,
     pub dir_name: Option<String>,
 }
@@ -157,9 +157,9 @@ impl Template {
         })
     }
 }
-impl Examples {
-    fn parse(pargs: &mut pico_args::Arguments) -> Result<Examples> {
-        Ok(Examples {
+impl Samples {
+    fn parse(pargs: &mut pico_args::Arguments) -> Result<Samples> {
+        Ok(Samples {
             task: parse_required_task_id(pargs)?,
             dir_name: pargs.opt_free_from_str()?,
         })
@@ -219,7 +219,7 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
             parse_required_task_id(&mut pargs)?,
         ),
         "template" => Command::Template(parse_scope(&mut pargs)?, Template::parse(&mut pargs)?),
-        "examples" => Command::Examples(parse_scope(&mut pargs)?, Examples::parse(&mut pargs)?),
+        "samples" => Command::Samples(parse_scope(&mut pargs)?, Samples::parse(&mut pargs)?),
         _ => return Err(anyhow!("Invalid command")),
     };
 
@@ -670,13 +670,13 @@ mod tests {
     }
 
     #[test]
-    fn examples_works_without_directory() {
-        let pargs = to_pargs(&["examples", "-t", "Q"]);
+    fn samples_works_without_directory() {
+        let pargs = to_pargs(&["samples", "-t", "Q"]);
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(
             command,
-            Command::Examples(None, Examples {
+            Command::Samples(None, Samples {
                 task,
                 dir_name: None,
             })
@@ -697,13 +697,13 @@ mod tests {
     }
 
     #[test]
-    fn examples_works_with_directory() {
-        let pargs = to_pargs(&["examples", "../elsewhere", "--task", "502"]);
+    fn samples_works_with_directory() {
+        let pargs = to_pargs(&["samples", "../elsewhere", "--task", "502"]);
         let command = Command::parse_command(pargs).unwrap();
 
         assert!(matches!(
             command,
-            Command::Examples(None, Examples {
+            Command::Samples(None, Samples {
                 task,
                 dir_name: Some(dir_name),
             })
@@ -712,8 +712,8 @@ mod tests {
     }
 
     #[test]
-    fn examples_fails_without_task_id() {
-        let pargs = to_pargs(&["examples", "-c", "course", "../elsewhere"]);
+    fn samples_fails_without_task_id() {
+        let pargs = to_pargs(&["samples", "-c", "course", "../elsewhere"]);
         assert!(Command::parse_command(pargs).is_err());
     }
 }
