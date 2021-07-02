@@ -39,14 +39,25 @@ pub fn save_test_cases(
     .context("Failed saving test cases.")
 }
 
-pub fn test_cases_exist(res: &Resources<impl RP>, dir_name: Option<&str>) -> bool {
+pub fn test_cases_exist(
+    res: &Resources<impl RP>,
+    case_count: u64,
+    dir_name: Option<&str>,
+) -> Vec<String> {
     let path = make_path(dir_name);
-    let case_num = 1;
-    res.filesystem
-        .file_exists(&format_path(&path, case_num, "in"))
-        || res
-            .filesystem
-            .file_exists(&format_path(&path, case_num, "out"))
+    let mut files_found = Vec::<String>::new();
+    for case_num in 1..case_count + 1 {
+        let test_case_in = format_path(&path, case_num, "in");
+        let test_case_out = format_path(&path, case_num, "out");
+        if res.filesystem.file_exists(&test_case_in) {
+            files_found.push(test_case_in);
+        }
+        if res.filesystem.file_exists(&test_case_out) {
+            files_found.push(test_case_out);
+        }
+    }
+
+    files_found
 }
 
 pub fn create_dir_all(res: &Resources<impl RP>, dir_name: Option<&str>) -> Result<()> {
