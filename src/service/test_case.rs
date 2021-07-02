@@ -46,7 +46,7 @@ pub fn test_cases_exist(
 ) -> Vec<String> {
     let path = make_path(dir_name);
     let mut files_found = Vec::<String>::new();
-    for case_num in 1..case_count + 1 {
+    for case_num in 1..=case_count {
         if res
             .filesystem
             .file_exists(&format_path(&path, case_num, "in"))
