@@ -83,9 +83,9 @@ impl<R: ResourcesProvider> Ui<R> {
                 let task_statement = service::get_task_statement(&self.res, &scope, &task_id)?;
                 statement::print_statement(self, &task_statement)?;
             }
-            Command::Examples(scope, examples) => {
+            Command::Samples(scope, samples) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                test_case::get_examples(self, &scope, examples)?;
+                test_case::get_samples(self, &scope, samples)?;
             }
             _ => {
                 return Err(anyhow!("Command not yet implemented"));

@@ -457,17 +457,17 @@ paths:
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
-  /courses/{course_id}/examples:
+  /courses/{course_id}/samples:
     get:
-      operationId: app.course_get_examples
+      operationId: app.course_get_samples
 
-      summary: Retrieve example test cases.
+      summary: Retrieve sample test cases.
 
       tags:
         - courses
 
       description: >
-        Requests example test cases for a task on a course.
+        Requests sample test cases for a task on a course.
         Order of the test cases should be the same as on the 
         task statement.
 
@@ -481,23 +481,23 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#/SuccessfulExamplesGet"
+          $ref: "responses.yaml#/SuccessfulSamplesGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":
           $ref: "responses.yaml#/ServerError"
 
-  /contests/{contest_id}/examples:
+  /contests/{contest_id}/samples:
     get:
-      operationId: app.contest_get_examples
+      operationId: app.contest_get_samples
 
-      summary: Retrieve example test cases.
+      summary: Retrieve sample test cases.
 
       tags:
         - contests
 
       description: >
-        Requests example test cases for a task on a contest.
+        Requests sample test cases for a task on a contest.
         Order of the test cases should be the same as on the 
         task statement.
 
@@ -511,7 +511,7 @@ paths:
 
       responses:
         "200":
-          $ref: "responses.yaml#/SuccessfulExamplesGet"
+          $ref: "responses.yaml#/SuccessfulSamplesGet"
         "4XX":
           $ref: "responses.yaml#/ClientError"
         "5XX":

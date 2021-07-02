@@ -3,8 +3,8 @@ use crate::{command, entities::Scope, service, RP};
 use anyhow::Result;
 use std::io::Write;
 
-pub fn get_examples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Examples) -> Result<()> {
-    let test_cases = service::fetch_examples(&ui.res, scope, &params.task)?;
+pub fn get_samples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Samples) -> Result<()> {
+    let test_cases = service::fetch_samples(&ui.res, scope, &params.task)?;
     if service::test_cases_exist(&ui.res, params.dir_name.as_deref()) {
         let overwrite_message = format!(
             "Test case files already present in the {}\n\
@@ -20,7 +20,7 @@ pub fn get_examples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Exampl
     service::save_test_cases(&ui.res, test_cases, params.dir_name.as_deref())?;
     Ok(writeln!(
         ui.term,
-        "{} example test cases successfully saved to the {}",
+        "{} sample test cases successfully saved to the {}",
         amount,
         format_dir_name(params.dir_name.as_deref())
     )?)

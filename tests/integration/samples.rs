@@ -9,7 +9,7 @@ fn test_task_escaped_properly() {
     // if the task is escaped properly, it is not 404 so it exists
     command()
         .args(&[
-            "examples",
+            "samples",
             "-c",
             "teku",
             "--task",
@@ -20,21 +20,21 @@ fn test_task_escaped_properly() {
 }
 
 #[distributed_slice(TESTS)]
-fn example_test_files_are_saved_to_program_root() {
-    fetch_examples(".");
+fn sample_test_files_are_saved_to_program_root() {
+    fetch_samples(".");
 }
 
 #[distributed_slice(TESTS)]
-fn example_test_files_are_saved_to_the_given_path() {
-    fetch_examples("tests/t1");
+fn sample_test_files_are_saved_to_the_given_path() {
+    fetch_samples("tests/t1");
 }
 
 #[distributed_slice(TESTS)]
 fn the_user_is_asked_before_the_files_are_overwritten_on_program_root() {
-    fetch_examples(".");
+    fetch_samples(".");
 
     command()
-        .args(&["examples", "-c", "teku", "-t", "1"])
+        .args(&["samples", "-c", "teku", "-t", "1"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)yes/no"))
@@ -43,10 +43,10 @@ fn the_user_is_asked_before_the_files_are_overwritten_on_program_root() {
 
 #[distributed_slice(TESTS)]
 fn the_user_is_asked_before_the_files_are_overwritten_on_custom_path() {
-    fetch_examples("tests/t1");
+    fetch_samples("tests/t1");
 
     command()
-        .args(&["examples", "-c", "teku", "-t", "1", "./tests/t1"])
+        .args(&["samples", "-c", "teku", "-t", "1", "./tests/t1"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)yes/no"))
@@ -59,7 +59,7 @@ fn the_files_are_not_overwritten_if_the_user_doesnt_wants_to() {
     create_file("1.out", b"olleH");
 
     command()
-        .args(&["examples", "-c", "teku", "-t", "1"])
+        .args(&["samples", "-c", "teku", "-t", "1"])
         .write_stdin("no\n")
         .assert()
         .success()
@@ -77,7 +77,7 @@ fn the_files_are_overwritten_if_the_user_wants_to() {
     create_file("1.out", b"olleH");
 
     command()
-        .args(&["examples", "-c", "teku", "-t", "1"])
+        .args(&["samples", "-c", "teku", "-t", "1"])
         .write_stdin("yes\n")
         .assert()
         .success()
@@ -96,27 +96,27 @@ fn the_user_is_not_asked_for_files_that_will_not_be_overwritten() {
     create_file("4.out", b"olleH");
 
     command()
-        .args(&["examples", "-c", "teku", "-t", "1"])
+        .args(&["samples", "-c", "teku", "-t", "1"])
         .assert()
         .success()
         .stdout(regex_match(r"(?i)yes/no").not())
         .stderr(predicate::str::is_empty());
 }
 
-fn fetch_examples(path: &str) {
+fn fetch_samples(path: &str) {
     let args = match path {
-        "." => vec!["examples", "-c", "teku", "-t", "1"],
-        _ => vec!["examples", "-c", "teku", "-t", "1", path],
+        "." => vec!["samples", "-c", "teku", "-t", "1"],
+        _ => vec!["samples", "-c", "teku", "-t", "1", path],
     };
     command()
         .args(args)
         .assert()
         .success()
         .stderr(predicate::str::is_empty());
-    check_examples_exist(path);
+    check_samples_exist(path);
 }
 
-fn check_examples_exist(path: &str) {
+fn check_samples_exist(path: &str) {
     for i in 1..4 {
         assert!(Path::new(&format!("{}/{}.in", path, i)).exists());
         assert!(Path::new(&format!("{}/{}.out", path, i)).exists());
