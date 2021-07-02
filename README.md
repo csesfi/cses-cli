@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/csesfi/cses-cli/branch/main/graph/badge.svg)](https://app.codecov.io/gh/csesfi/cses-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-University of Helsinki, Ohjelmistotuotantoprojekti, summer 2021
+University of Helsinki, Ohjelmistotuotantoprojekti (Software Engineering Project), summer 2021
 
 CSES CLI is a lightweight tool for using CSES from the command line.
 
@@ -37,3 +37,14 @@ CSES CLI is a lightweight tool for using CSES from the command line.
 - [User manual](https://github.com/csesfi/cses-cli/wiki/User-manual)
 
 - [Testing](https://github.com/csesfi/cses-cli/wiki/Testing)
+
+## Contributors
+
+The original version of this program was created during the *Software Engineering Project* course  (Ohjelmistotuotantoprojekti) at the University of Helsinki summer 2021.
+
+### CSES-CLI software engineering project team  
+- Antto Heikura
+- Joona Huuhtanen
+- Kalle Luopajärvi
+- Roope Salmi
+- Anton Taleiko
