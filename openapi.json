@@ -514,7 +514,7 @@
                       }
                     ],
                     "discriminator": {
-                      "propertyName": "objectType",
+                      "propertyName": "item_type",
                       "mapping": {
                         "text": "schemas.yaml#/Text",
                         "link": "schemas.yaml#/Link",
@@ -569,7 +569,7 @@
                       }
                     ],
                     "discriminator": {
-                      "propertyName": "objectType",
+                      "propertyName": "item_type",
                       "mapping": {
                         "text": "schemas.yaml#/Text",
                         "link": "schemas.yaml#/Link",
@@ -586,14 +586,14 @@
       "Text": {
         "additionalProperties": false,
         "required": [
-          "objectType",
+          "item_type",
           "name",
           "id",
           "link"
         ],
         "type": "object",
         "properties": {
-          "objectType": {
+          "item_type": {
             "type": "string"
           },
           "name": {
@@ -613,13 +613,13 @@
       "Link": {
         "additionalProperties": false,
         "required": [
-          "objectType",
+          "item_type",
           "name",
           "link"
         ],
         "type": "object",
         "properties": {
-          "objectType": {
+          "item_type": {
             "type": "string"
           },
           "name": {
@@ -635,7 +635,7 @@
       "CourseTask": {
         "additionalProperties": false,
         "required": [
-          "objectType",
+          "item_type",
           "name",
           "id",
           "link",
@@ -643,7 +643,7 @@
         ],
         "type": "object",
         "properties": {
-          "objectType": {
+          "item_type": {
             "type": "string"
           },
           "name": {
@@ -665,7 +665,7 @@
       "ContestTask": {
         "additionalProperties": false,
         "required": [
-          "objectType",
+          "item_type",
           "name",
           "id",
           "link",
@@ -673,7 +673,7 @@
         ],
         "type": "object",
         "properties": {
-          "objectType": {
+          "item_type": {
             "type": "string"
           },
           "name": {
