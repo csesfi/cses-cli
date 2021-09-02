@@ -33,7 +33,6 @@ impl<R: ResourcesProvider> Ui<R> {
     }
 
     pub fn run(&mut self, command: Command) -> Result<()> {
-        service::ping(&mut self.res);
         match command {
             Command::None => {
                 self.term.write_line(HELP_STR)?;
