@@ -12,7 +12,7 @@ use anyhow::{anyhow, Context, Error, Result};
 use console::{Style, Term};
 
 use crate::api::ApiError;
-use crate::command::{Submission, HELP_STR, LANGUAGE_HINT, TASK_HINT};
+use crate::command::{ScopedCommand, Submission, HELP_STR, LANGUAGE_HINT, TASK_HINT};
 use crate::service;
 use crate::{Command, Resources, ResourcesProvider, RP};
 
@@ -32,7 +32,6 @@ impl<R: ResourcesProvider> Ui<R> {
         }
     }
 
-    #[allow(unreachable_patterns)]
     pub fn run(&mut self, command: Command) -> Result<()> {
         service::ping(&mut self.res);
         match command {
@@ -55,44 +54,52 @@ impl<R: ResourcesProvider> Ui<R> {
             Command::Courses => {
                 courses::list_courses(self)?;
             }
-            Command::List(scope) => {
+            Command::Scoped(scope, command) => {
                 let scope = service::select_scope(&mut self.res, scope)?;
-                courses::list_content(self, &scope)?;
-            }
-            Command::Submit(scope, submit) => {
-                let scope = service::select_scope(&mut self.res, scope)?;
-                let submission_info = service::submit(&mut self.res, &scope, submit)?;
-                submission::print_submission_info(self, &scope, submission_info, true)?;
-            }
-            Command::Template(scope, template) => {
-                let scope = service::select_scope(&mut self.res, scope)?;
-                template::get_template(self, &scope, template)?;
-            }
-            Command::Submissions(scope, task_id) => {
-                let scope = service::select_scope(&mut self.res, scope)?;
-                submissions::list(self, &scope, &task_id)?;
-            }
-            Command::Submission(scope, submission) => {
-                let scope = service::select_scope(&mut self.res, scope)?;
-                let submission_info = match submission {
-                    Submission::Id(submission_id) => {
-                        service::submission_info(&mut self.res, &scope, submission_id, false)?
+                match command {
+                    ScopedCommand::List => {
+                        courses::list_content(self, &scope)?;
                     }
-                    Submission::NthLatest(task_id, n) => {
-                        service::nth_latest_submission_info(&mut self.res, &scope, &task_id, n)?
+                    ScopedCommand::Submit(submit) => {
+                        let submission_info = service::submit(&mut self.res, &scope, submit)?;
+                        submission::print_submission_info(self, &scope, submission_info, true)?;
                     }
-                };
-                submission::print_submission_info(self, &scope, submission_info, false)?;
+                    ScopedCommand::Template(template) => {
+                        template::get_template(self, &scope, template)?;
+                    }
+                    ScopedCommand::Submissions(task_id) => {
+                        submissions::list(self, &scope, &task_id)?;
+                    }
+                    ScopedCommand::Submission(submission) => {
+                        let submission_info = match submission {
+                            Submission::Id(submission_id) => service::submission_info(
+                                &mut self.res,
+                                &scope,
+                                submission_id,
+                                false,
+                            )?,
+                            Submission::NthLatest(task_id, n) => {
+                                service::nth_latest_submission_info(
+                                    &mut self.res,
+                                    &scope,
+                                    &task_id,
+                                    n,
+                                )?
+                            }
+                        };
+                        submission::print_submission_info(self, &scope, submission_info, false)?;
+                    }
+                    ScopedCommand::View(task_id) => {
+                        let task_statement =
+                            service::get_task_statement(&self.res, &scope, &task_id)?;
+                        statement::print_statement(self, &task_statement)?;
+                    }
+                    ScopedCommand::Samples(samples) => {
+                        test_case::get_samples(self, &scope, samples)?;
+                    }
+                }
             }
-            Command::View(scope, task_id) => {
-                let scope = service::select_scope(&mut self.res, scope)?;
-                let task_statement = service::get_task_statement(&self.res, &scope, &task_id)?;
-                statement::print_statement(self, &task_statement)?;
-            }
-            Command::Samples(scope, samples) => {
-                let scope = service::select_scope(&mut self.res, scope)?;
-                test_case::get_samples(self, &scope, samples)?;
-            }
+            #[allow(unreachable_patterns)]
             _ => {
                 return Err(anyhow!("Command not yet implemented"));
             }

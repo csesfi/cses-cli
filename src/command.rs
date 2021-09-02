@@ -67,13 +67,17 @@ pub enum Command {
     Logout,
     Status,
     Courses,
-    List(Option<Scope>),
-    Submit(Option<Scope>, Submit),
-    Submissions(Option<Scope>, String),
-    Submission(Option<Scope>, Submission),
-    View(Option<Scope>, String),
-    Template(Option<Scope>, Template),
-    Samples(Option<Scope>, Samples),
+    Scoped(Option<Scope>, ScopedCommand),
+}
+#[derive(Debug)]
+pub enum ScopedCommand {
+    List,
+    Submit(Submit),
+    Submissions(String),
+    Submission(Submission),
+    View(String),
+    Template(Template),
+    Samples(Samples),
 }
 #[derive(Debug)]
 pub struct Submit {
@@ -205,21 +209,31 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
         "logout" => Command::Logout,
         "status" => Command::Status,
         "courses" => Command::Courses,
-        "list" => Command::List(parse_scope(&mut pargs)?),
-        "submit" => Command::Submit(parse_scope(&mut pargs)?, Submit::parse(&mut pargs)?),
-        "submissions" => Command::Submissions(
+        "list" => Command::Scoped(parse_scope(&mut pargs)?, ScopedCommand::List),
+        "submit" => Command::Scoped(
             parse_scope(&mut pargs)?,
-            parse_required_task_id(&mut pargs)?,
+            ScopedCommand::Submit(Submit::parse(&mut pargs)?),
         ),
-        "submission" => {
-            Command::Submission(parse_scope(&mut pargs)?, Submission::parse(&mut pargs)?)
-        }
-        "view" => Command::View(
+        "submissions" => Command::Scoped(
             parse_scope(&mut pargs)?,
-            parse_required_task_id(&mut pargs)?,
+            ScopedCommand::Submissions(parse_required_task_id(&mut pargs)?),
         ),
-        "template" => Command::Template(parse_scope(&mut pargs)?, Template::parse(&mut pargs)?),
-        "samples" => Command::Samples(parse_scope(&mut pargs)?, Samples::parse(&mut pargs)?),
+        "submission" => Command::Scoped(
+            parse_scope(&mut pargs)?,
+            ScopedCommand::Submission(Submission::parse(&mut pargs)?),
+        ),
+        "view" => Command::Scoped(
+            parse_scope(&mut pargs)?,
+            ScopedCommand::View(parse_required_task_id(&mut pargs)?),
+        ),
+        "template" => Command::Scoped(
+            parse_scope(&mut pargs)?,
+            ScopedCommand::Template(Template::parse(&mut pargs)?),
+        ),
+        "samples" => Command::Scoped(
+            parse_scope(&mut pargs)?,
+            ScopedCommand::Samples(Samples::parse(&mut pargs)?),
+        ),
         _ => return Err(anyhow!("Invalid command")),
     };
 
@@ -300,7 +314,10 @@ mod tests {
         let pargs = to_pargs(&["submit", "test.cpp"]);
         let command = Command::parse_command(pargs).unwrap();
 
-        assert!(matches!(command, Command::Submit(..)));
+        assert!(matches!(
+            command,
+            Command::Scoped(_, ScopedCommand::Submit(..))
+        ));
     }
 
     #[test]
@@ -310,7 +327,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, submit)
+            Command::Scoped(_, ScopedCommand::Submit(submit))
             if submit.file_name == "test.cpp"
         ));
 
@@ -319,7 +336,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, submit)
+            Command::Scoped(_, ScopedCommand::Submit(submit))
             if submit.file_name == "qwerty.rs"
         ));
     }
@@ -331,7 +348,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Some(Scope::Course(course)), _)
+            Command::Scoped(Some(Scope::Course(course)), _)
             if course == "alon"
         ));
     }
@@ -343,7 +360,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Some(Scope::Course(course)), _)
+            Command::Scoped(Some(Scope::Course(course)), _)
             if course == "alon"
         ));
     }
@@ -355,7 +372,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task: Some(task), .. })
+            Command::Scoped(_, ScopedCommand::Submit(Submit { task: Some(task), .. }))
             if task == "123"
         ));
     }
@@ -367,7 +384,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { task: Some(task), .. })
+            Command::Scoped(_, ScopedCommand::Submit(Submit { task: Some(task), .. }))
             if task == "123"
         ));
     }
@@ -379,7 +396,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { language: Language { name: Some(lang), ..}, .. })
+            Command::Scoped(
+                _,
+                ScopedCommand::Submit(Submit { language: Language { name: Some(lang), ..}, .. })
+            )
             if lang == "Rust"
         ));
     }
@@ -391,7 +411,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { language: Language { name: Some(lang), .. }, .. })
+            Command::Scoped(
+                _,
+                ScopedCommand::Submit(Submit { language: Language { name: Some(lang), .. }, .. })
+            )
             if lang == "Rust"
         ));
     }
@@ -403,7 +426,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { language: Language { option: Some(opt), .. }, .. })
+            Command::Scoped(
+                _,
+                ScopedCommand::Submit(Submit { language: Language { option: Some(opt), .. }, .. })
+            )
             if opt == "C++17"
         ));
     }
@@ -414,7 +440,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(_, Submit { language: Language { option: Some(opt), .. }, ..})
+            Command::Scoped(
+                _,
+                ScopedCommand::Submit(Submit { language: Language { option: Some(opt), .. }, ..})
+            )
             if opt == "C++17"
         ));
     }
@@ -448,13 +477,13 @@ mod tests {
         let pargs = to_pargs(&["template", "-c", "course", "-t", "123", "-l", "language"]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
-            Command::Template(
+            Command::Scoped(
                 Some(Scope::Course(course_id)),
-                Template {
+                ScopedCommand::Template(Template {
                     task: Some(task),
                     language: Some(language),
                     file_name: None,
-                }
+                }),
             )
             if course_id == "course" && task == "123" && language == "language"
         ));
@@ -464,13 +493,13 @@ mod tests {
         let pargs = to_pargs(&["template", "-t", "123", "-l", "language"]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
-            Command::Template(
+            Command::Scoped(
                 None,
-                Template {
+                ScopedCommand::Template(Template {
                     task: Some(task),
                     language: Some(language),
                     file_name: None,
-                }
+                }),
             )
             if task == "123" && language == "language"
         ));
@@ -480,13 +509,13 @@ mod tests {
         let pargs = to_pargs(&["template", "-c", "course", "-f", "file"]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
-            Command::Template(
+            Command::Scoped(
                 Some(Scope::Course(course_id)),
-                Template {
+                ScopedCommand::Template(Template {
                     task: None,
                     language: None,
                     file_name: Some(file_name),
-                }
+                }),
             )
             if course_id == "course" && file_name == "file"
         ));
@@ -504,13 +533,13 @@ mod tests {
         ]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
-            Command::Template(
+            Command::Scoped(
                 Some(Scope::Course(course_id)),
-                Template {
+                ScopedCommand::Template(Template {
                     task: Some(task),
                     language: Some(language),
                     file_name: None,
-                }
+                }),
             )
             if course_id == "course" && task == "123" && language == "language"
         ));
@@ -520,13 +549,13 @@ mod tests {
         let pargs = to_pargs(&["template", "--file", "file"]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
-            Command::Template(
+            Command::Scoped(
                 None,
-                Template {
+                ScopedCommand::Template(Template {
                     task: None,
                     language: None,
                     file_name: Some(file_name),
-                }
+                }),
             )
             if file_name == "file"
         ));
@@ -538,7 +567,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submissions(None, task)
+            Command::Scoped(None, ScopedCommand::Submissions(task))
             if task == "140"
         ));
     }
@@ -550,7 +579,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submissions(Some(Scope::Course(course)), task)
+            Command::Scoped(
+                Some(Scope::Course(course)),
+                ScopedCommand::Submissions(task),
+            )
             if course == "alon" && task == "140"
         ));
     }
@@ -569,7 +601,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(None, Submission::Id(1512))
+            Command::Scoped(None, ScopedCommand::Submission(Submission::Id(1512))),
         ));
     }
 
@@ -580,7 +612,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(Some(Scope::Course(course)), Submission::Id(5326))
+            Command::Scoped(
+                Some(Scope::Course(course)),
+                ScopedCommand::Submission(Submission::Id(5326)),
+            )
             if course == "alon"));
     }
 
@@ -591,7 +626,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(Some(Scope::Course(course)), Submission::NthLatest(task, 3))
+            Command::Scoped(
+                Some(Scope::Course(course)),
+                ScopedCommand::Submission(Submission::NthLatest(task, 3)),
+            )
             if course == "alon" && task == "1068"));
     }
 
@@ -602,7 +640,10 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submission(Some(Scope::Course(course)), Submission::NthLatest(task, 0))
+            Command::Scoped(
+                Some(Scope::Course(course)),
+                ScopedCommand::Submission(Submission::NthLatest(task, 0)),
+            )
             if course == "alon" && task == "1068"));
     }
 
@@ -619,7 +660,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Some(Scope::Contest(124)), _)
+            Command::Scoped(Some(Scope::Contest(124)), _)
         ));
     }
 
@@ -636,7 +677,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Some(Scope::Contest(125)), _)
+            Command::Scoped(Some(Scope::Contest(125)), _)
         ));
     }
 
@@ -647,7 +688,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Submit(Some(Scope::Course(_)), _)
+            Command::Scoped(Some(Scope::Course(_)), _)
         ));
     }
 
@@ -664,7 +705,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::View(Some(Scope::Contest(contest_id)), task_id)
+            Command::Scoped(Some(Scope::Contest(contest_id)), ScopedCommand::View(task_id))
             if contest_id == 123 && task_id == "C"
         ));
     }
@@ -676,10 +717,13 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Samples(None, Samples {
-                task,
-                dir_name: None,
-            })
+            Command::Scoped(
+                None,
+                ScopedCommand::Samples(Samples {
+                    task,
+                    dir_name: None,
+                }),
+            )
             if task == "Q"
         ));
     }
@@ -691,7 +735,7 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::View(Some(Scope::Course(course_id)), task_id)
+            Command::Scoped(Some(Scope::Course(course_id)), ScopedCommand::View(task_id))
             if course_id == "alon" && task_id == "42"
         ));
     }
@@ -703,10 +747,13 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Samples(None, Samples {
-                task,
-                dir_name: Some(dir_name),
-            })
+            Command::Scoped(
+                None,
+                ScopedCommand::Samples(Samples {
+                    task,
+                    dir_name: Some(dir_name),
+                }),
+            )
             if task == "502" && dir_name == "../elsewhere"
         ));
     }

@@ -9,7 +9,7 @@ pub fn fetch_samples(
 ) -> Result<Vec<TestCase>> {
     (|| -> Result<_> {
         let token = res.storage.get().get_token();
-        let response = res.api.get_samples(token, &scope, task_id)?;
+        let response = res.api.get_samples(token, scope, task_id)?;
         Ok(response.test_cases)
     })()
     .context("Failed querying sample test cases from the server.")
