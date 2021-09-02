@@ -135,7 +135,7 @@ pub fn print_error(err: &Error) {
         if let Some(hint) = get_error_hint(error) {
             let prefix = prefix.to_owned() + indentation;
             println!("{}\n", add_indentation("Hint:", &prefix));
-            println!("{}", add_indentation(&hint, &prefix));
+            println!("{}", add_indentation(hint, &prefix));
         }
     }
 }

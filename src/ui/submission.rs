@@ -53,7 +53,7 @@ fn print_info_header(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
         "Language: {}",
         submission_info.language.name.as_deref().unwrap_or("?")
     )?;
-    if let Some(ref option) = submission_info.language.option {
+    if let Some(option) = &submission_info.language.option {
         write!(ui.term, " ({})", option)?;
     };
     Ok(writeln!(ui.term)?)
@@ -72,7 +72,7 @@ fn print_compiler_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo)
 fn print_status(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
     let status_text = "Status:";
     if submission_info.pending {
-        if let Some(ref test_progress) = submission_info.test_progress {
+        if let Some(test_progress) = &submission_info.test_progress {
             let progress_fraction =
                 test_progress.finished_tests as f64 / test_progress.total_tests as f64;
             if (0.0..=1.0).contains(&progress_fraction) {
@@ -116,7 +116,7 @@ fn print_test_score(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> R
 }
 
 fn print_test_feedback(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
-    if let Some(ref feedback) = submission_info.feedback {
+    if let Some(feedback) = &submission_info.feedback {
         ui.term.write_line("\nFeedback\n")?;
         let mut table = Table::new(vec![0, "OUTPUT LIMIT EXCEEDED".len(), 0]);
         table.add_row(vec![
@@ -138,7 +138,7 @@ fn print_test_feedback(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -
 }
 
 fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
-    if let Some(ref tests) = submission_info.tests {
+    if let Some(tests) = &submission_info.tests {
         ui.term.write_line("\nTest results\n")?;
         let mut table = Table::new(vec![0, "OUTPUT LIMIT EXCEEDED".len(), 0, 0]);
         table.add_row(vec![
@@ -162,7 +162,7 @@ fn print_test_results(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) ->
 }
 
 fn print_test_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
-    if let Some(ref report) = submission_info.test_report {
+    if let Some(report) = &submission_info.test_report {
         ui.term.write_line("\nTest report:")?;
         writeln!(ui.term, "{}", report)?;
     };
@@ -170,8 +170,8 @@ fn print_test_report(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> 
 }
 
 fn print_final_result(ui: &mut Ui<impl RP>, submission_info: &SubmissionInfo) -> Result<()> {
-    if let Some(ref result) = submission_info.result {
-        writeln!(ui.term, "\nResult: {}", result_with_color(&result))?;
+    if let Some(result) = &submission_info.result {
+        writeln!(ui.term, "\nResult: {}", result_with_color(result))?;
     };
     Ok(())
 }
