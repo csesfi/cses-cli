@@ -62,7 +62,7 @@ jobs:
         RUSTUP_UNPACK_RAM: 104857600
       with:
         profile: minimal
-        toolchain: nightly-2021-05-09
+        toolchain: nightly
         components: rust-src
         override: true
     - name: Install Xargo
