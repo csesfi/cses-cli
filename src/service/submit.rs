@@ -12,7 +12,7 @@ pub fn submit(
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         require_login(res)?;
-        let task = parameters.task.as_deref();
+        let task_id = parameters.task_id.as_deref();
         let content = res.filesystem.get_file(&parameters.filename)?;
         let filename = res.filesystem.get_filename(&parameters.filename)?;
         let content = res.filesystem.encode_base64(&content);
@@ -23,7 +23,7 @@ pub fn submit(
         };
         Ok(res
             .api
-            .submit_task(require_login(res)?, scope, task, &submission)?)
+            .submit_task(require_login(res)?, scope, task_id, &submission)?)
     })()
     .context("Failed submitting file")
 }

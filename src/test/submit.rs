@@ -32,7 +32,7 @@ fn submit_mock() -> Result<()> {
     let scope = Scope::Course("crs".to_string());
     fake_resources.storage.data = storage_data;
     let submit_params = command::Submit {
-        task: Some("3".to_owned()),
+        task_id: Some("3".to_owned()),
         language: Language {
             name: Some("Python".to_owned()),
             option: None,

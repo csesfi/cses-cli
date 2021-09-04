@@ -9,7 +9,7 @@ use crate::entities::Scope;
 use crate::{command, service, RP};
 
 pub fn get_samples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Samples) -> Result<()> {
-    let test_cases = service::fetch_samples(&ui.res, scope, &params.task)?;
+    let test_cases = service::fetch_samples(&ui.res, scope, &params.task_id)?;
     let existing_files =
         service::test_cases_exist(&ui.res, test_cases.len() as u64, params.dir_name.as_deref());
     if !existing_files.is_empty() {

@@ -15,7 +15,7 @@ pub fn get_template(
         Ok(res.api.get_template(
             token,
             scope,
-            parameters.task.as_deref(),
+            parameters.task_id.as_deref(),
             parameters.language.as_deref(),
             parameters.filename.as_deref(),
         )?)

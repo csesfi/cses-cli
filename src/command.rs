@@ -83,19 +83,19 @@ pub enum ScopedCommand {
 }
 #[derive(Debug)]
 pub struct Submit {
-    pub task: Option<String>,
+    pub task_id: Option<String>,
     pub language: Language,
     pub filename: PathBuf,
 }
 #[derive(Debug)]
 pub struct Template {
-    pub task: Option<String>,
+    pub task_id: Option<String>,
     pub language: Option<String>,
     pub filename: Option<String>,
 }
 #[derive(Debug)]
 pub struct Samples {
-    pub task: String,
+    pub task_id: String,
     pub dir_name: Option<PathBuf>,
 }
 
@@ -139,7 +139,7 @@ fn parse_language_option(pargs: &mut pico_args::Arguments) -> Result<Option<Stri
 impl Submit {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submit> {
         Ok(Submit {
-            task: parse_task_id(pargs)?,
+            task_id: parse_task_id(pargs)?,
             language: Language {
                 name: parse_language_name(pargs)?,
                 option: parse_language_option(pargs)?,
@@ -157,7 +157,7 @@ impl Submit {
 impl Template {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
         Ok(Template {
-            task: parse_task_id(pargs)?,
+            task_id: parse_task_id(pargs)?,
             language: parse_language_name(pargs)?,
             filename: pargs.opt_value_from_str(["-f", "--file"])?,
         })
@@ -166,7 +166,7 @@ impl Template {
 impl Samples {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Samples> {
         Ok(Samples {
-            task: parse_required_task_id(pargs)?,
+            task_id: parse_required_task_id(pargs)?,
             dir_name: pargs.opt_free_from_str()?,
         })
     }
@@ -192,11 +192,11 @@ impl Command {
 }
 impl Submission {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Submission> {
-        let task: Option<String> = parse_task_id(pargs)?;
+        let task_id: Option<String> = parse_task_id(pargs)?;
         let submission_id: Option<u64> = pargs.opt_free_from_str()?;
 
-        Ok(if let Some(task) = task {
-            Submission::NthLatest(task, submission_id.unwrap_or(0))
+        Ok(if let Some(task_id) = task_id {
+            Submission::NthLatest(task_id, submission_id.unwrap_or(0))
         } else {
             Submission::Id(submission_id.ok_or_else(|| anyhow!("Submission ID not specified"))?)
         })
@@ -352,8 +352,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Scoped(Some(Scope::Course(course)), _)
-            if course == "alon"
+            Command::Scoped(Some(Scope::Course(course_id)), _)
+            if course_id == "alon"
         ));
     }
 
@@ -364,8 +364,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Scoped(Some(Scope::Course(course)), _)
-            if course == "alon"
+            Command::Scoped(Some(Scope::Course(course_id)), _)
+            if course_id == "alon"
         ));
     }
 
@@ -376,8 +376,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Scoped(_, ScopedCommand::Submit(Submit { task: Some(task), .. }))
-            if task == "123"
+            Command::Scoped(_, ScopedCommand::Submit(Submit { task_id: Some(task_id), .. }))
+            if task_id == "123"
         ));
     }
 
@@ -388,8 +388,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Scoped(_, ScopedCommand::Submit(Submit { task: Some(task), .. }))
-            if task == "123"
+            Command::Scoped(_, ScopedCommand::Submit(Submit { task_id: Some(task_id), .. }))
+            if task_id == "123"
         ));
     }
 
@@ -484,12 +484,12 @@ mod tests {
             Command::Scoped(
                 Some(Scope::Course(course_id)),
                 ScopedCommand::Template(Template {
-                    task: Some(task),
+                    task_id: Some(task_id),
                     language: Some(language),
                     filename: None,
                 }),
             )
-            if course_id == "course" && task == "123" && language == "language"
+            if course_id == "course" && task_id == "123" && language == "language"
         ));
     }
     #[test]
@@ -500,12 +500,12 @@ mod tests {
             Command::Scoped(
                 None,
                 ScopedCommand::Template(Template {
-                    task: Some(task),
+                    task_id: Some(task_id),
                     language: Some(language),
                     filename: None,
                 }),
             )
-            if task == "123" && language == "language"
+            if task_id == "123" && language == "language"
         ));
     }
     #[test]
@@ -516,7 +516,7 @@ mod tests {
             Command::Scoped(
                 Some(Scope::Course(course_id)),
                 ScopedCommand::Template(Template {
-                    task: None,
+                    task_id: None,
                     language: None,
                     filename: Some(filename),
                 }),
@@ -540,12 +540,12 @@ mod tests {
             Command::Scoped(
                 Some(Scope::Course(course_id)),
                 ScopedCommand::Template(Template {
-                    task: Some(task),
+                    task_id: Some(task_id),
                     language: Some(language),
                     filename: None,
                 }),
             )
-            if course_id == "course" && task == "123" && language == "language"
+            if course_id == "course" && task_id == "123" && language == "language"
         ));
     }
     #[test]
@@ -556,7 +556,7 @@ mod tests {
             Command::Scoped(
                 None,
                 ScopedCommand::Template(Template {
-                    task: None,
+                    task_id: None,
                     language: None,
                     filename: Some(filename),
                 }),
@@ -571,8 +571,8 @@ mod tests {
 
         assert!(matches!(
             command,
-            Command::Scoped(None, ScopedCommand::Submissions(task))
-            if task == "140"
+            Command::Scoped(None, ScopedCommand::Submissions(task_id))
+            if task_id == "140"
         ));
     }
 
@@ -584,10 +584,10 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(
-                Some(Scope::Course(course)),
-                ScopedCommand::Submissions(task),
+                Some(Scope::Course(course_id)),
+                ScopedCommand::Submissions(task_id),
             )
-            if course == "alon" && task == "140"
+            if course_id == "alon" && task_id == "140"
         ));
     }
 
@@ -617,10 +617,10 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(
-                Some(Scope::Course(course)),
+                Some(Scope::Course(course_id)),
                 ScopedCommand::Submission(Submission::Id(5326)),
             )
-            if course == "alon"));
+            if course_id == "alon"));
     }
 
     #[test]
@@ -631,10 +631,10 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(
-                Some(Scope::Course(course)),
-                ScopedCommand::Submission(Submission::NthLatest(task, 3)),
+                Some(Scope::Course(course_id)),
+                ScopedCommand::Submission(Submission::NthLatest(task_id, 3)),
             )
-            if course == "alon" && task == "1068"));
+            if course_id == "alon" && task_id == "1068"));
     }
 
     #[test]
@@ -645,10 +645,10 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(
-                Some(Scope::Course(course)),
-                ScopedCommand::Submission(Submission::NthLatest(task, 0)),
+                Some(Scope::Course(course_id)),
+                ScopedCommand::Submission(Submission::NthLatest(task_id, 0)),
             )
-            if course == "alon" && task == "1068"));
+            if course_id == "alon" && task_id == "1068"));
     }
 
     #[test]
@@ -724,11 +724,11 @@ mod tests {
             Command::Scoped(
                 None,
                 ScopedCommand::Samples(Samples {
-                    task,
+                    task_id,
                     dir_name: None,
                 }),
             )
-            if task == "Q"
+            if task_id == "Q"
         ));
     }
 
@@ -754,11 +754,11 @@ mod tests {
             Command::Scoped(
                 None,
                 ScopedCommand::Samples(Samples {
-                    task,
+                    task_id,
                     dir_name: Some(dir_name),
                 }),
             )
-            if task == "502" && dir_name == Path::new("../elsewhere")
+            if task_id == "502" && dir_name == Path::new("../elsewhere")
         ));
     }
 
