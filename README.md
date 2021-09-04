@@ -15,9 +15,15 @@ CSES CLI is a lightweight tool for using CSES from the command line.
 
 - [Releases](https://github.com/csesfi/cses-cli/releases)
 
-## Project documentation
+## Documentation
 
-### Progress
+### User guides
+
+- [Installation](https://github.com/csesfi/cses-cli/wiki/Installation)
+
+- [User manual](https://github.com/csesfi/cses-cli/wiki/User-manual)
+
+### Project managment
 
 - [Google Drive folder](https://drive.google.com/drive/folders/1teZTWPnbmWlJkVfETz7T2j04UHqJYpuf?usp=sharing)
 
@@ -25,16 +31,11 @@ CSES CLI is a lightweight tool for using CSES from the command line.
 
 - [Definition of Done and project guidelines](https://docs.google.com/document/d/1HzQkxhqxwODUW_URyV2goGciKnT3nIeE2NJFh6VS_qg/edit?usp=sharing)
 
-
 ### Program description
 
 - [API](https://csesfi.github.io/cses-cli/)
 
 - [Architecture](https://github.com/csesfi/cses-cli/wiki/Architecture)
-
-### User info
-
-- [User manual](https://github.com/csesfi/cses-cli/wiki/User-manual)
 
 - [Testing](https://github.com/csesfi/cses-cli/wiki/Testing)
 
