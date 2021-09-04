@@ -1,4 +1,4 @@
-use super::{prompt_yes_no, Ui};
+use super::{util::prompt_yes_no, Ui};
 use crate::{command, entities::Scope, service, RP};
 use anyhow::Result;
 use std::{

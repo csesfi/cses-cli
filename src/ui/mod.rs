@@ -9,12 +9,12 @@ mod test_case;
 mod util;
 
 use anyhow::{anyhow, Context, Error, Result};
-use console::{Style, Term};
+use console::Term;
 
 use crate::api::ApiError;
 use crate::command::{ScopedCommand, Submission, HELP_STR, LANGUAGE_HINT, TASK_HINT};
 use crate::service;
-use crate::{Command, Resources, ResourcesProvider, RP};
+use crate::{Command, Resources, ResourcesProvider};
 
 pub struct Ui<R: ResourcesProvider> {
     res: Resources<R>,
@@ -161,20 +161,6 @@ fn add_indentation(text: &str, prefix: &str) -> String {
         result.push_str(line);
     }
     result
-}
-
-pub fn print_with_color(line: String) {
-    let mut color = Style::new().red();
-    if line == "ACCEPTED" {
-        color = Style::new().green();
-    }
-    print!("{}", color.apply_to(line));
-}
-
-fn prompt_yes_no(ui: &mut Ui<impl RP>, message: &str) -> Result<bool> {
-    ui.term.write_str(message)?;
-    let answer = ui.prompt_line().context("Failed reading confirmation")?;
-    Ok(answer == "yes")
 }
 
 #[cfg(test)]

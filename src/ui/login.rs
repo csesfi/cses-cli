@@ -6,7 +6,7 @@ use std::io::Write;
 
 use anyhow::Context;
 
-use super::{prompt_yes_no, Ui};
+use super::{util::prompt_yes_no, Ui};
 
 pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
     (|| -> Result<_> {
