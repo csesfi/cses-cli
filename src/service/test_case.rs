@@ -14,7 +14,7 @@ pub fn fetch_samples(
         let response = res.api.get_samples(token, scope, task_id)?;
         Ok(response.test_cases)
     })()
-    .context("Failed querying sample test cases from the server.")
+    .context("Failed querying sample test cases from the server")
 }
 
 pub fn save_test_cases(
@@ -38,7 +38,7 @@ pub fn save_test_cases(
         }
         Ok(())
     })()
-    .context("Failed saving test cases.")
+    .context("Failed saving test cases")
 }
 
 pub fn test_cases_exist(

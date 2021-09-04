@@ -29,7 +29,7 @@ pub enum ApiError {
     HttpError(#[from] minreq::Error),
     #[error("Could not parse server response")]
     JsonError(#[from] miniserde::Error),
-    #[error("API key pending authentication.")]
+    #[error("API key pending authentication")]
     PendingApiKeyError,
     #[error("Invalid API key. Log in again.")]
     ApiKeyError,
