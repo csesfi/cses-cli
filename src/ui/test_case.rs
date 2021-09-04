@@ -1,7 +1,7 @@
 use super::{prompt_yes_no, Ui};
 use crate::{command, entities::Scope, service, RP};
 use anyhow::Result;
-use std::io::Write;
+use std::{io::Write, path::Path};
 
 pub fn get_samples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Samples) -> Result<()> {
     let test_cases = service::fetch_samples(&ui.res, scope, &params.task)?;
@@ -31,9 +31,9 @@ pub fn get_samples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Samples
     )?)
 }
 
-fn format_dir_name(dir_name: Option<&str>) -> String {
+fn format_dir_name(dir_name: Option<&Path>) -> String {
     if let Some(dir_name) = dir_name {
-        format!("directory {}", dir_name)
+        format!("directory {}", dir_name.display())
     } else {
         "current directory".to_owned()
     }

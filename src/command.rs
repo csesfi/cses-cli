@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use anyhow::{anyhow, bail, Context, Result};
 
 use crate::entities::{Language, Scope};
@@ -83,7 +85,7 @@ pub enum ScopedCommand {
 pub struct Submit {
     pub task: Option<String>,
     pub language: Language,
-    pub filename: String,
+    pub filename: PathBuf,
 }
 #[derive(Debug)]
 pub struct Template {
@@ -94,7 +96,7 @@ pub struct Template {
 #[derive(Debug)]
 pub struct Samples {
     pub task: String,
-    pub dir_name: Option<String>,
+    pub dir_name: Option<PathBuf>,
 }
 
 #[derive(Debug)]
@@ -247,6 +249,8 @@ fn delegate_command(mut pargs: pico_args::Arguments, command: &str) -> Result<Co
 
 #[cfg(test)]
 mod tests {
+    use std::path::Path;
+
     use super::*;
 
     fn to_pargs(args: &[&str]) -> pico_args::Arguments {
@@ -328,7 +332,7 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(_, ScopedCommand::Submit(submit))
-            if submit.filename == "test.cpp"
+            if submit.filename == Path::new("test.cpp")
         ));
 
         let pargs = to_pargs(&["submit", "qwerty.rs"]);
@@ -337,7 +341,7 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(_, ScopedCommand::Submit(submit))
-            if submit.filename == "qwerty.rs"
+            if submit.filename == Path::new("qwerty.rs")
         ));
     }
 
@@ -754,7 +758,7 @@ mod tests {
                     dir_name: Some(dir_name),
                 }),
             )
-            if task == "502" && dir_name == "../elsewhere"
+            if task == "502" && dir_name == Path::new("../elsewhere")
         ));
     }
 

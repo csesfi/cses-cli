@@ -4,6 +4,7 @@ use crate::entities::{Language, Scope, SubmissionInfo};
 use crate::service;
 use crate::storage::StorageData;
 use anyhow::Result;
+use std::path::PathBuf;
 
 #[test]
 fn submit_mock() -> Result<()> {
@@ -35,7 +36,7 @@ fn submit_mock() -> Result<()> {
             name: Some("Python".to_owned()),
             option: None,
         },
-        filename: "input filename".to_owned(),
+        filename: PathBuf::from("input filename"),
     };
     let submission_response = service::submit(&mut fake_resources, &scope, submit_params)?;
     assert_eq!(submission_response.id, 17);
