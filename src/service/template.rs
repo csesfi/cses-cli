@@ -15,14 +15,14 @@ pub fn get_template(
             scope,
             parameters.task.as_deref(),
             parameters.language.as_deref(),
-            parameters.file_name.as_deref(),
+            parameters.filename.as_deref(),
         )?)
     })()
     .context("Failed querying code template from the server")
 }
 
-pub fn file_exists(res: &Resources<impl RP>, file_name: &str) -> bool {
-    res.filesystem.file_exists(file_name)
+pub fn file_exists(res: &Resources<impl RP>, filename: &str) -> bool {
+    res.filesystem.file_exists(filename)
 }
 
 pub fn save_response(res: &mut Resources<impl RP>, response: &TemplateResponse) -> Result<()> {

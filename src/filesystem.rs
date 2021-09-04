@@ -25,7 +25,7 @@ pub trait Filesystem {
     fn file_exists(&self, path: &str) -> bool;
     fn create_dir_all(&self, path: &str) -> Result<()>;
     fn write_file(&self, filecontent: &[u8], path: &str) -> Result<()>;
-    fn get_file_name(&self, path: &str) -> Result<String>;
+    fn get_filename(&self, path: &str) -> Result<String>;
     fn encode_base64(&self, filecontent: &[u8]) -> String;
     fn decode_base64(&self, filecontent: &str) -> Result<Vec<u8>>;
 }
@@ -59,7 +59,7 @@ impl Filesystem for ConcreteFilesystem {
             .context(format!("Failed saving file to {}", path))
     }
 
-    fn get_file_name(&self, path: &str) -> Result<String> {
+    fn get_filename(&self, path: &str) -> Result<String> {
         Path::new(path)
             .file_name()
             .and_then(|f| f.to_str())

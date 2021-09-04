@@ -13,8 +13,8 @@ pub fn submit(
     (|| -> Result<_> {
         require_login(res)?;
         let task = parameters.task.as_deref();
-        let content = res.filesystem.get_file(&parameters.file_name)?;
-        let filename = res.filesystem.get_file_name(&parameters.file_name)?;
+        let content = res.filesystem.get_file(&parameters.filename)?;
+        let filename = res.filesystem.get_filename(&parameters.filename)?;
         let content = res.filesystem.encode_base64(&content);
         let submission = CodeSubmit {
             language: parameters.language,

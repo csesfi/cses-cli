@@ -35,7 +35,7 @@ fn submit_mock() -> Result<()> {
             name: Some("Python".to_owned()),
             option: None,
         },
-        file_name: "input filename".to_owned(),
+        filename: "input filename".to_owned(),
     };
     let submission_response = service::submit(&mut fake_resources, &scope, submit_params)?;
     assert_eq!(submission_response.id, 17);

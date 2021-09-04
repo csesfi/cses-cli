@@ -122,7 +122,7 @@ impl Filesystem for FakeFilesystem {
         Ok(b"test".to_vec())
     }
 
-    fn get_file_name(&self, _path: &str) -> Result<String> {
+    fn get_filename(&self, _path: &str) -> Result<String> {
         Ok("extracted_filename".to_owned())
     }
 

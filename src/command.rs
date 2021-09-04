@@ -83,13 +83,13 @@ pub enum ScopedCommand {
 pub struct Submit {
     pub task: Option<String>,
     pub language: Language,
-    pub file_name: String,
+    pub filename: String,
 }
 #[derive(Debug)]
 pub struct Template {
     pub task: Option<String>,
     pub language: Option<String>,
-    pub file_name: Option<String>,
+    pub filename: Option<String>,
 }
 #[derive(Debug)]
 pub struct Samples {
@@ -142,11 +142,11 @@ impl Submit {
                 name: parse_language_name(pargs)?,
                 option: parse_language_option(pargs)?,
             },
-            file_name: {
-                if let Ok(file_name) = pargs.free_from_str() {
-                    file_name
+            filename: {
+                if let Ok(filename) = pargs.free_from_str() {
+                    filename
                 } else {
-                    anyhow::bail!("File name not specified")
+                    anyhow::bail!("File not specified")
                 }
             },
         })
@@ -157,7 +157,7 @@ impl Template {
         Ok(Template {
             task: parse_task_id(pargs)?,
             language: parse_language_name(pargs)?,
-            file_name: pargs.opt_value_from_str(["-f", "--file"])?,
+            filename: pargs.opt_value_from_str(["-f", "--file"])?,
         })
     }
 }
@@ -328,7 +328,7 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(_, ScopedCommand::Submit(submit))
-            if submit.file_name == "test.cpp"
+            if submit.filename == "test.cpp"
         ));
 
         let pargs = to_pargs(&["submit", "qwerty.rs"]);
@@ -337,7 +337,7 @@ mod tests {
         assert!(matches!(
             command,
             Command::Scoped(_, ScopedCommand::Submit(submit))
-            if submit.file_name == "qwerty.rs"
+            if submit.filename == "qwerty.rs"
         ));
     }
 
@@ -482,7 +482,7 @@ mod tests {
                 ScopedCommand::Template(Template {
                     task: Some(task),
                     language: Some(language),
-                    file_name: None,
+                    filename: None,
                 }),
             )
             if course_id == "course" && task == "123" && language == "language"
@@ -498,14 +498,14 @@ mod tests {
                 ScopedCommand::Template(Template {
                     task: Some(task),
                     language: Some(language),
-                    file_name: None,
+                    filename: None,
                 }),
             )
             if task == "123" && language == "language"
         ));
     }
     #[test]
-    fn command_template_works_with_file_name() {
+    fn command_template_works_with_filename() {
         let pargs = to_pargs(&["template", "-c", "course", "-f", "file"]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
@@ -514,10 +514,10 @@ mod tests {
                 ScopedCommand::Template(Template {
                     task: None,
                     language: None,
-                    file_name: Some(file_name),
+                    filename: Some(filename),
                 }),
             )
-            if course_id == "course" && file_name == "file"
+            if course_id == "course" && filename == "file"
         ));
     }
     #[test]
@@ -538,14 +538,14 @@ mod tests {
                 ScopedCommand::Template(Template {
                     task: Some(task),
                     language: Some(language),
-                    file_name: None,
+                    filename: None,
                 }),
             )
             if course_id == "course" && task == "123" && language == "language"
         ));
     }
     #[test]
-    fn command_template_works_with_long_parameters_file_name() {
+    fn command_template_works_with_long_parameters_filename() {
         let pargs = to_pargs(&["template", "--file", "file"]);
         let command = Command::parse_command(pargs).unwrap();
         assert!(matches!(command,
@@ -554,10 +554,10 @@ mod tests {
                 ScopedCommand::Template(Template {
                     task: None,
                     language: None,
-                    file_name: Some(file_name),
+                    filename: Some(filename),
                 }),
             )
-            if file_name == "file"
+            if filename == "file"
         ));
     }
     #[test]
