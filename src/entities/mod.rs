@@ -1,7 +1,6 @@
 mod scope;
-pub use scope::*;
-
 use miniserde::{Deserialize, Serialize};
+pub use scope::*;
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
 pub struct Language {

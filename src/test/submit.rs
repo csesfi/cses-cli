@@ -1,10 +1,11 @@
-use super::fake_resources_with_mock_api;
-use crate::command;
-use crate::entities::{Language, Scope, SubmissionInfo};
-use crate::service;
-use crate::storage::StorageData;
-use anyhow::Result;
 use std::path::PathBuf;
+
+use anyhow::Result;
+
+use super::fake_resources_with_mock_api;
+use crate::entities::{Language, Scope, SubmissionInfo};
+use crate::storage::StorageData;
+use crate::{command, service};
 
 #[test]
 fn submit_mock() -> Result<()> {

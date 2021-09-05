@@ -1,6 +1,7 @@
-use console::StyledObject;
 use std::fmt;
 use std::fmt::{Display, Write};
+
+use console::StyledObject;
 
 pub struct Table {
     min_widths: Vec<usize>,

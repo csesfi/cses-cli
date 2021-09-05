@@ -1,9 +1,9 @@
 use std::path::Path;
 
-use crate::command;
-use crate::entities::{Scope, TemplateResponse};
-use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 use anyhow::{Context, Result};
+
+use crate::entities::{Scope, TemplateResponse};
+use crate::{command, CsesApi, Filesystem, Resources, Storage, RP};
 
 pub fn get_template(
     res: &mut Resources<impl RP>,

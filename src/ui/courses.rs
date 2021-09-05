@@ -1,17 +1,13 @@
-use crate::{
-    entities::{Scope, ScopeItem, ScopeItemRaw},
-    service,
-    ui::{
-        table::{Table, TableAlign, TableCell},
-        util::styled_task_status_or_score,
-    },
-    RP,
-};
-use anyhow::Result;
-use console::style;
 use std::io::Write;
 
+use anyhow::Result;
+use console::style;
+
 use super::Ui;
+use crate::entities::{Scope, ScopeItem, ScopeItemRaw};
+use crate::ui::table::{Table, TableAlign, TableCell};
+use crate::ui::util::styled_task_status_or_score;
+use crate::{service, RP};
 
 pub fn list_courses(ui: &mut Ui<impl RP>) -> Result<()> {
     let courses = service::courses(&mut ui.res)?;

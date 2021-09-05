@@ -1,10 +1,11 @@
-use crate::api::ApiError;
-use crate::{CsesApi, Resources, Storage, RP};
-use anyhow::{Context, Result};
-use miniserde::{Deserialize, Serialize};
 use std::fmt;
 
+use anyhow::{Context, Result};
+use miniserde::{Deserialize, Serialize};
+
 use super::require_login;
+use crate::api::ApiError;
+use crate::{CsesApi, Resources, Storage, RP};
 
 #[derive(Serialize, Deserialize)]
 pub struct Login {

@@ -1,7 +1,12 @@
-use super::{util::prompt_yes_no, Ui};
-use crate::{command, entities::Scope, service, RP};
+use std::io::Write;
+use std::path::Path;
+
 use anyhow::Result;
-use std::{io::Write, path::Path};
+
+use super::util::prompt_yes_no;
+use super::Ui;
+use crate::entities::Scope;
+use crate::{command, service, RP};
 
 pub fn get_samples(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Samples) -> Result<()> {
     let test_cases = service::fetch_samples(&ui.res, scope, &params.task)?;

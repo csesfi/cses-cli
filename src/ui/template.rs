@@ -1,10 +1,12 @@
-use super::{util::prompt_yes_no, Ui};
-use crate::{command, entities::Scope, service, RP};
+use std::io::Write;
+use std::path::{Path, MAIN_SEPARATOR};
+
 use anyhow::Result;
-use std::{
-    io::Write,
-    path::{Path, MAIN_SEPARATOR},
-};
+
+use super::util::prompt_yes_no;
+use super::Ui;
+use crate::entities::Scope;
+use crate::{command, service, RP};
 
 pub fn get_template(ui: &mut Ui<impl RP>, scope: &Scope, params: command::Template) -> Result<()> {
     let template_response = service::get_template(&mut ui.res, scope, params)?;

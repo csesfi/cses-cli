@@ -1,15 +1,14 @@
-use crate::entities::Scope;
-use crate::service;
-use crate::ui::util::styled_task_status_or_score;
-use crate::RP;
+use std::io::Write;
+
 use anyhow::Result;
 use console::Style;
-use std::io::Write;
 
 use super::table::*;
 use super::util::{format_code_time, format_test_groups, result_with_color};
 use super::Ui;
-use crate::entities::SubmissionInfo;
+use crate::entities::{Scope, SubmissionInfo};
+use crate::ui::util::styled_task_status_or_score;
+use crate::{service, RP};
 
 pub fn print_submission_info(
     ui: &mut Ui<impl RP>,

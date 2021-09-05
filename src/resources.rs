@@ -1,5 +1,4 @@
-use crate::{ConcreteFilesystem, CsesHttpApi, FileStorage};
-use crate::{CsesApi, Filesystem, Storage};
+use crate::{ConcreteFilesystem, CsesApi, CsesHttpApi, FileStorage, Filesystem, Storage};
 
 pub struct Resources<R: ResourcesProvider> {
     pub api: R::CsesApiImpl,

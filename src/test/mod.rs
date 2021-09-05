@@ -1,14 +1,15 @@
 mod submit;
-use crate::api::{CodeSubmit, LoginResponse};
+use std::path::{Path, PathBuf};
+
+use anyhow::Result;
+
+use crate::api::{ApiResult, CodeSubmit, LoginResponse, MockCsesApi};
 use crate::entities::{
     CourseList, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
     TemplateResponse, TestCaseList, UserOutline,
 };
 use crate::storage::StorageData;
-use crate::{api::ApiResult, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
-use anyhow::Result;
-use std::path::{Path, PathBuf};
 
 struct FakeCsesApi {}
 

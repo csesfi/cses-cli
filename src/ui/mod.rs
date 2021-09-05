@@ -13,8 +13,7 @@ use console::Term;
 
 use crate::api::ApiError;
 use crate::command::{ScopedCommand, Submission, HELP_STR, LANGUAGE_HINT, TASK_HINT};
-use crate::service;
-use crate::{Command, Resources, ResourcesProvider};
+use crate::{service, Command, Resources, ResourcesProvider};
 
 pub struct Ui<R: ResourcesProvider> {
     res: Resources<R>,

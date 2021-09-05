@@ -1,11 +1,12 @@
+use std::io::Write;
+
+use anyhow::Result;
+use console::style;
+
+use super::Ui;
 use crate::entities::TaskStatement;
 use crate::ui::util::format_code_time;
 use crate::RP;
-use anyhow::Result;
-use console::style;
-use std::io::Write;
-
-use super::Ui;
 
 pub fn print_statement(ui: &mut Ui<impl RP>, task_statement: &TaskStatement) -> Result<()> {
     writeln!(ui.term, "\n{}", style(&task_statement.name).bold())?;

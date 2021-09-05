@@ -1,9 +1,5 @@
 mod escape;
 mod trace_send;
-use crate::entities::{
-    CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
-    TemplateResponse, TestCaseList, UserOutline,
-};
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
@@ -11,6 +7,11 @@ use minreq::Response;
 use mockall::automock;
 use thiserror::Error;
 use trace_send::TraceSend;
+
+use crate::entities::{
+    CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
+    TemplateResponse, TestCaseList, UserOutline,
+};
 
 pub struct CsesHttpApi {
     url: String,

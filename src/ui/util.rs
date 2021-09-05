@@ -1,10 +1,9 @@
-use anyhow::{Result, Context};
+use anyhow::{Context, Result};
 use console::{style, Style, StyledObject};
 
+use super::Ui;
 use crate::entities::TaskStatus;
 use crate::RP;
-
-use super::Ui;
 
 pub fn result_with_color(line: &str) -> StyledObject<&str> {
     let color = match line {

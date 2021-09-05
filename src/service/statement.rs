@@ -1,6 +1,7 @@
+use anyhow::{Context, Result};
+
 use crate::entities::{Scope, TaskStatement};
 use crate::{CsesApi, Resources, Storage, RP};
-use anyhow::{Context, Result};
 pub fn get_task_statement(
     res: &Resources<impl RP>,
     scope: &Scope,

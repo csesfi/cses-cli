@@ -1,12 +1,10 @@
-use crate::service;
-use crate::Storage;
-use crate::RP;
-use anyhow::Result;
 use std::io::Write;
 
-use anyhow::Context;
+use anyhow::{Context, Result};
 
-use super::{util::prompt_yes_no, Ui};
+use super::util::prompt_yes_no;
+use super::Ui;
+use crate::{service, Storage, RP};
 
 pub fn login(ui: &mut Ui<impl RP>) -> Result<()> {
     (|| -> Result<_> {

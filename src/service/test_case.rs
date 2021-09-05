@@ -1,8 +1,9 @@
 use std::path::{Path, PathBuf};
 
+use anyhow::{Context, Result};
+
 use crate::entities::{Scope, TestCase};
 use crate::{CsesApi, Filesystem, Resources, Storage, RP};
-use anyhow::{Context, Result};
 
 pub fn fetch_samples(
     res: &Resources<impl RP>,

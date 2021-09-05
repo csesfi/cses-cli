@@ -37,11 +37,11 @@ mod submission;
 mod submit;
 mod template;
 
-use common::TESTS;
-
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
 use std::sync::{Arc, Mutex};
+
+use common::TESTS;
 
 struct TestServer {
     child: Arc<Mutex<Child>>,

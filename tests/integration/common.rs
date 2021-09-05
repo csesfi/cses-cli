@@ -1,10 +1,10 @@
-use predicates::str::{ContainsPredicate, RegexPredicate};
 use std::path::Path;
 
 pub use assert_cmd::prelude::*;
 pub use assert_cmd::Command;
 pub use linkme::distributed_slice;
 pub use predicates::prelude::*;
+use predicates::str::{ContainsPredicate, RegexPredicate};
 
 #[distributed_slice]
 pub static TESTS: [fn()] = [..];

@@ -1,9 +1,9 @@
+use anyhow::{anyhow, Context, Result};
+
 use super::require_login;
 use crate::api::CodeSubmit;
-use crate::command;
 use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo};
-use crate::{CsesApi, Filesystem, Resources, RP};
-use anyhow::{anyhow, Context, Result};
+use crate::{command, CsesApi, Filesystem, Resources, RP};
 
 pub fn submit(
     res: &mut Resources<impl RP>,

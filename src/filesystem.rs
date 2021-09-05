@@ -1,8 +1,9 @@
-use anyhow::{anyhow, bail, Context, Result};
-use base64::{decode, encode};
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::Path;
+
+use anyhow::{anyhow, bail, Context, Result};
+use base64::{decode, encode};
 
 const FILE_SIZE_LIMIT: usize = 128 * 1024;
 
@@ -77,10 +78,11 @@ impl Filesystem for ConcreteFilesystem {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::env::temp_dir;
     use std::fs::{remove_dir, remove_file};
     use std::io::Write;
+
+    use super::*;
 
     #[test]
     fn can_read_file() {
