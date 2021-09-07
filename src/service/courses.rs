@@ -1,8 +1,7 @@
-use crate::{
-    entities::{CourseInfo, Scope, ScopeContent},
-    CsesApi, Resources, Storage, RP,
-};
 use anyhow::Result;
+
+use crate::entities::{CourseInfo, Scope, ScopeContent};
+use crate::{CsesApi, Resources, Storage, RP};
 
 pub fn courses(res: &mut Resources<impl RP>) -> Result<Vec<CourseInfo>> {
     let token = res.storage.get().get_token();

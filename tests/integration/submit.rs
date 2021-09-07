@@ -1,5 +1,6 @@
-use crate::common::*;
 use std::path::PathBuf;
+
+use crate::common::*;
 
 #[distributed_slice(TESTS)]
 fn fails_with_wrong_filename() {

@@ -2,23 +2,23 @@ import base64
 
 
 class Template:
-    def __init__(self, has_token, scope_id, task_id, language, file):
+    def __init__(self, has_token, scope_id, task_id, language, filename):
         self.has_token = has_token
         self.scope_id = scope_id
         self.task_id = task_id
         self.language = language
-        self.file = file
+        self.filename = filename
 
     def __eq__(self, other):
         return self.has_token == other.has_token \
             and self.scope_id == other.scope_id \
             and self.task_id == other.task_id \
             and self.language == other.language \
-            and self.file == other.file
+            and self.filename == other.filename
 
     def __hash__(self):
         return hash((self.has_token, self.scope_id, self.task_id,
-                     self.language, self.file))
+                     self.language, self.filename))
 
 
 def _to_b64(string):

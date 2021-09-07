@@ -1,6 +1,9 @@
+use std::fmt;
+use std::num::ParseIntError;
+use std::str::FromStr;
+
 use anyhow::anyhow;
 use miniserde::Deserialize;
-use std::{fmt, num::ParseIntError, str::FromStr};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Scope {

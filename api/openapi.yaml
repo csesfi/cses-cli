@@ -2,11 +2,15 @@ openapi: 3.0.3
 
 info:
   title: CSES API
-  description: API describing the communication between CSES CLI and cses.fi
+  description: >
+    API describing the communication between CSES CLI and cses.fi.
+
+    There are currently no stability guarantees and the API may change at any
+    time.
   version: 0.0.1
   license:
     name: MIT
-    url: https://github.com/H4m5t3r/cses-cli/blob/main/LICENSE
+    url: https://github.com/csesfi/cses-cli/blob/main/LICENSE
 
 components:
   schemas:

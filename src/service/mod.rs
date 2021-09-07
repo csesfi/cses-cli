@@ -13,14 +13,10 @@ pub mod submit;
 pub use submit::{nth_latest_submission_info, submission_info, submission_list, submit};
 
 mod scope;
+use anyhow::{anyhow, Result};
 pub use scope::select_scope;
 
 use crate::{Resources, Storage, RP};
-use anyhow::{anyhow, Result};
-
-pub fn ping(_res: &mut Resources<impl RP>) -> bool {
-    true
-}
 
 fn require_login(res: &Resources<impl RP>) -> Result<&str> {
     res.storage

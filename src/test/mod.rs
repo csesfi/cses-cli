@@ -1,14 +1,15 @@
 mod submit;
-use crate::api::{CodeSubmit, LoginResponse};
+use std::path::{Path, PathBuf};
+
+use anyhow::Result;
+
+use crate::api::{ApiResult, CodeSubmit, LoginResponse, MockCsesApi};
 use crate::entities::{
     CourseList, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
     TemplateResponse, TestCaseList, UserOutline,
 };
 use crate::storage::StorageData;
-use crate::{api::ApiResult, api::MockCsesApi};
 use crate::{CsesApi, Filesystem, Resources, Storage};
-use anyhow::Result;
-use std::path::PathBuf;
 
 struct FakeCsesApi {}
 
@@ -118,11 +119,11 @@ impl Storage for FakeStorage {
 struct FakeFilesystem {}
 
 impl Filesystem for FakeFilesystem {
-    fn get_file(&self, _filename: &str) -> anyhow::Result<Vec<u8>> {
+    fn get_file(&self, _path: &Path) -> anyhow::Result<Vec<u8>> {
         Ok(b"test".to_vec())
     }
 
-    fn get_file_name(&self, _path: &str) -> Result<String> {
+    fn get_filename(&self, _path: &Path) -> Result<String> {
         Ok("extracted_filename".to_owned())
     }
 
@@ -134,15 +135,15 @@ impl Filesystem for FakeFilesystem {
         todo!()
     }
 
-    fn file_exists(&self, _path: &str) -> bool {
+    fn file_exists(&self, _path: &Path) -> bool {
         todo!();
     }
 
-    fn create_dir_all(&self, _path: &str) -> Result<()> {
+    fn create_dir_all(&self, _path: &Path) -> Result<()> {
         todo!();
     }
 
-    fn write_file(&self, _filecontent: &[u8], _path: &str) -> Result<()> {
+    fn write_file(&self, _filecontent: &[u8], _path: &Path) -> Result<()> {
         todo!();
     }
 }

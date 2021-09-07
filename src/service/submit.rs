@@ -1,9 +1,9 @@
+use anyhow::{anyhow, Context, Result};
+
 use super::require_login;
 use crate::api::CodeSubmit;
-use crate::command;
 use crate::entities::{Scope, SubmissionInfo, SubmissionListingInfo};
-use crate::{CsesApi, Filesystem, Resources, RP};
-use anyhow::{anyhow, Context, Result};
+use crate::{command, CsesApi, Filesystem, Resources, RP};
 
 pub fn submit(
     res: &mut Resources<impl RP>,
@@ -12,9 +12,9 @@ pub fn submit(
 ) -> Result<SubmissionInfo> {
     (|| -> Result<_> {
         require_login(res)?;
-        let task = parameters.task.as_deref();
-        let content = res.filesystem.get_file(&parameters.file_name)?;
-        let filename = res.filesystem.get_file_name(&parameters.file_name)?;
+        let task_id = parameters.task_id.as_deref();
+        let content = res.filesystem.get_file(&parameters.filename)?;
+        let filename = res.filesystem.get_filename(&parameters.filename)?;
         let content = res.filesystem.encode_base64(&content);
         let submission = CodeSubmit {
             language: parameters.language,
@@ -23,7 +23,7 @@ pub fn submit(
         };
         Ok(res
             .api
-            .submit_task(require_login(res)?, &scope, task, &submission)?)
+            .submit_task(require_login(res)?, scope, task_id, &submission)?)
     })()
     .context("Failed submitting file")
 }
@@ -37,7 +37,7 @@ pub fn submission_info(
     (|| -> Result<_> {
         Ok(res
             .api
-            .get_submit(require_login(res)?, &scope, submission_id, poll)?)
+            .get_submit(require_login(res)?, scope, submission_id, poll)?)
     })()
     .context("Failed querying submission status from the server")
 }
@@ -50,7 +50,7 @@ pub fn submission_list(
     (|| -> Result<_> {
         let response = res
             .api
-            .get_submit_list(require_login(res)?, &scope, task_id)?;
+            .get_submit_list(require_login(res)?, scope, task_id)?;
         Ok(response.submissions)
     })()
     .context("Failed querying submissions from the server")

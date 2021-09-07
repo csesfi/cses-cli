@@ -1,9 +1,5 @@
 mod escape;
 mod trace_send;
-use crate::entities::{
-    CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
-    TemplateResponse, TestCaseList, UserOutline,
-};
 use escape::Escape;
 use miniserde::{json, Deserialize, Serialize};
 use minreq::Response;
@@ -11,6 +7,11 @@ use minreq::Response;
 use mockall::automock;
 use thiserror::Error;
 use trace_send::TraceSend;
+
+use crate::entities::{
+    CourseList, Language, Scope, ScopeContent, SubmissionInfo, SubmissionList, TaskStatement,
+    TemplateResponse, TestCaseList, UserOutline,
+};
 
 pub struct CsesHttpApi {
     url: String,
@@ -29,7 +30,7 @@ pub enum ApiError {
     HttpError(#[from] minreq::Error),
     #[error("Could not parse server response")]
     JsonError(#[from] miniserde::Error),
-    #[error("API key pending authentication.")]
+    #[error("API key pending authentication")]
     PendingApiKeyError,
     #[error("Invalid API key. Log in again.")]
     ApiKeyError,
@@ -79,7 +80,7 @@ pub trait CsesApi {
         scope: &Scope,
         task_id: Option<&'a str>,
         language: Option<&'a str>,
-        file: Option<&'a str>,
+        filename: Option<&'a str>,
     ) -> ApiResult<TemplateResponse>;
     fn get_task_statement<'a>(
         &self,
@@ -214,7 +215,7 @@ impl CsesApi for CsesHttpApi {
         scope: &Scope,
         task_id: Option<&'a str>,
         language: Option<&'a str>,
-        file_name: Option<&'a str>,
+        filename: Option<&'a str>,
     ) -> ApiResult<TemplateResponse> {
         let mut request = minreq::get(format_url(&self.url, scope, "templates"));
         if let Some(token) = token {
@@ -226,8 +227,8 @@ impl CsesApi for CsesHttpApi {
         if let Some(language) = language {
             request = request.with_param("language", Escape(language));
         }
-        if let Some(file_name) = file_name {
-            request = request.with_param("filename", Escape(file_name));
+        if let Some(filename) = filename {
+            request = request.with_param("filename", Escape(filename));
         }
         let response = request.trace_send(self.trace)?;
         check_error(&response)?;

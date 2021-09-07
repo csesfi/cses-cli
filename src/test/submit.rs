@@ -1,9 +1,11 @@
-use super::fake_resources_with_mock_api;
-use crate::command;
-use crate::entities::{Language, Scope, SubmissionInfo};
-use crate::service;
-use crate::storage::StorageData;
+use std::path::PathBuf;
+
 use anyhow::Result;
+
+use super::fake_resources_with_mock_api;
+use crate::entities::{Language, Scope, SubmissionInfo};
+use crate::storage::StorageData;
+use crate::{command, service};
 
 #[test]
 fn submit_mock() -> Result<()> {
@@ -30,12 +32,12 @@ fn submit_mock() -> Result<()> {
     let scope = Scope::Course("crs".to_string());
     fake_resources.storage.data = storage_data;
     let submit_params = command::Submit {
-        task: Some("3".to_owned()),
+        task_id: Some("3".to_owned()),
         language: Language {
             name: Some("Python".to_owned()),
             option: None,
         },
-        file_name: "input filename".to_owned(),
+        filename: PathBuf::from("input filename"),
     };
     let submission_response = service::submit(&mut fake_resources, &scope, submit_params)?;
     assert_eq!(submission_response.id, 17);

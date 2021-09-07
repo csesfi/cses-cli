@@ -25,11 +25,11 @@ libc = "0.2"
 
 [dev-dependencies]
 ctrlc = "3"
-assert_cmd = "1"
-predicates = "1"
+assert_cmd = "2"
+predicates = "2"
 linkme = "0.2"
 backtrace = "0.3"
-mockall = "0.9.1"
+mockall = "0.10"
 
 [[test]]
 name = "integration"

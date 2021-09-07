@@ -1,8 +1,8 @@
+use std::fs;
+use std::path::{Path, PathBuf};
+
 use anyhow::Result;
 use miniserde::{json, Deserialize, Serialize};
-use std::fs;
-use std::path::Path;
-use std::path::PathBuf;
 
 use crate::entities::Scope;
 
