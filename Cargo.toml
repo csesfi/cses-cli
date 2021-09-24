@@ -1,6 +1,6 @@
 [package]
 name = "cses-cli"
-version = "0.1.0"
+version = "0.1.2"
 authors = [
   "Antto Heikura <antto.heikura@helsinki.fi>",
   "Valokoodari <joona.huuhtanen@helsinki.fi>",
@@ -10,6 +10,15 @@ authors = [
 ]
 edition = "2018"
 autotests = false
+
+license = "MIT"
+description = "CSES CLI is a lightweight tool for using CSES from the command line."
+readme = "README.md"
+documentation = "https://github.com/csesfi/cses-cli/wiki/User-manual"
+homepage = "https://cses.fi/"
+repository = "https://github.com/csesfi/cses-cli"
+categories = ["command-line-utilities"]
+exclude = ["/api", "/tests"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

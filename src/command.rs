@@ -4,7 +4,7 @@ use anyhow::{anyhow, bail, Context, Result};
 
 use crate::entities::{Language, Scope};
 
-pub static HELP_STR: &str = r#"CSES CLI
+pub static HELP_STR: &str = concat!("CSES CLI version ", env!("CARGO_PKG_VERSION"), r#"
 
 USAGE:
     cses-cli <command> [OPTIONS]
@@ -47,7 +47,7 @@ OPTIONS:
         has possible options "C++11" and "C++17".
     -f <file>, --file <file>
         Selects the template with filename "file".
-"#;
+"#);
 
 pub static LANGUAGE_HINT: &str = r#"You can manually specify the language with
 the "-l" or "--language" flags, e.g.:
