@@ -48,7 +48,7 @@ pub struct ScopeSection {
 pub enum ScopeItem<'a> {
     Text {
         name: &'a str,
-        id: String,
+        id: &'a str,
         link: &'a str,
     },
     Link {
@@ -57,7 +57,7 @@ pub enum ScopeItem<'a> {
     },
     Task {
         name: &'a str,
-        id: String,
+        id: &'a str,
         link: &'a str,
         status: Option<TaskStatus>,
         score: Option<u64>,
@@ -99,7 +99,10 @@ impl ScopeItemRaw {
         Ok(match &self.item_type {
             ScopeItemType::Text => ScopeItem::Text {
                 name: &self.name,
-                id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,
+                id: self
+                    .id
+                    .as_deref()
+                    .ok_or_else(|| anyhow!("Text item does not have ID"))?,
                 link: &self.link,
             },
             ScopeItemType::Link => ScopeItem::Link {
@@ -108,7 +111,10 @@ impl ScopeItemRaw {
             },
             ScopeItemType::Task => ScopeItem::Task {
                 name: &self.name,
-                id: self.id.clone().ok_or_else(|| anyhow!("Could not get ID"))?,
+                id: self
+                    .id
+                    .as_deref()
+                    .ok_or_else(|| anyhow!("Task item does not have ID"))?,
                 link: &self.link,
                 status: self.status,
                 score: self.score,
