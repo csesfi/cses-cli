@@ -12,7 +12,8 @@ except IndexError:
 def __file_details(filename: str, new_name: str = None) -> Dict[str, str]:
     return {
         "filename": new_name if new_name is not None else filename,
-        "content": open(f"../../tests/files/{filename}").read()
+        "content": open(f"../../tests/files/{filename}", encoding="UTF-8")
+                   .read()
     }
 
 
