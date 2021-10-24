@@ -45,5 +45,13 @@ TEMPLATES = {
     Template(True, 101, None, None, None): {
         "template_source": _to_b64("code1"),
         "filename": "code1"
-    }
+    },
+    Template(False, "teku", "1068", "Rust", None): {
+        "template_source": _to_b64("rust1"),
+        "filename": "rust1.rs",
+    },
+    Template(False, "teku", "1094", "Rust", None): {
+        "template_source": _to_b64("rust2"),
+        "filename": "rust2.rs",
+    },
 }
