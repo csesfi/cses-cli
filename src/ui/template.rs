@@ -87,26 +87,23 @@ fn get_many<'a>(
 ) -> Result<()> {
     let mut found = false;
     for item in items {
-        match item.as_enum()? {
-            ScopeItem::Task { name, id, .. } => {
-                match get_one(ui, scope, Some(id), language, None) {
-                    Ok(decision) => {
-                        found = true;
-                        if let Some(saved) = decision {
-                            writeln!(
-                                ui.term,
-                                "Template for task {} saved to .{}{}",
-                                name, MAIN_SEPARATOR, &saved
-                            )?
-                        }
+        if let ScopeItem::Task { name, id, .. } = item.as_enum()? {
+            match get_one(ui, scope, Some(id), language, None) {
+                Ok(decision) => {
+                    found = true;
+                    if let Some(saved) = decision {
+                        writeln!(
+                            ui.term,
+                            "Template for task {} saved to .{}{}",
+                            name, MAIN_SEPARATOR, &saved
+                        )?
                     }
-                    Err(error) => match error.downcast_ref::<ApiError>() {
-                        Some(ApiError::ClientError(_)) => {}
-                        _ => return Err(error),
-                    },
                 }
+                Err(error) => match error.downcast_ref::<ApiError>() {
+                    Some(ApiError::ClientError(_)) => {}
+                    _ => return Err(error),
+                },
             }
-            _ => {}
         }
     }
     if !found {
