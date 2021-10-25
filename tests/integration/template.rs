@@ -99,3 +99,17 @@ fn can_fetch_section_templates() {
     let content = std::fs::read_to_string("./rust2.rs").unwrap();
     assert_eq!(content, "rust2");
 }
+
+#[distributed_slice(TESTS)]
+fn can_fetch_all_tests() {
+    command()
+        .args(&["template", "-c", "teku", "--all", "-l", "Rust"])
+        .assert()
+        .success()
+        .stdout(regex_match(r"Wierd algorithm.*rust1.rs"))
+        .stdout(regex_match(r"Increasing array.*rust2.rs"));
+    let content = std::fs::read_to_string("./rust1.rs").unwrap();
+    assert_eq!(content, "rust1");
+    let content = std::fs::read_to_string("./rust2.rs").unwrap();
+    assert_eq!(content, "rust2");
+}
