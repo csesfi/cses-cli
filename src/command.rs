@@ -26,10 +26,12 @@ COMMANDS:
     submission [-c] (<id> | (-t) [<n>])
         Show details about the submission with given ID or specify a task and 
         your nth latest submission to it, starting from 0 (the default value).
-    template [-cftl]            Download and save a code template from cses.fi.
+    template [-cftlp] [--all]   Download and save a code template from cses.fi.
         The template will be saved to the current directory with a filename
         specified by the server. File, task ID and language are optional
         and will be used by the server to select a suitable code template.
+        Multiple templates will be downloaded when using the --section or --all
+        options.
     view [-c] (-t)              View the statement of a task.
     samples [-c] (-t) [<dir>]   Download sample inputs and outputs for a task.
         The files will be saved in the current directory unless specified
@@ -50,6 +52,11 @@ OPTIONS:
         has possible options "C++11" and "C++17".
     -f <file>, --file <file>
         Selects the template with filename "file".
+    -s <section>, --section <section>
+        Download templates for all tasks in the given section of the course. The
+        section is specified by an ordinal number starting from 1.
+    --all
+        Download templates for all tasks in the course or contest.
 "#
 );
 
@@ -93,9 +100,17 @@ pub struct Submit {
 }
 #[derive(Debug)]
 pub struct Template {
-    pub task_id: Option<String>,
     pub language: Option<String>,
-    pub filename: Option<String>,
+    pub query: TemplateQuery,
+}
+#[derive(Debug)]
+pub enum TemplateQuery {
+    Single {
+        task_id: Option<String>,
+        filename: Option<String>,
+    },
+    Section(u64),
+    All,
 }
 #[derive(Debug)]
 pub struct Samples {
@@ -161,9 +176,19 @@ impl Submit {
 impl Template {
     fn parse(pargs: &mut pico_args::Arguments) -> Result<Template> {
         Ok(Template {
-            task_id: parse_task_id(pargs)?,
             language: parse_language_name(pargs)?,
-            filename: pargs.opt_value_from_str(["-f", "--file"])?,
+            query: {
+                if pargs.contains("--all") {
+                    TemplateQuery::All
+                } else if let Some(section) = pargs.opt_value_from_str(["-s", "--section"])? {
+                    TemplateQuery::Section(section)
+                } else {
+                    TemplateQuery::Single {
+                        task_id: parse_task_id(pargs)?,
+                        filename: pargs.opt_value_from_str(["-f", "--file"])?,
+                    }
+                }
+            },
         })
     }
 }
@@ -488,9 +513,11 @@ mod tests {
             Command::Scoped(
                 Some(Scope::Course(course_id)),
                 ScopedCommand::Template(Template {
-                    task_id: Some(task_id),
                     language: Some(language),
-                    filename: None,
+                    query: TemplateQuery::Single {
+                        task_id: Some(task_id),
+                        filename: None,
+                    }
                 }),
             )
             if course_id == "course" && task_id == "123" && language == "language"
@@ -504,9 +531,11 @@ mod tests {
             Command::Scoped(
                 None,
                 ScopedCommand::Template(Template {
-                    task_id: Some(task_id),
                     language: Some(language),
-                    filename: None,
+                    query: TemplateQuery::Single {
+                        task_id: Some(task_id),
+                        filename: None,
+                    }
                 }),
             )
             if task_id == "123" && language == "language"
@@ -520,9 +549,11 @@ mod tests {
             Command::Scoped(
                 Some(Scope::Course(course_id)),
                 ScopedCommand::Template(Template {
-                    task_id: None,
                     language: None,
-                    filename: Some(filename),
+                    query: TemplateQuery::Single {
+                        task_id: None,
+                        filename: Some(filename),
+                    }
                 }),
             )
             if course_id == "course" && filename == "file"
@@ -544,9 +575,11 @@ mod tests {
             Command::Scoped(
                 Some(Scope::Course(course_id)),
                 ScopedCommand::Template(Template {
-                    task_id: Some(task_id),
                     language: Some(language),
-                    filename: None,
+                    query: TemplateQuery::Single {
+                        task_id: Some(task_id),
+                        filename: None,
+                    }
                 }),
             )
             if course_id == "course" && task_id == "123" && language == "language"
@@ -560,14 +593,33 @@ mod tests {
             Command::Scoped(
                 None,
                 ScopedCommand::Template(Template {
-                    task_id: None,
                     language: None,
-                    filename: Some(filename),
+                    query: TemplateQuery::Single {
+                        task_id: None,
+                        filename: Some(filename),
+                    }
                 }),
             )
             if filename == "file"
         ));
     }
+
+    #[test]
+    fn templates_from_section() {
+        let pargs = to_pargs(&["template", "-s", "4"]);
+        let command = Command::parse_command(pargs).unwrap();
+        assert!(matches!(
+            command,
+            Command::Scoped(
+                _,
+                ScopedCommand::Template(Template {
+                    query: TemplateQuery::Section(4),
+                    ..
+                }),
+            )
+        ));
+    }
+
     #[test]
     fn submissions_without_course_parsed() {
         let pargs = to_pargs(&["submissions", "-t", "140"]);

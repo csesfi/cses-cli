@@ -3,22 +3,20 @@ use std::path::Path;
 use anyhow::{Context, Result};
 
 use crate::entities::{Scope, TemplateResponse};
-use crate::{command, CsesApi, Filesystem, Resources, Storage, RP};
+use crate::{CsesApi, Filesystem, Resources, Storage, RP};
 
 pub fn get_template(
     res: &mut Resources<impl RP>,
     scope: &Scope,
-    parameters: command::Template,
+    task_id: Option<&str>,
+    language: Option<&str>,
+    filename: Option<&str>,
 ) -> Result<TemplateResponse> {
     (|| -> Result<_> {
         let token = res.storage.get().get_token();
-        Ok(res.api.get_template(
-            token,
-            scope,
-            parameters.task_id.as_deref(),
-            parameters.language.as_deref(),
-            parameters.filename.as_deref(),
-        )?)
+        Ok(res
+            .api
+            .get_template(token, scope, task_id, language, filename)?)
     })()
     .context("Failed querying code template from the server")
 }

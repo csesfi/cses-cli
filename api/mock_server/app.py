@@ -35,7 +35,7 @@ APP = connexion.App(__name__, specification_dir="../",
 def login_post():
     token = STATE.login()
     print(f"got token: {token}")
-    host = connexion.request.root_url
+    host = connexion.request.host_url
     return (
         {
             "X-Auth-Token": token,
