@@ -1,6 +1,6 @@
 [package]
 name = "cses-cli"
-version = "0.1.2"
+version = "0.1.3"
 authors = [
   "Antto Heikura <antto.heikura@helsinki.fi>",
   "Valokoodari <joona.huuhtanen@helsinki.fi>",
