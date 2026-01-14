@@ -49,6 +49,7 @@ opt-level = 'z'
 lto = true
 panic = 'abort'
 codegen-units = 1
+strip = 'symbols'
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(custom_abort)'] }
