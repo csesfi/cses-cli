@@ -28,9 +28,13 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            target_triplet: x86_64-apple-darwin
+            target_triplet: aarch64-apple-darwin
             compiled_name: cses-cli
             export_name: cses-cli-mac
+          - os: macos-latest
+            target_triplet: x86_64-apple-darwin
+            compiled_name: cses-cli
+            export_name: cses-cli-intel-mac
           - os: ubuntu-22.04
             target_triplet: x86_64-unknown-linux-gnu
             compiled_name: cses-cli
@@ -52,6 +56,8 @@ jobs:
             ~/.cargo/.package-cache
             ~/.cargo/.crates2.json
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cd
+      - name: Add target toolchain
+        run: rustup target add ${{ matrix.target_triplet }}
       - name: Compile binary
         run: cargo build --release --target ${{ matrix.target_triplet }}
         env:
