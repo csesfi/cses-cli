@@ -1,0 +1,30 @@
+name: Rust MSRV Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install MSRV
+        run: |
+          rustup install 1.75
+          rustup default 1.75
+
+      - name: Check
+        run: cargo check

@@ -21,12 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install MSRV
-        run: |
-          rustup install 1.75
-          rustup default 1.75
-          rustup component add rustfmt clippy
-
       - name: Check format
         if: matrix.os == 'ubuntu-latest'
         run: cargo fmt -- --check
