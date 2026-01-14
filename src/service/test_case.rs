@@ -81,6 +81,6 @@ fn make_path(dir_name: Option<&Path>) -> &Path {
 }
 fn format_path(path: &Path, case_num: u64, end: &str) -> PathBuf {
     let mut path = path.to_owned();
-    path.push(&format!("{}.{}", case_num, end));
+    path.push(format!("{}.{}", case_num, end));
     path
 }

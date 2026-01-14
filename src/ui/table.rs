@@ -139,9 +139,9 @@ impl Display for Table {
                     TableAlign::Left => (0, leftover),
                     TableAlign::Center => {
                         if width[i] % 2 == 0 {
-                            (leftover / 2, (leftover + 1) / 2)
+                            (leftover / 2, leftover.div_ceil(2))
                         } else {
-                            ((leftover + 1) / 2, leftover / 2)
+                            (leftover.div_ceil(2), leftover / 2)
                         }
                     }
                     TableAlign::Right => (leftover, 0),
