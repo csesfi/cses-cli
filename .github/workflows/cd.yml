@@ -36,7 +36,7 @@ jobs:
             target_triplet: x86_64-apple-darwin
             compiled_name: cses-cli
             export_name: cses-cli-mac
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             target_triplet: x86_64-unknown-linux-gnu
             compiled_name: cses-cli
             export_name: cses-cli-linux

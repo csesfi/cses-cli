@@ -8,6 +8,7 @@ authors = [
   "Roope Salmi <roope.j.salmi@helsinki.fi>",
   "Anton Taleiko <anton.taleiko@gmail.com>",
 ]
+rust-version = "1.75"
 edition = "2018"
 autotests = false
 
@@ -19,8 +20,6 @@ homepage = "https://cses.fi/"
 repository = "https://github.com/csesfi/cses-cli"
 categories = ["command-line-utilities"]
 exclude = ["/api", "/tests"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 pico-args = "0.4"
