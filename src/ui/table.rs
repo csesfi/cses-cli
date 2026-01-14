@@ -15,6 +15,7 @@ enum Line {
     Separator,
 }
 
+#[derive(Clone)]
 pub struct TableCell {
     allow_hiding: bool,
     content: String,
@@ -22,6 +23,7 @@ pub struct TableCell {
     align: TableAlign,
 }
 
+#[derive(Clone)]
 pub enum TableAlign {
     Left,
     Center,
@@ -135,7 +137,13 @@ impl Display for Table {
                 let leftover = width[i] - cell.length;
                 let (left_pad, mut right_pad) = match cell.align {
                     TableAlign::Left => (0, leftover),
-                    TableAlign::Center => (leftover / 2, (leftover + 1) / 2),
+                    TableAlign::Center => {
+                        if width[i] % 2 == 0 {
+                            (leftover / 2, (leftover + 1) / 2)
+                        } else {
+                            ((leftover + 1) / 2, leftover / 2)
+                        }
+                    }
                     TableAlign::Right => (leftover, 0),
                 };
                 if i == last_shown {
@@ -190,7 +198,7 @@ mod tests {
         ]);
         let result = table.to_string();
         assert!(result.contains("| 12    | 12345"));
-        assert!(result.contains("|  23   |     5"));
+        assert!(result.contains("|   23  |     5"));
         assert!(result.contains("|    45 |"));
     }
 
@@ -205,5 +213,17 @@ mod tests {
         let result = table.to_string();
         assert!(result.contains("content"));
         assert!(!result.contains("hidden"));
+    }
+
+    #[test]
+    fn consistent_alignment() {
+        let mut table = Table::new(vec![3, 4, 5]);
+        table.add_row(vec![TableCell::from("1").align(TableAlign::Center); 3]);
+        table.add_row(vec![TableCell::from("22").align(TableAlign::Center); 3]);
+        table.add_row(vec![TableCell::from("333").align(TableAlign::Center); 3]);
+        let result = table.to_string();
+        assert!(result.contains("  1  |  1   |   1"));
+        assert!(result.contains("  22 |  22  |   22"));
+        assert!(result.contains(" 333 | 333  |  333"));
     }
 }
