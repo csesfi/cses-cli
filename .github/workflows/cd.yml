@@ -16,7 +16,8 @@ jobs:
         with:
           name: Release ${{ github.ref_name }}
           draft: true
-          body_path: .github/workflows/release_template.md
+          body: |
+            See the user manual [here](https://github.com/csesfi/cses-cli/wiki/User-manual).
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
