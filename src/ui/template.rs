@@ -40,8 +40,7 @@ pub fn get_template(ui: &mut Ui<impl RP>, scope: &Scope, command: Template) -> R
             let items = content
                 .sections
                 .iter()
-                .map(|section| section.list.iter())
-                .flatten();
+                .flat_map(|section| section.list.iter());
             if items.clone().count() > 200 {
                 anyhow::bail!(
                     "{} is too large to download all templates",

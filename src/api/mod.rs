@@ -96,6 +96,7 @@ pub trait CsesApi {
     ) -> ApiResult<TestCaseList>;
 }
 
+#[allow(clippy::needless_lifetimes)]
 impl CsesApi for CsesHttpApi {
     fn login(&self) -> ApiResult<LoginResponse> {
         let response = minreq::post(format!("{}/login", self.url)).trace_send(self.trace)?;
