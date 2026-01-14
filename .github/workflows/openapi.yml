@@ -9,17 +9,18 @@ jobs:
     name: Generate Openapi documentation
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install swagger-cli
-      run: sudo npm --global install swagger-cli
-    - name: Bundle OpenAPI definition
-      run: swagger-cli bundle api/openapi.yaml > openapi.json
-    - uses: Legion2/swagger-ui-action@v1
-      with:
-        output: swagger-ui
-        spec-file: openapi.json
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: swagger-ui
+      - uses: actions/checkout@v2
+      - name: Install swagger-cli
+        run: sudo npm --global install swagger-cli
+      - name: Bundle OpenAPI definition
+        run: swagger-cli bundle api/openapi.yaml > openapi.json
+      - uses: Legion2/swagger-ui-action@v1
+        with:
+          output: swagger-ui
+          spec-file: openapi.json
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: swagger-ui

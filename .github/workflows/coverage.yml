@@ -2,7 +2,7 @@ name: Coverage report
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
   workflow_dispatch:
 
@@ -11,61 +11,61 @@ jobs:
     name: Generate coverage report
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache Cargo files
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/bin
-          ~/.cargo/git
-          ~/.cargo/registry
-          ~/.cargo/.crates.toml
-          ~/.cargo/.package-cache
-          ~/.cargo/.crates2.json
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cov
-    - name: Rust toolchain setup
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: nightly
-        override: true
-        components: llvm-tools-preview
-    - name: Install grcov
-      run: cargo install grcov
-    - name: Install rust-covfix
-      run: cargo install rust-covfix
+      - uses: actions/checkout@v2
+      - name: Cache Cargo files
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/git
+            ~/.cargo/registry
+            ~/.cargo/.crates.toml
+            ~/.cargo/.package-cache
+            ~/.cargo/.crates2.json
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cov
+      - name: Rust toolchain setup
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: llvm-tools-preview
+      - name: Install grcov
+        run: cargo install grcov
+      - name: Install rust-covfix
+        run: cargo install rust-covfix
 
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install Poetry
-      uses: snok/install-poetry@v1.2.1
-      with:
-        virtualenvs-create: true
-        virtualenvs-in-project: false
-    - name: Cache pip wheels
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache
-        key: wheels-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-    - name: Install Poetry dependencies
-      run: poetry install --no-interaction
-      working-directory: api/mock_server
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.2.1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: false
+      - name: Cache pip wheels
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache
+          key: wheels-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Poetry dependencies
+        run: poetry install --no-interaction
+        working-directory: api/mock_server
 
-    - name: Run tests
-      run: cargo test
-      env:
-        RUSTFLAGS: '-Z instrument-coverage -C link-dead-code -C codegen-units=1 -C opt-level=0'
-        LLVM_PROFILE_FILE: '${{ github.workspace }}/output-%p-%m.profraw'
-    - name: Run grcov
-      run: |
-        # Copy relevant binaries into one folder, otherwise grcov tries to walk all dependencies
-        mkdir binaries
-        cp target/debug/deps/cses_cli* binaries/
-        cp target/debug/cses-cli binaries/
-        grcov . --binary-path binaries/ -s . -t lcov --llvm --ignore-not-existing --ignore 'src/test/*' --ignore 'tests/*' --ignore '/*' -o coverage-pre.lcov
-    - name: Run rust-covfix
-      run: |
-        rust-covfix coverage-pre.lcov -o coverage.lcov
-        rm coverage-pre.lcov
-    - uses: codecov/codecov-action@v1
+      - name: Run tests
+        run: cargo test
+        env:
+          RUSTFLAGS: "-Z instrument-coverage -C link-dead-code -C codegen-units=1 -C opt-level=0"
+          LLVM_PROFILE_FILE: "${{ github.workspace }}/output-%p-%m.profraw"
+      - name: Run grcov
+        run: |
+          # Copy relevant binaries into one folder, otherwise grcov tries to walk all dependencies
+          mkdir binaries
+          cp target/debug/deps/cses_cli* binaries/
+          cp target/debug/cses-cli binaries/
+          grcov . --binary-path binaries/ -s . -t lcov --llvm --ignore-not-existing --ignore 'src/test/*' --ignore 'tests/*' --ignore '/*' -o coverage-pre.lcov
+      - name: Run rust-covfix
+        run: |
+          rust-covfix coverage-pre.lcov -o coverage.lcov
+          rm coverage-pre.lcov
+      - uses: codecov/codecov-action@v1
