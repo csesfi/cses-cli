@@ -1,28 +1,27 @@
-
 name: CD
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   draft_release:
     name: Draft release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Create draft release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: true
-        prerelease: false
-        body_path: .github/workflows/release_template.md
+      - uses: actions/checkout@v2
+      - name: Create draft release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+          body_path: .github/workflows/release_template.md
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
@@ -46,42 +45,40 @@ jobs:
             compiled_name: cses-cli.exe
             export_name: cses-cli-windows.exe
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache Cargo registry
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cargo/bin
-          ~/.cargo/git
-          ~/.cargo/registry
-          ~/.cargo/.crates.toml
-          ~/.cargo/.package-cache
-          ~/.cargo/.crates2.json
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cd
-    - name: Rust toolchain setup
-      uses: actions-rs/toolchain@v1
-      env:
-        RUSTUP_UNPACK_RAM: 104857600
-      with:
-        profile: minimal
-        toolchain: nightly
-        components: rust-src
-        override: true
-    - name: Install Xargo
-      run: cargo install xargo
-    - name: Compile binary
-      run: xargo build --release --target ${{ matrix.target_triplet }}
-      env:
-        RUSTFLAGS: '-Z strip=symbols --cfg custom_abort'
-    - name: Upload release assets
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.draft_release.outputs.upload_url }}
-        asset_name: ${{ matrix.export_name }}
-        asset_path: target/${{ matrix.target_triplet }}/release/${{ matrix.compiled_name }}
-        asset_content_type: application/octet-stream
+      - uses: actions/checkout@v2
+      - name: Cache Cargo registry
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/git
+            ~/.cargo/registry
+            ~/.cargo/.crates.toml
+            ~/.cargo/.package-cache
+            ~/.cargo/.crates2.json
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-cd
+      - name: Rust toolchain setup
+        uses: actions-rs/toolchain@v1
+        env:
+          RUSTUP_UNPACK_RAM: 104857600
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: rust-src
+          override: true
+      - name: Compile binary
+        run: cargo build --release --target ${{ matrix.target_triplet }}
+        env:
+          RUSTFLAGS: "-Z strip=symbols --cfg custom_abort"
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.draft_release.outputs.upload_url }}
+          asset_name: ${{ matrix.export_name }}
+          asset_path: target/${{ matrix.target_triplet }}/release/${{ matrix.compiled_name }}
+          asset_content_type: application/octet-stream
   publish-release:
     name: Publish release
     runs-on: ubuntu-latest
